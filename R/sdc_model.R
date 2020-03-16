@@ -2,28 +2,23 @@
 #' @param data The dataset (anything which can be coerced to data.table) from
 #'   which the model is estimated.
 #' @param model The estimated model object. Can be a model type like lm, glm and
-#'   various others (anything which can be coerced to broom::augment).
+#'   various others (anything which can be handled by [`broom::augment()`]).
 #' @param id_var The name of the id variable as a character.
 #' @importFrom data.table as.data.table uniqueN
 #' @importFrom broom augment
 #' @importFrom stats na.omit
+#' @importFrom checkmate assert_data_frame assert_string
 #' @export
-#'
-#' @example include df
-
 
 sdc_model <- function(data, model, id_var) {
 
-    # Check argument types
-    checkmate::assert_data_frame(data, .var.name = substitute(data))
-    checkmate::assert_character(id_var)
+    # check inputs
+    checkmate::assert_data_frame(data)
+    checkmate::assert_string(id_var)
 
+    # status messages
     message_options()
-
     message_arguments(id_var)
-
-    #new message_arguments function:
-    message_arguments(data = data, id_var = id_var, model = model)
 
     data <- data.table::as.data.table(data)
 
@@ -89,7 +84,7 @@ sdc_model <- function(data, model, id_var) {
             class(distinct_ids_per_value)
         )
         distinct_ids_per_value
-     })
+    })
 
     names(dummy_list) <- dummy_vars
     print(dummy_list)
@@ -97,11 +92,9 @@ sdc_model <- function(data, model, id_var) {
     # return list with all problem df's &| messages
     invisible(
         list(
-        distinct_ids = distinct_ids,
-        dominance_list = dominance_list,
-        dummy_list = dummy_list
+            distinct_ids = distinct_ids,
+            dominance_list = dominance_list,
+            dummy_list = dummy_list
+        )
     )
-    )
-
 }
-

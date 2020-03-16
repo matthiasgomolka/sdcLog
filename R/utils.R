@@ -11,3 +11,16 @@ sdc_arg_check <- function(data, id_var, val_var, by = NULL) {
         checkmate::check_class(substitute(by), "character"),
     )
 }
+
+by_to_character <- function(by) {
+    str <- as.character(by)
+    if (length(str) == 1L) {
+        return(gsub(",", ", ", str))
+    }
+
+    if (grepl("^(:|>|<|=)", str[1L])) {
+        return(paste(str[2L], str[1L], str[3L]))
+    } else {
+        return(paste(str[-1], collapse = ", "))
+    }
+}
