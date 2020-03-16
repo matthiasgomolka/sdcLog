@@ -13,7 +13,7 @@ message_arguments <- function(id_var, val_var = NULL, by = NULL) {
         "[ ",
         "id_var: ", id_var,
         " | val_var: ", val_var,
-        # if is.character(by) then print
+        # if is.character(by) then print, otherwise skip
         " | by: ", paste(by, collapse = ", "),
         " ]"
     )
