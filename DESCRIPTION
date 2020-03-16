@@ -1,0 +1,29 @@
+Package: sdc
+Title: Helper functions for statistical disclosure control in research data 
+  centres
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Matthias",
+             family = "Gomolka",
+             role = c("aut", "cre"),
+             email = "matthias.gomolka@bundesbank.de"),
+      person(given = "Tim",
+             family = "Becker",
+             role = c("aut"),
+             email = "tim.becker@bundesbank.de"))
+Description: What the package does (one paragraph).
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 2.10)
+Imports: 
+    broom,
+    data.table,
+    crayon,
+    purrr,
+    checkmate
+Suggests: 
+    testthat (>= 2.1.0)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.2
