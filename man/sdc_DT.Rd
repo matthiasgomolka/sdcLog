@@ -4,7 +4,9 @@
 \name{sdc_DT}
 \alias{sdc_DT}
 \title{Test Dataset for Statistical Disclosure control}
-\format{A data.table with 100 rows and 8 columns.}
+\format{
+A data.table with 100 rows and 8 columns.
+}
 \usage{
 data("sdc_DT")
 }

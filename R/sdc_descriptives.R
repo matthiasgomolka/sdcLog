@@ -8,14 +8,13 @@
 #' @importFrom data.table as.data.table
 #' @export
 
-
 sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     # input checks
     sdc_arg_check(data, id_var, val_var, by)
 
     # status messages
     message_options()
-    message_arguments(data = data, id_var = id_var, val_var = val_var, by = by)
+    message_arguments(id_var, val_var, by)
 
     data <- data.table::as.data.table(data)
 
@@ -52,7 +51,7 @@ sdc_count <- function(DT, id_var, val_var, by = NULL) {
            .(distinct_ids = data.table::uniqueN(.SD)),
            .SDcols = id_var,
            keyby = by
-           ][distinct_ids < getOption("sdc.n_ids", 15L)]
+           ][distinct_ids < getOption("sdc.n_ids", 5L)]
     )
 }
 

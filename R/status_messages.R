@@ -1,6 +1,6 @@
 message_options <- function() {
     message(
-        "[ ",
+        "[ OPTIONS:  ",
         "sdc.n_ids: ", getOption("sdc.n_ids", 5L),
         " | sdc.n_ids_dominance: ", getOption("sdc.n_ids_dominance", 2L),
         " | sdc.share_dominance: ", getOption("sdc.share_dominance", 0.85),
@@ -25,11 +25,10 @@ message_arguments <- function(id_var, val_var = NULL, by = NULL) {
     }
 
     message(
-        "[ ",
-        "id_var: ", id_var,
-        " | val_var: ", val_var,
-        # if is.character(by) then print
-        " | by: ", paste(by, collapse = ", "),
+        "[ SETTINGS: ",
+        msg_id_var,
+        msg_val_var,
+        msg_by,
         " ]"
     )
 }

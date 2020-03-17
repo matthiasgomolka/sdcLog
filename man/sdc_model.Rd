@@ -11,7 +11,7 @@ sdc_model(data, model, id_var)
 which the model is estimated.}
 
 \item{model}{The estimated model object. Can be a model type like lm, glm and
-various others (anything which can be coerced to broom::augment).}
+various others (anything which can be handled by \code{\link[broom:augment]{broom::augment()}}).}
 
 \item{id_var}{The name of the id variable as a character.}
 }

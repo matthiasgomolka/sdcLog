@@ -5,7 +5,7 @@
 \title{check if calculation of extreme values comply to RDSC rules.
 If so, function returns average min and max values according to RDSC rules.}
 \usage{
-sdc_extreme(data, id_var, val_var, by = NULL, n_max = 5, n_min = 5)
+sdc_extreme(data, id_var, val_var, by = NULL, n_min = 5L, n_max = n_min)
 }
 \arguments{
 \item{data}{The dataset (anything which can be coerced to data.table) from
