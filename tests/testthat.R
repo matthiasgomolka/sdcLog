@@ -1,4 +1,4 @@
 library(testthat)
-library(sdc)
+library(sdcLog)
 
-test_check("sdc")
+test_check("sdcLog")
