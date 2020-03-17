@@ -1,6 +1,5 @@
 #' check if your model complies to RDSC rules
-#' @param data [data.frame] The dataset (anything which can be coerced to data.table) from
-#'   which the model is estimated.
+#' @param data [data.frame] The dataset from which the model is estimated.
 #' @param model The estimated model object. Can be a model type like lm, glm and
 #'   various others (anything which can be handled by [broom::augment()]).
 #' @param id_var [character] The name of the id variable as a character.
@@ -23,7 +22,12 @@ sdc_model <- function(data, model, id_var) {
     data <- data.table::as.data.table(data)
 
     #model df
-    data_model <- broom::augment(model)
+    data_model <- tryCatch(
+        broom::augment(model),
+        error = function(error) {paste0(
+            "Models of class '", class(model), "' are not yet supported."
+            )}
+        )
 
     model_vars <- setdiff(
         names(data_model),
@@ -56,20 +60,23 @@ sdc_model <- function(data, model, id_var) {
 
 
     #warning dominance with print method
-    dominance_list <- lapply(seq_along(model_var_no_dummy), function(x) {
-        dominance <-
-            eval(sdc_dominance(model_df_no_dummy, id_var, model_var_no_dummy))
+    dominance_list <- lapply(model_var_no_dummy, function(x) {
+        dominance <- eval(
+            sdc_dominance(model_df_no_dummy, id_var, x)
+        )
         class(dominance) <- c("sdc_dominance", class(dominance))
         dominance
     })
 
     names(dominance_list) <- model_var_no_dummy
-    print(dominance_list)
+    conditional_print(dominance_list)
 
 
     # return early if no dummy cols exist
     if (length(dummy_vars) == 0) {
-        message("No dummy-variables in data")
+        if (getOption("sdc.info_level", 1L) > 1L) {
+            message("No dummy variables in data.")
+        }
         invisible(return(TRUE))
     }
 
@@ -77,17 +84,17 @@ sdc_model <- function(data, model, id_var) {
 
     # warnings for dummy variables
     dummy_list <- lapply(dummy_vars, function(x) {
-        distinct_ids_per_value <-
-            eval(sdc_count(dummy_data, id_var, val_var = x, by = x))
-        class(distinct_ids_per_value) <- c(
-            "sdc_counts",
-            class(distinct_ids_per_value)
+        distinct_ids_per_value <- eval(
+            sdc_count(dummy_data, id_var, val_var = x, by = x)
         )
+        class(distinct_ids_per_value) <-
+            c("sdc_counts", class(distinct_ids_per_value))
         distinct_ids_per_value
     })
 
     names(dummy_list) <- dummy_vars
-    print(dummy_list)
+    conditional_print(dummy_list)
+
 
     # return list with all problem df's &| messages
     invisible(
@@ -97,4 +104,11 @@ sdc_model <- function(data, model, id_var) {
             dummy_list = dummy_list
         )
     )
+}
+
+conditional_print <- function(list) {
+    problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+    if (sum(problems) > 0L) {
+        print(list[problems])
+    }
 }
