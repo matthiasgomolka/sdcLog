@@ -31,7 +31,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     print(dominance)
 
     res <- list(counts = counts, dominance = dominance)
-    class(res) <- c("sdc", class(res))
+    class(res) <- c("sdc_descriptives", class(res))
     res
 }
 

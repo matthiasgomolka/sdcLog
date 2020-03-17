@@ -38,7 +38,7 @@ print.sdc_dominance <- function(res) {
     }
 }
 
-print.sdc <- function(res) {
+print.sdc_descriptives <- function(res) {
     no_problems <- sum(nrow(res[["counts"]]), nrow(res[["dominance"]])) == 0
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
         message("Output complies to RDSC rules.")
