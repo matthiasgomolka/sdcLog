@@ -10,7 +10,7 @@
 
 sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     # input checks
-    sdc_arg_check(data, id_var, val_var, by)
+    check_args(data, id_var, val_var, by)
 
     # status messages
     message_options()

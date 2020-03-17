@@ -1,3 +1,6 @@
+# make package aware of data.table usage
+.datatable.aware <- TRUE
+
 #' @importFrom checkmate assert_data_frame assert_string assert check_class
 sdc_arg_check <- function(data, id_var, val_var, by = NULL) {
     checkmate::assert_data_frame(data)
