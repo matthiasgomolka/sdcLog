@@ -2,7 +2,7 @@
 .datatable.aware <- TRUE
 
 #' @importFrom checkmate assert_data_frame assert_string assert check_class
-sdc_arg_check <- function(data, id_var, val_var, by = NULL) {
+check_args <- function(data, id_var, val_var, by = NULL) {
     checkmate::assert_data_frame(data)
     checkmate::assert_string(id_var)
     checkmate::assert_string(val_var)
