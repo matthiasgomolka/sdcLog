@@ -22,7 +22,8 @@ Imports:
     data.table,
     crayon,
     purrr,
-    checkmate
+    checkmate,
+    methods
 Suggests: 
     testthat (>= 2.1.0)
 Roxygen: list(markdown = TRUE)
