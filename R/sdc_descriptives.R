@@ -1,7 +1,7 @@
 #' Check if your descriptive statistics comply to statistical disclosure control.
-#' @param data [`data.frame`] from which the descriptives are calculated.
-#' @param id_var [`character`] The name of the id variable.
-#' @param val_var [`character`] vector of value variables on which descriptives
+#' @param data [data.frame] from which the descriptives are calculated.
+#' @param id_var [character] The name of the id variable.
+#' @param val_var [character] vector of value variables on which descriptives
 #'   are computed.
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
@@ -30,20 +30,9 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     class(dominance) <- c("sdc_dominance", class(dominance))
     print(dominance)
 
-    # if (sum(nrow(counts), nrow(dominance)) == 0) {
-    #    message("Output complies to RDSC rules.")
-    # }
-
-    # invisible(
-    list <- list(
-        counts = counts,
-        dominance = dominance
-    )
-    # )
-
-    class(list) <- c("sdc", class(list))
-    print(list)
-    invisible(list)
+    res <- list(counts = counts, dominance = dominance)
+    class(res) <- c("sdc", class(res))
+    res
 }
 
 #' Internal function which creates cross-tables with number of distinct id's

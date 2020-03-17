@@ -7,11 +7,11 @@
 sdc_descriptives(data, id_var, val_var, by = NULL)
 }
 \arguments{
-\item{data}{\code{\link{data.frame}} from which the descriptives are calculated.}
+\item{data}{\link{data.frame} from which the descriptives are calculated.}
 
-\item{id_var}{\code{\link{character}} The name of the id variable.}
+\item{id_var}{\link{character} The name of the id variable.}
 
-\item{val_var}{\code{\link{character}} vector of value variables on which descriptives
+\item{val_var}{\link{character} vector of value variables on which descriptives
 are computed.}
 
 \item{by}{Grouping variables (or expression). Can be provided as in

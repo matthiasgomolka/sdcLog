@@ -1,71 +1,47 @@
 #' @importFrom crayon bold red
 print.sdc_counts <- function(res) {
+    msg <- "Not enought distinct entities"
+
+    # with problems
     if (nrow(res) > 0L) {
-        warning(crayon::bold(
-            "Potential disclosure problem: Not enought distinct entities."),
+        warning(
+            crayon::bold("Potential disclosure problem: "), msg, ".",
             call. = FALSE
         )
-        cat(crayon::red(
-            "Not enough distinct entities:\n"
-        ))
+        msg <- paste0(msg, ":\n")
+        cat(crayon::red(msg))
         print(as.data.table(res))
-    } else if (getOption("sdc.verbose", TRUE)) {
+
+    # no problems
+    } else if (getOption("sdc.info_level", 1L) > 1L) {
         message("No problem with number of distinct entities.")
     }
 }
 
 #' @importFrom crayon bold red
 print.sdc_dominance <- function(res) {
+    msg <- "Dominant entities"
+
+    # with problems
     if (nrow(res) > 0L) {
-        warning(crayon::bold(
-            "Potential disclosure problem: Dominant entities."),
+        warning(
+            crayon::bold("Potential disclosure problem: "), msg, ".",
             call. = FALSE
         )
-        cat(crayon::red("Dominant entities:\n"))
+        msg <- paste0(msg, ":\n")
+        cat(crayon::red(msg))
         print(as.data.table(res))
-    } else {
+
+    # no problems
+    } else if (getOption("sdc.info_level", 1L) > 1L) {
         message("No problem with dominance.")
     }
 }
-
-
-# option no print for no problems
-
-#' @importFrom crayon bold red
-print.sdc_counts <- function(res) {
-    if (nrow(res) > 0L) {
-        warning(crayon::bold(
-            "Potential disclosure problem: Not enought distinct entities."),
-            call. = FALSE
-        )
-        cat(crayon::red(
-            "Not enough distinct entities:\n"
-        ))
-        print(as.data.table(res))
-    }
-}
-
-#' @importFrom crayon bold red
-print.sdc_dominance <- function(res) {
-    if (nrow(res) > 0L) {
-        warning(crayon::bold(
-            "Potential disclosure problem: Dominant entities."),
-            call. = FALSE
-        )
-        cat(crayon::red("Dominant entities:\n"))
-        print(as.data.table(res))
-    }
-}
-
-
 
 print.sdc <- function(res) {
-    if (sum(nrow(res[["counts"]]), nrow(res[["dominance"]])) == 0) {
+    no_problems <- sum(nrow(res[["counts"]]), nrow(res[["dominance"]])) == 0
+    if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
         message("Output complies to RDSC rules.")
-    } else if (nrow(res[["counts"]]) == 0) {
-        message("No problem with number of distinct entities.")
-    } else if (nrow(res[["dominance"]]) == 0) {
-        message("No problem with dominance.")
     }
 }
 
