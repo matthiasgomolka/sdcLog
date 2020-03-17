@@ -1,9 +1,9 @@
 #' check if your model complies to RDSC rules
-#' @param data The dataset (anything which can be coerced to data.table) from
+#' @param data [data.frame] The dataset (anything which can be coerced to data.table) from
 #'   which the model is estimated.
 #' @param model The estimated model object. Can be a model type like lm, glm and
 #'   various others (anything which can be handled by [broom::augment()]).
-#' @param id_var The name of the id variable as a character.
+#' @param id_var [character] The name of the id variable as a character.
 #' @importFrom data.table as.data.table uniqueN
 #' @importFrom broom augment
 #' @importFrom stats na.omit

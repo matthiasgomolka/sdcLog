@@ -1,14 +1,14 @@
 #' check if calculation of extreme values comply to RDSC rules.
 #'   If so, function returns average min and max values according to RDSC rules.
-#' @param data The dataset (anything which can be coerced to data.table) from
+#' @param data [data.frame] The dataset (anything which can be coerced to data.table) from
 #'   which the extreme values can be calculated.
-#' @param id_var The name of the id variable as a character.
-#' @param val_var Character vector of value variables on which descriptives are
+#' @param id_var [character] The name of the id variable as a character.
+#' @param val_var [character] Character vector of value variables on which descriptives are
 #'   computed.
 #' @param by Grouping variables. Can be provided as in
 #'   [data.table::data.table()].
-#' @param n_min [integer]
-#' @param n_max [integer]
+#' @param n_min [integer] The number of values used to calculate the minimum, by default 5.
+#' @param n_max [integer] The number of values used to calculate the maximum, by default 5.
 #' @importFrom data.table as.data.table data.table setorderv fintersect
 #' @importFrom checkmate assert_int
 #' @export
