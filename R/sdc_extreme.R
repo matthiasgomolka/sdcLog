@@ -22,7 +22,7 @@ sdc_extreme <- function(
   n_max = n_min
 ) {
   # input checks
-  sdc_arg_check(data, id_var, val_var, by)
+  check_args(data, id_var, val_var, by)
   checkmate::assert_int(n_max)
   checkmate::assert_int(n_min)
 
