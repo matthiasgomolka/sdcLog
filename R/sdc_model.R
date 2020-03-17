@@ -2,7 +2,7 @@
 #' @param data The dataset (anything which can be coerced to data.table) from
 #'   which the model is estimated.
 #' @param model The estimated model object. Can be a model type like lm, glm and
-#'   various others (anything which can be handled by [`broom::augment()`]).
+#'   various others (anything which can be handled by [broom::augment()]).
 #' @param id_var The name of the id variable as a character.
 #' @importFrom data.table as.data.table uniqueN
 #' @importFrom broom augment
@@ -36,10 +36,10 @@ sdc_model <- function(data, model, id_var) {
 
     # general check for number of distinct ID's
     distinct_ids <- data.table::uniqueN(model_df[[id_var]])
-
-    #warning via print method for distinct ID's
     distinct_ids <- data.table::as.data.table(distinct_ids)
     distinct_ids <- distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]
+
+    # warning via print method for distinct ID's
     class(distinct_ids) <- c("sdc_counts", class(distinct_ids))
     print(distinct_ids)
 
@@ -56,7 +56,7 @@ sdc_model <- function(data, model, id_var) {
 
 
     #warning dominance with print method
-    dominance_list <- lapply(seq_along(model_var_no_dummy), function(x){
+    dominance_list <- lapply(seq_along(model_var_no_dummy), function(x) {
         dominance <-
             eval(sdc_dominance(model_df_no_dummy, id_var, model_var_no_dummy))
         class(dominance) <- c("sdc_dominance", class(dominance))

@@ -19,9 +19,9 @@ computed.}
 \item{by}{Grouping variables. Can be provided as in
 \code{\link[data.table:data.table]{data.table::data.table()}}.}
 
-\item{n_min}{\code{\link{integer}}}
+\item{n_min}{\link{integer}}
 
-\item{n_max}{\code{\link{integer}}}
+\item{n_max}{\link{integer}}
 }
 \description{
 check if calculation of extreme values comply to RDSC rules.

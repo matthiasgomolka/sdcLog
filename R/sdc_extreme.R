@@ -6,15 +6,21 @@
 #' @param val_var Character vector of value variables on which descriptives are
 #'   computed.
 #' @param by Grouping variables. Can be provided as in
-#'   [`data.table::data.table()`].
-#' @param n_min [`integer`]
-#' @param n_max [`integer`]
+#'   [data.table::data.table()].
+#' @param n_min [integer]
+#' @param n_max [integer]
 #' @importFrom data.table as.data.table data.table setorderv fintersect
 #' @importFrom checkmate assert_int
 #' @export
 
-sdc_extreme <- function(data, id_var, val_var, by = NULL, n_min = 5L, n_max = n_min){
-
+sdc_extreme <- function(
+  data,
+  id_var,
+  val_var,
+  by = NULL,
+  n_min = 5L,
+  n_max = n_min
+) {
   # input checks
   sdc_arg_check(data, id_var, val_var, by)
   checkmate::assert_int(n_max)
@@ -61,8 +67,8 @@ sdc_extreme <- function(data, id_var, val_var, by = NULL, n_min = 5L, n_max = n_
 #' @importFrom utils tail head
 find_SD <- function(data, type, n, id_var, val_var, by) {
   SD_fun <- switch(type,
-    min = utils::tail,
-    max = utils::head
+                   min = utils::tail,
+                   max = utils::head
   )
 
   SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
