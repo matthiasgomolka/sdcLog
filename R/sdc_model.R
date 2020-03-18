@@ -101,13 +101,13 @@ sdc_model <- function(data, model, id_var) {
 
 
     # return list with all problem df's &| messages
-    invisible(
-        list(
-            distinct_ids = distinct_ids,
-            dominance_list = dominance_list,
-            dummy_list = dummy_list
-        )
+    res <- list(
+        distinct_ids = distinct_ids,
+        dominance_list = dominance_list,
+        dummy_list = dummy_list
     )
+    class(res) <- c("sdc_model", class(res))
+    res
 }
 
 conditional_print <- function(list) {

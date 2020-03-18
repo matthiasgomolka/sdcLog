@@ -39,12 +39,21 @@ print.sdc_dominance <- function(res) {
 }
 
 print.sdc_descriptives <- function(res) {
-    no_problems <- sum(nrow(res[["counts"]]), nrow(res[["dominance"]])) == 0
+    no_problems <- sum(nrow(res[["counts"]]), nrow(res[["dominance"]])) == 0L
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
         message("Output complies to RDSC rules.")
     }
 }
 
 
+print.sdc_model <- function(res) {
+    n_problems <- vapply(c("dominance_list", "dummy_list"), function(lst) {
+        sum(vapply(res[[lst]], nrow, FUN.VALUE = integer(1L)))
+    }, FUN.VALUE = integer(1L))
+    no_problems <- sum(nrow(res[["distinct_ids"]]), n_problems) == 0L
 
+    if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
+        message("Output complies to RDSC rules.")
+    }
+}
 
