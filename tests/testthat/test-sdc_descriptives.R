@@ -14,11 +14,11 @@ test_dt[id == "A" & year == 2019L, val := NA_real_]
 test_dt[id %chin% c("A", "F") & year == 2020L, val := val * 50]
 setcolorder(test_dt, c("id", "sector", "year"))
 
-# test sdc_count ----
-context("sdc_count")
-test_that("sdc_count() returns a call", {
-    expect_true(is.call(sdcLog:::sdc_count(test_dt, "id", "val")))
-    expect_type(sdcLog:::sdc_count(test_dt, "id", "val"), "language")
+# test check_distinct_ids ----
+context("check_distinct_ids")
+test_that("check_distinct_ids() returns a call", {
+    expect_true(is.call(sdcLog:::check_distinct_ids(test_dt, "id", "val")))
+    expect_type(sdcLog:::check_distinct_ids(test_dt, "id", "val"), "language")
 })
 
 ## functionality tests
@@ -27,27 +27,27 @@ counts_ref_2 <- data.table(sector = character(), distinct_ids = integer(),
                            key = "sector")
 counts_ref_3 <- data.table(sector = "S1", year = 2019L, distinct_ids = 4L,
                            key = c("sector", "year"))
-test_that("sdc_count() counts correctly", {
+test_that("check_distinct_ids() counts correctly", {
     expect_identical(
-        eval(sdcLog:::sdc_count(test_dt, "id", "val")),
+        eval(sdcLog:::check_distinct_ids(test_dt, "id", "val")),
         counts_ref_1
     )
     expect_identical(
-        eval(sdcLog:::sdc_count(test_dt, "id", "val", by = sector)),
+        eval(sdcLog:::check_distinct_ids(test_dt, "id", "val", by = sector)),
         counts_ref_2
     )
     expect_identical(
-        eval(sdcLog:::sdc_count(test_dt, "id", "val", by = .(sector, year))),
+        eval(sdcLog:::check_distinct_ids(test_dt, "id", "val", by = .(sector, year))),
         counts_ref_3
     )
 })
 
-# test sdc_dominance ----
-context("sdc_dominance")
+# test check_dominance ----
+context("check_dominance")
 ## pure technical tests
-test_that("sdc_count() returns a call", {
-    expect_true(is.call(sdcLog:::sdc_dominance(test_dt, "id", "val")))
-    expect_type(sdcLog:::sdc_dominance(test_dt, "id", "val"), "language")
+test_that("check_dominance() returns a call", {
+    expect_true(is.call(sdcLog:::check_dominance(test_dt, "id", "val")))
+    expect_type(sdcLog:::check_dominance(test_dt, "id", "val"), "language")
 })
 
 ## functionality tests
@@ -60,17 +60,17 @@ dominance_ref_3 <- data.table(
     key = c("sector", "year")
 )
 
-test_that("sdc_dominance() calculates correctly", {
+test_that("check_dominance() calculates correctly", {
     expect_identical(
-        eval(sdcLog:::sdc_dominance(test_dt, "id", "val")),
+        eval(sdcLog:::check_dominance(test_dt, "id", "val")),
         dominance_ref_1
     )
     expect_equal(
-        eval(sdcLog:::sdc_dominance(test_dt, "id", "val", by = sector)),
+        eval(sdcLog:::check_dominance(test_dt, "id", "val", by = sector)),
         dominance_ref_2
     )
     expect_equal(
-        eval(sdcLog:::sdc_dominance(test_dt, "id", "val", by = .(sector, year))),
+        eval(sdcLog:::check_dominance(test_dt, "id", "val", by = .(sector, year))),
         dominance_ref_3
     )
 })
@@ -80,7 +80,7 @@ test_that("sdc_dominance() calculates correctly", {
 context("sdc_descriptives")
 # descriptives setup 1 ####
 class(counts_ref_1)    <- c("sdc_counts"   , class(counts_ref_1))
-class(dominance_ref_1) <- c("sdc_dominance", class(dominance_ref_1))
+class(dominance_ref_1) <- c("check_dominance", class(dominance_ref_1))
 descriptives_ref_1 <- list(counts = counts_ref_1,
                            dominance = dominance_ref_1)
 class(descriptives_ref_1) <- c("sdc", class(descriptives_ref_1))
@@ -105,7 +105,7 @@ test_that("sdc_descriptives works in simple cases", {
 
 # descriptives setup 2 ####
 class(counts_ref_2)    <- c("sdc_counts"   , class(counts_ref_2))
-class(dominance_ref_2) <- c("sdc_dominance", class(dominance_ref_2))
+class(dominance_ref_2) <- c("check_dominance", class(dominance_ref_2))
 descriptives_ref_2 <- list(counts = counts_ref_2,
                            dominance = dominance_ref_2)
 class(descriptives_ref_2) <- c("sdc", class(descriptives_ref_2))
@@ -149,7 +149,7 @@ test_that("sdc_descriptives works in medium cases", {
 
 # descriptives setup 3 ####
 class(counts_ref_3)    <- c("sdc_counts"   , class(counts_ref_3))
-class(dominance_ref_3) <- c("sdc_dominance", class(dominance_ref_3))
+class(dominance_ref_3) <- c("check_dominance", class(dominance_ref_3))
 descriptives_ref_3 <- list(counts = counts_ref_3,
                            dominance = dominance_ref_3)
 class(descriptives_ref_3) <- c("sdc", class(descriptives_ref_3))

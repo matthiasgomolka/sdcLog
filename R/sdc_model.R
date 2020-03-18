@@ -12,8 +12,7 @@
 sdc_model <- function(data, model, id_var) {
 
     # check inputs
-    checkmate::assert_data_frame(data)
-    checkmate::assert_string(id_var)
+    check_args(data, id_var)
 
     # status messages
     message_options()
@@ -39,9 +38,14 @@ sdc_model <- function(data, model, id_var) {
     model_df <- stats::na.omit(model_df)
 
     # general check for number of distinct ID's
-    distinct_ids <- data.table::uniqueN(model_df[[id_var]])
-    distinct_ids <- data.table::as.data.table(distinct_ids)
-    distinct_ids <- distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]
+    # distinct_ids <- data.table::uniqueN(model_df[[id_var]])
+    # distinct_ids <- data.table::as.data.table(distinct_ids)
+    # distinct_ids <- distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]
+
+    # no call of check_distinct_ids because we have no single val_var here
+    distinct_ids <-
+        model_df[, .(distinct_ids = data.table::uniqueN(get(id_var)))
+               ][distinct_ids < getOption("sdc.n_ids", 5L)]
 
     # warning via print method for distinct ID's
     class(distinct_ids) <- c("sdc_counts", class(distinct_ids))
@@ -50,7 +54,7 @@ sdc_model <- function(data, model, id_var) {
     #extract dummy cols
     var_df <- model_df[, model_vars, with = FALSE]
 
-    dummy_vars <- vapply(var_df, sdc_find_dummy_cols, FUN.VALUE = logical(1))
+    dummy_vars <- vapply(var_df, is_dummy, FUN.VALUE = logical(1L))
     dummy_vars <- names(dummy_vars)[dummy_vars == TRUE]
 
 
@@ -62,7 +66,7 @@ sdc_model <- function(data, model, id_var) {
     #warning dominance with print method
     dominance_list <- lapply(model_var_no_dummy, function(x) {
         dominance <- eval(
-            sdc_dominance(model_df_no_dummy, id_var, x)
+            check_dominance(model_df_no_dummy, id_var, x)
         )
         class(dominance) <- c("sdc_dominance", class(dominance))
         dominance
@@ -85,7 +89,7 @@ sdc_model <- function(data, model, id_var) {
     # warnings for dummy variables
     dummy_list <- lapply(dummy_vars, function(x) {
         distinct_ids_per_value <- eval(
-            sdc_count(dummy_data, id_var, val_var = x, by = x)
+            check_distinct_ids(dummy_data, id_var, val_var = x, by = x)
         )
         class(distinct_ids_per_value) <-
             c("sdc_counts", class(distinct_ids_per_value))
