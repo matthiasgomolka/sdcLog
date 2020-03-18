@@ -80,10 +80,10 @@ test_that("check_dominance() calculates correctly", {
 context("sdc_descriptives")
 # descriptives setup 1 ####
 class(counts_ref_1)    <- c("sdc_counts"   , class(counts_ref_1))
-class(dominance_ref_1) <- c("check_dominance", class(dominance_ref_1))
+class(dominance_ref_1) <- c("sdc_dominance", class(dominance_ref_1))
 descriptives_ref_1 <- list(counts = counts_ref_1,
                            dominance = dominance_ref_1)
-class(descriptives_ref_1) <- c("sdc", class(descriptives_ref_1))
+class(descriptives_ref_1) <- c("sdc_descriptives", class(descriptives_ref_1))
 
 descriptives_expect_1 <- function(x) {
     messages <- capture_messages(expect_identical(x, descriptives_ref_1))
@@ -105,10 +105,10 @@ test_that("sdc_descriptives works in simple cases", {
 
 # descriptives setup 2 ####
 class(counts_ref_2)    <- c("sdc_counts"   , class(counts_ref_2))
-class(dominance_ref_2) <- c("check_dominance", class(dominance_ref_2))
+class(dominance_ref_2) <- c("sdc_dominance", class(dominance_ref_2))
 descriptives_ref_2 <- list(counts = counts_ref_2,
                            dominance = dominance_ref_2)
-class(descriptives_ref_2) <- c("sdc", class(descriptives_ref_2))
+class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
 
 descriptives_expect_2 <- function(x) {
     expect_output(
@@ -149,10 +149,10 @@ test_that("sdc_descriptives works in medium cases", {
 
 # descriptives setup 3 ####
 class(counts_ref_3)    <- c("sdc_counts"   , class(counts_ref_3))
-class(dominance_ref_3) <- c("check_dominance", class(dominance_ref_3))
+class(dominance_ref_3) <- c("sdc_dominance", class(dominance_ref_3))
 descriptives_ref_3 <- list(counts = counts_ref_3,
                            dominance = dominance_ref_3)
-class(descriptives_ref_3) <- c("sdc", class(descriptives_ref_3))
+class(descriptives_ref_3) <- c("sdc_descriptives", class(descriptives_ref_3))
 
 descriptives_expect_3 <- function(x) {
     warnings <- capture_warnings({
