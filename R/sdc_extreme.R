@@ -32,6 +32,9 @@ sdc_extreme <- function(
 
   data <- data.table::as.data.table(data)
 
+  # na.omit.data.table call
+  data <- na.omit(data, cols = val_var)
+
   # order decreasing by val_var
   data.table::setorderv(data, cols = val_var, order = -1L)
 
@@ -42,7 +45,7 @@ sdc_extreme <- function(
   # check for overlaps of results
   sd_overlap <- nrow(data.table::fintersect(results_min, results_max)) > 0
   if (!sd_overlap) {
-    data.table(
+      data.table::data.table(
       val_var = val_var,
       min = mean(results_min[[val_var]]),
       n_obs_min = nrow(results_min),
