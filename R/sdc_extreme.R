@@ -1,14 +1,19 @@
-#' check if calculation of extreme values comply to RDSC rules.
-#'   If so, function returns average min and max values according to RDSC rules.
-#' @param data [data.frame] The dataset (anything which can be coerced to data.table) from
-#'   which the extreme values can be calculated.
+#' Calculate min and max values that comply to RDSC rules
+#' @description `sdc_extreme()` tries to calculate aggregated min and max values
+#'   for a given `val_var` which comply to RDSC rules.
+#' @return A [data.table] with five columns: `val_var`, `min`, `n_obs_min`,
+#'   `max`, `n_obs_max`. The number of rows depends on `by`.
+#' @param data [data.frame] The dataset from which the extreme values can be
+#'   calculated.
 #' @param id_var [character] The name of the id variable as a character.
-#' @param val_var [character] Character vector of value variables on which descriptives are
-#'   computed.
+#' @param val_var [character] Character vector of value variables on which
+#'   descriptives are computed.
 #' @param by Grouping variables. Can be provided as in
 #'   [data.table::data.table()].
-#' @param n_min [integer] The number of values used to calculate the minimum, by default 5.
-#' @param n_max [integer] The number of values used to calculate the maximum, by default 5.
+#' @param n_min [integer] The number of values used to calculate the minimum, by
+#'   default 5.
+#' @param n_max [integer] The number of values used to calculate the maximum, by
+#'   default 5.
 #' @importFrom data.table as.data.table data.table setorderv fintersect
 #' @importFrom checkmate assert_int
 #' @export
@@ -28,7 +33,8 @@ sdc_extreme <- function(
 
   # status messages
   message_options()
-  message_arguments(id_var, val_var, by)
+  by_for_msg <- by_to_char(substitute(by))
+  message_arguments(id_var = id_var, val_var = val_var, by = by_for_msg)
 
   data <- data.table::as.data.table(data)
 
@@ -50,7 +56,8 @@ sdc_extreme <- function(
       n_obs_max = nrow(results_max)
     )
   } else {
-    message(crayon::bold("Impossible to compute extreme values for variable ('", val_var, "') that comply to RDSC rules."))
+    message("It is impossible to compute extreme values for variable '",
+            val_var, "' that comply to RDSC rules.")
     data.table::data.table(
       val_var = val_var,
       min = NA_real_,
@@ -71,7 +78,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
   while (SD_results[["problems"]]) {
-    n = n + 1
+    n  <- n + 1
     SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
     # this assures that this is no infinite loop; problems will be catched
@@ -84,21 +91,24 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   return(SD_results[["SD"]])
 }
 
-#' @importFrom purrr quietly
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
   SD <- SD_fun(data, n)
-  quiet_sdc_descriptives <- purrr::quietly(sdc_descriptives)
-  check_results <- eval(substitute(
-    quiet_sdc_descriptives(SD, id_var, val_var, by)
-  ))[["result"]]
+
+  results_distinct_ids <- eval(eval(substitute(
+    check_distinct_ids(SD, id_var, val_var, by),
+    env = parent.frame(n = 2L)
+    )))
+  class(results_distinct_ids) <- c("sdc_counts", class(results_distinct_ids))
+
+  results_dominance <- eval(eval(substitute(
+    check_dominance(SD, id_var, val_var, by),
+    env = parent.frame(n = 2L)
+  )))
+  class(results_dominance) <- c("sdc_dominance", class(results_dominance))
 
   list(
     SD = SD,
-    problems = sum(
-      nrow(check_results[["counts"]]),
-      nrow(check_results[["dominance"]])
-    ) != 0
+    problems = sum(nrow(results_distinct_ids), nrow(results_dominance)) != 0L
   )
 }
-
 

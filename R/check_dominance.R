@@ -10,7 +10,11 @@ check_dominance <- function(DT, id_var, val_var, by = NULL) {
     substitute(
         DT[!is.na(get(val_var)),
            # base::sum needed to avoid error with gsum
-           .SD[, .(agg_val_var = base::sum(.SD)), .SDcols = val_var, by = id_var],
+           .SD[,
+               .(agg_val_var = base::sum(.SD)),
+               .SDcols = val_var,
+               by = id_var
+               ],
            keyby = by
          ][order(-agg_val_var),
            .(value_share = cumsum(agg_val_var) / sum(agg_val_var)),

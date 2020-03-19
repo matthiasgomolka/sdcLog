@@ -1,4 +1,4 @@
-#' Check if your descriptive statistics comply to statistical disclosure control.
+#' Check if your descriptive statistics comply to statistical disclosure control
 #' @param data [data.frame] from which the descriptives are calculated.
 #' @param id_var [character] The name of the id variable.
 #' @param val_var [character] vector of value variables on which descriptives
@@ -14,7 +14,8 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
 
     # status messages
     message_options()
-    message_arguments(id_var, val_var, by)
+    by_for_msg <- by_to_char(substitute(by))
+    message_arguments(id_var = id_var, val_var = val_var, by = by_for_msg)
 
     data <- data.table::as.data.table(data)
 
