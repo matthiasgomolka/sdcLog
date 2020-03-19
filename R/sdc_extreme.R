@@ -81,7 +81,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
   while (SD_results[["problems"]]) {
-    n  <- n + 1
+    n <- n + 1
     SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
     # this assures that this is no infinite loop; problems will be catched
