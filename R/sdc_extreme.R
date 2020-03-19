@@ -99,7 +99,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
 
 #' @importFrom data.table .SD
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
-  SD <- data[order(-get(val_var)), head(.SD), by = by]
+  SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
 
   results_distinct_ids <- eval(eval(substitute(
     check_distinct_ids(SD, id_var, val_var, by),
