@@ -45,13 +45,22 @@ sdc_extreme <- function(
   # check for overlaps of results
   sd_overlap <- nrow(data.table::fintersect(results_min, results_max)) > 0
   if (!sd_overlap) {
-      data.table::data.table(
-      val_var = val_var,
-      min = mean(results_min[[val_var]]),
-      n_obs_min = nrow(results_min),
-      max = mean(results_max[[val_var]]),
-      n_obs_max = nrow(results_max)
-    )
+      if(!is.null(by)){
+          data.table::data.table(
+              val_var,
+              results_min[, .(min = mean(get(val_var))), by = by],
+              results_min[, .(n_obs_min = .N), by = by][, 2],
+              results_max[, .(max = mean(get(val_var))), by = by][, 2],
+              results_max[, .(n_obs_max = .N), by = by][, 2])
+      } else {
+          data.table::data.table(
+              val_var = val_var,
+              min = mean(results_min[[val_var]]),
+              n_obs_min = nrow(results_min),
+              max = mean(results_max[[val_var]]),
+              n_obs_max = nrow(results_max)
+          )
+      }
   } else {
     message(crayon::bold("Impossible to compute extreme values for variable ('", val_var, "') that comply to RDSC rules."))
     data.table::data.table(
@@ -89,7 +98,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
 
 #' @importFrom purrr quietly
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
-  SD <- SD_fun(data, n)
+    SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
   quiet_sdc_descriptives <- purrr::quietly(sdc_descriptives)
   check_results <- eval(substitute(
     quiet_sdc_descriptives(SD, id_var, val_var, by)
