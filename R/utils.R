@@ -19,3 +19,17 @@ check_args <- function(data, id_var, val_var = NULL, by = NULL) {
         )
     }
 }
+
+
+by_to_char <- function(by) {
+    str <- as.character(by)
+    if (length(str) == 1L) {
+        return(gsub(",", ", ", fixed = TRUE, str))
+    }
+
+    if (grepl("^(:|>|<|=)", str[1L])) {
+        paste(str[2L], str[1L], str[3L])
+    } else {
+        paste(str[-1], collapse = ", ")
+    }
+}
