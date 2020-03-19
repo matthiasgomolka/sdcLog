@@ -1,6 +1,5 @@
 # pure technical settings
 .datatable.aware <- TRUE
-utils::globalVariables(".")
 
 #' @importFrom checkmate assert_data_frame assert_string assert check_class
 #' @importFrom methods hasArg
@@ -18,5 +17,19 @@ check_args <- function(data, id_var, val_var = NULL, by = NULL) {
             checkmate::check_class(substitute(by), "call"),
             checkmate::check_class(substitute(by), "character"),
         )
+    }
+}
+
+
+by_to_char <- function(by) {
+    str <- as.character(by)
+    if (length(str) == 1L) {
+        return(gsub(",", ", ", fixed = TRUE, str))
+    }
+
+    if (grepl("^(:|>|<|=)", str[1L])) {
+        paste(str[2L], str[1L], str[3L])
+    } else {
+        paste(str[-1], collapse = ", ")
     }
 }

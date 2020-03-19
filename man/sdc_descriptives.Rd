@@ -2,7 +2,7 @@
 % Please edit documentation in R/sdc_descriptives.R
 \name{sdc_descriptives}
 \alias{sdc_descriptives}
-\title{Check if your descriptive statistics comply to statistical disclosure control.}
+\title{Check if your descriptive statistics comply to statistical disclosure control}
 \usage{
 sdc_descriptives(data, id_var, val_var, by = NULL)
 }
@@ -18,5 +18,5 @@ are computed.}
 \code{\link[data.table:data.table]{data.table::data.table()}}.}
 }
 \description{
-Check if your descriptive statistics comply to statistical disclosure control.
+Check if your descriptive statistics comply to statistical disclosure control
 }

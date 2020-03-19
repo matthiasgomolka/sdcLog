@@ -16,7 +16,7 @@ sdc_model <- function(data, model, id_var) {
 
     # status messages
     message_options()
-    message_arguments(id_var)
+    message_arguments(id_var = id_var)
 
     data <- data.table::as.data.table(data)
 
@@ -38,13 +38,9 @@ sdc_model <- function(data, model, id_var) {
     model_df <- stats::na.omit(model_df)
 
     # general check for number of distinct ID's
-    # distinct_ids <- data.table::uniqueN(model_df[[id_var]])
-    # distinct_ids <- data.table::as.data.table(distinct_ids)
-    # distinct_ids <- distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]
-
-    # no call of check_distinct_ids because we have no single val_var here
+    # no call of check_distinct_ids() because we have no single val_var here
     distinct_ids <-
-        model_df[, .(distinct_ids = data.table::uniqueN(get(id_var)))
+        model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))
                ][distinct_ids < getOption("sdc.n_ids", 5L)]
 
     # warning via print method for distinct ID's

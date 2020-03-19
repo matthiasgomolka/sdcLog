@@ -62,7 +62,8 @@ sdc_extreme <- function(
           )
       }
   } else {
-    message(crayon::bold("Impossible to compute extreme values for variable ('", val_var, "') that comply to RDSC rules."))
+    message("It is impossible to compute extreme values for variable '",
+            val_var, "' that comply to RDSC rules.")
     data.table::data.table(
       val_var = val_var,
       min = NA_real_,
@@ -83,7 +84,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
   while (SD_results[["problems"]]) {
-    n = n + 1
+    n <- n + 1
     SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
     # this assures that this is no infinite loop; problems will be catched
@@ -96,7 +97,6 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   return(SD_results[["SD"]])
 }
 
-#' @importFrom purrr quietly
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
     SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
   quiet_sdc_descriptives <- purrr::quietly(sdc_descriptives)
@@ -104,13 +104,21 @@ find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
     quiet_sdc_descriptives(SD, id_var, val_var, by)
   ))[["result"]]
 
+  results_distinct_ids <- eval(eval(substitute(
+    check_distinct_ids(SD, id_var, val_var, by),
+    env = parent.frame(n = 2L)
+    )))
+  class(results_distinct_ids) <- c("sdc_counts", class(results_distinct_ids))
+
+  results_dominance <- eval(eval(substitute(
+    check_dominance(SD, id_var, val_var, by),
+    env = parent.frame(n = 2L)
+  )))
+  class(results_dominance) <- c("sdc_dominance", class(results_dominance))
+
   list(
     SD = SD,
-    problems = sum(
-      nrow(check_results[["counts"]]),
-      nrow(check_results[["dominance"]])
-    ) != 0
+    problems = sum(nrow(results_distinct_ids), nrow(results_dominance)) != 0L
   )
 }
-
 
