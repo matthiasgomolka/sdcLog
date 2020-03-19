@@ -2,33 +2,28 @@
 % Please edit documentation in R/sdc_extreme.R
 \name{sdc_extreme}
 \alias{sdc_extreme}
-\title{Calculate min and max values that comply to RDSC rules}
+\title{check if calculation of extreme values comply to RDSC rules.
+If so, function returns average min and max values according to RDSC rules.}
 \usage{
 sdc_extreme(data, id_var, val_var, by = NULL, n_min = 5L, n_max = n_min)
 }
 \arguments{
-\item{data}{\link{data.frame} The dataset from which the extreme values can be
-calculated.}
+\item{data}{\link{data.frame} The dataset (anything which can be coerced to data.table) from
+which the extreme values can be calculated.}
 
 \item{id_var}{\link{character} The name of the id variable as a character.}
 
-\item{val_var}{\link{character} Character vector of value variables on which
-descriptives are computed.}
+\item{val_var}{\link{character} Character vector of value variables on which descriptives are
+computed.}
 
 \item{by}{Grouping variables. Can be provided as in
 \code{\link[data.table:data.table]{data.table::data.table()}}.}
 
-\item{n_min}{\link{integer} The number of values used to calculate the minimum, by
-default 5.}
+\item{n_min}{\link{integer} The number of values used to calculate the minimum, by default 5.}
 
-\item{n_max}{\link{integer} The number of values used to calculate the maximum, by
-default 5.}
-}
-\value{
-A \link{data.table} with five columns: \code{val_var}, \code{min}, \code{n_obs_min},
-\code{max}, \code{n_obs_max}. The number of rows depends on \code{by}.
+\item{n_max}{\link{integer} The number of values used to calculate the maximum, by default 5.}
 }
 \description{
-\code{sdc_extreme()} tries to calculate aggregated min and max values
-for a given \code{val_var} which comply to RDSC rules.
+check if calculation of extreme values comply to RDSC rules.
+If so, function returns average min and max values according to RDSC rules.
 }
