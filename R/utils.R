@@ -1,6 +1,5 @@
 # pure technical settings
 .datatable.aware <- TRUE
-utils::globalVariables(".")
 
 #' @importFrom checkmate assert_data_frame assert_string assert check_class
 #' @importFrom methods hasArg

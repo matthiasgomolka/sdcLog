@@ -11,6 +11,8 @@ Authors@R:
              family = "Becker",
              role = c("aut"),
              email = "tim.becker@bundesbank.de"))
+URL: https://github.com/Plebejer/sdcLog
+BugReports: https://github.com/Plebejer/sdcLog/issues
 Description: What the package does (one paragraph).
 License: GPL-3
 Encoding: UTF-8
@@ -21,7 +23,6 @@ Imports:
     broom,
     data.table,
     crayon,
-    purrr,
     checkmate,
     methods
 Suggests: 
