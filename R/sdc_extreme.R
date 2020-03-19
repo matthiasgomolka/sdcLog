@@ -64,13 +64,24 @@ sdc_extreme <- function(
   } else {
     message("It is impossible to compute extreme values for variable '",
             val_var, "' that comply to RDSC rules.")
-    data.table::data.table(
-      val_var = val_var,
-      min = NA_real_,
-      n_obs_min = NA_integer_,
-      max = NA_real_,
-      n_obs_max = NA_integer_
-    )
+      if(!is.null(by)){
+        data.table::data.table(
+            val_Var = val_var,
+            by = unique(data[, get(by)]),
+            min = rep(NA_real_, length(unique(data[, get(by)]))),
+            n_obs_min = rep(NA_integer_, length(unique(data[, get(by)]))),
+            max = rep(NA_real_, length(unique(data[, get(by)]))),
+            n_obs_max = rep(NA_integer_, length(unique(data[, get(by)])))
+        )
+        } else {
+        data.table::data.table(
+            val_var = val_var,
+            min = NA_real_,
+            n_obs_min = NA_integer_,
+            max = NA_real_,
+            n_obs_max = NA_integer_
+            )
+    }
   }
 }
 
@@ -99,10 +110,6 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
 
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
     SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
-  quiet_sdc_descriptives <- purrr::quietly(sdc_descriptives)
-  check_results <- eval(substitute(
-    quiet_sdc_descriptives(SD, id_var, val_var, by)
-  ))[["result"]]
 
   results_distinct_ids <- eval(eval(substitute(
     check_distinct_ids(SD, id_var, val_var, by),

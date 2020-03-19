@@ -147,8 +147,8 @@ extreme_ref_4 <- data.table(val_var = val_var_test_by,
 
 test_that("sdc_extreme() computes correctly", {
     expect_equal(
-        sdc_extreme(extreme_test_dt, "id", "val"),
-        extreme_ref_1
+        sdc_extreme(extreme_test_dt_by, "id", "val", by = "sector"),
+        extreme_ref_4
     )
 })
 
