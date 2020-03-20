@@ -65,15 +65,17 @@ sdc_extreme <- function(
     message("It is impossible to compute extreme values for variable '",
             val_var, "' that comply to RDSC rules.")
       if(!is.null(by)){
-        data.table::data.table(
-            val_Var = val_var,
-            by = unique(data[, get(by)]),
-            min = rep(NA_real_, length(unique(data[, get(by)]))),
-            n_obs_min = rep(NA_integer_, length(unique(data[, get(by)]))),
-            max = rep(NA_real_, length(unique(data[, get(by)]))),
-            n_obs_max = rep(NA_integer_, length(unique(data[, get(by)])))
-        )
-        } else {
+          setnames(sdc_extreme_dt_results <- data.table::data.table(
+              val_var,
+              unique(data[, get(by)]),
+              rep(NA_real_, length(unique(data[, get(by)]))),
+              rep(NA_integer_, length(unique(data[, get(by)]))),
+              rep(NA_real_, length(unique(data[, get(by)]))),
+              rep(NA_integer_, length(unique(data[, get(by)])))
+          ), c("val_var", by, "min", "n_obs_min",
+               "max", "n_obs_max"))
+          sdc_extreme_dt_results
+          } else {
         data.table::data.table(
             val_var = val_var,
             min = NA_real_,
