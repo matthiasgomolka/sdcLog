@@ -17,9 +17,14 @@ message_arguments <- function(id_var, val_var = NULL, by = NULL) {
     }
 
     msg_by <- ""
-    if (!is.null(by) & by != "") {
+    if (!is.null(by) && by != "") {
             msg_by <- paste0(" | by: ", by)
     }
+
+    # or with grepl
+    #if (!is.null(by) && !grepl("^\\s*$", by)) {
+     #       msg_by <- paste0(" | by: ", by)
+    #}
 
     message(
         "[ SETTINGS: ",
