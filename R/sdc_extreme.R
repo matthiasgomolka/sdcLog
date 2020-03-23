@@ -9,7 +9,7 @@
 #'   [data.table::data.table()].
 #' @param n_min [integer] The number of values used to calculate the minimum, by default 5.
 #' @param n_max [integer] The number of values used to calculate the maximum, by default 5.
-#' @importFrom data.table as.data.table data.table setorderv fintersect
+#' @importFrom data.table as.data.table data.table setorderv fintersect .N
 #' @importFrom checkmate assert_int
 #' @export
 
@@ -45,13 +45,13 @@ sdc_extreme <- function(
   # check for overlaps of results
   sd_overlap <- nrow(data.table::fintersect(results_min, results_max)) > 0
   if (!sd_overlap) {
-      if(!is.null(by)){
+      if (!is.null(by)) {
           data.table::data.table(
               val_var,
-              results_min[, .(min = mean(get(val_var))), by = by],
-              results_min[, .(n_obs_min = .N), by = by][, 2],
-              results_max[, .(max = mean(get(val_var))), by = by][, 2],
-              results_max[, .(n_obs_max = .N), by = by][, 2])
+              results_min[, list(min = mean(get(val_var))), by = by],
+              results_min[, list(n_obs_min = .N), by = by][, 2],
+              results_max[, list(max = mean(get(val_var))), by = by][, 2],
+              results_max[, list(n_obs_max = .N), by = by][, 2])
       } else {
           data.table::data.table(
               val_var = val_var,
@@ -108,8 +108,9 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   return(SD_results[["SD"]])
 }
 
+#' @importFrom data.table .SD
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
-    SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
+  SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
 
   results_distinct_ids <- eval(eval(substitute(
     check_distinct_ids(SD, id_var, val_var, by),

@@ -37,7 +37,8 @@ test_that("check_distinct_ids() counts correctly", {
         counts_ref_2
     )
     expect_identical(
-        eval(sdcLog:::check_distinct_ids(test_dt, "id", "val", by = .(sector, year))),
+        eval(sdcLog:::check_distinct_ids(test_dt, "id", "val",
+                                         by = .(sector, year))),
         counts_ref_3
     )
 })
@@ -70,7 +71,8 @@ test_that("check_dominance() calculates correctly", {
         dominance_ref_2
     )
     expect_equal(
-        eval(sdcLog:::check_dominance(test_dt, "id", "val", by = .(sector, year))),
+        eval(sdcLog:::check_dominance(test_dt, "id", "val",
+                                      by = .(sector, year))),
         dominance_ref_3
     )
 })
@@ -89,7 +91,8 @@ descriptives_expect_1 <- function(x) {
     messages <- capture_messages(expect_identical(x, descriptives_ref_1))
     expect_match(
         paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+               "sdc.share_dominance: 0.85 ]\n",
                "[ SETTINGS: id_var: id | val_var: val ]\n",
                collapse = ""),
         fixed = TRUE
@@ -115,7 +118,8 @@ descriptives_expect_2 <- function(x) {
         expect_warning(
             expect_message(
                 expect_equal(x, descriptives_ref_2),
-                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+                "sdc.share_dominance: 0.85 ]\n",
                 "[ SETTINGS: id_var: id | val_var: val | by: sector ]\n",
                 fixed = TRUE
             ),
@@ -159,7 +163,8 @@ descriptives_expect_3 <- function(x) {
         expect_output(
             expect_message(
                 expect_equal(x, descriptives_ref_3),
-                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+                "sdc.share_dominance: 0.85 ]\n",
                 "[ SETTINGS: id_var: id | val_var: val | by: sector, year ]\n",
                 fixed = TRUE
             ),
@@ -170,7 +175,10 @@ descriptives_expect_3 <- function(x) {
     })
     expect_match(
         warnings,
-        "Potential disclosure problem\\: (Not enought distinct entities|Dominant entities)\\.")
+        paste0(
+            "Potential disclosure problem\\: ",
+            "(Not enought distinct entities|Dominant entities)\\.")
+    )
 }
 
 # descriptives tests 3 ####
