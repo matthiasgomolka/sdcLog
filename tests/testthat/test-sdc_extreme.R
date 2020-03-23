@@ -1,7 +1,7 @@
 library(data.table)
 library(testthat)
 
-set.seed(3)
+set.seed(1)
 
 # small test dt
 extreme_test_dt <- data.table(
@@ -20,6 +20,7 @@ context("sdc_extreme")
 test_that("sdc_extreme() returns a data.table", {
     expect_true(is.data.table(sdc_extreme(extreme_test_dt, "id", "val")))
 })
+
 
 
 ## functionality tests
@@ -139,7 +140,7 @@ test_that("sdc_extreme() returns correct messages", {
 
 
 
-# test dt für by
+# test dt für by argument
 n <- 20
 extreme_test_dt_by <- data.table(
     id = rep_len(LETTERS[1L:10L], n),
@@ -147,10 +148,11 @@ extreme_test_dt_by <- data.table(
     sector = sort(rep_len(paste0("S", 1L:2L), n)),
     val_2 = c(200, 190, 18:1),
     val_3 = c(NA, 19:1),
+    val_4 = c(20:7, rep(NA, 6)),
     key = "id"
 )
 
-# test extreme values for val_var = val, by = sector
+# setup test extreme values for val_var = val, by = sector
 val_var_test_by <- "val"
 by <- "sector"
 data.table::setorderv(extreme_test_dt_by, cols = val_var_test_by, order = -1L)
@@ -169,16 +171,8 @@ extreme_ref_4 <- data.table(val_var = val_var_test_by,
                             n_obs_max = n_obs_test_val_by
 )
 
-# test that sdc_extreme computes correctly
-test_that("sdc_extreme() computes correctly", {
-    expect_equal(
-        sdc_extreme(extreme_test_dt_by, "id", "val", by = "sector"),
-        extreme_ref_4
-    )
-})
 
-
-# test extreme values for val_var = val_2, by = sector
+# setup test extreme values for val_var = val_2, by = sector
 val_var_test_by <- "val_2"
 by <- "sector"
 data.table::setorderv(extreme_test_dt_by, cols = val_var_test_by, order = -1L)
@@ -208,8 +202,12 @@ extreme_ref_5 <- data.table(val_var = val_var_test_by,
                             n_obs_max = n_obs_test_val_2_by
 )
 
-# test that sdc_extreme computes correctly
+# test that sdc_extreme computes correctly with by argument
 test_that("sdc_extreme() computes correctly", {
+    expect_equal(
+        sdc_extreme(extreme_test_dt_by, "id", "val", by = "sector"),
+        extreme_ref_4
+        )
     expect_equal(
         sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
         extreme_ref_5
@@ -254,7 +252,107 @@ test_that("sdc_extreme() returns correct messages", {
 
 
 
-# more tests für interne Funktionen etc.
+# interne Funktionen:
+
+#find_SD_problems:
+context("find_SD_problems")
+
+# test that find_SD_problems returns a list
+test_that("find_SD_problems() returns a list", {
+    expect_true(is.list(find_SD_problems(extreme_test_dt, head, 5, "id", "val")))
+    expect_true(is.list(find_SD_problems(extreme_test_dt, tail, 5, "id", "val")))
+    }
+)
+
+# test that find_SD_problems detects problems corretly
+
+# set up:
+# case 1: extreme_test_dt: no problems with subset of head/tail 5 obs. for val_var = val
+    # so list[["problems]] == FALSE
+# case 2: extreme_test_dt: problems with subset of head 5 obs. for val_var = val_2, no problems for tail
+    # so list[["problems"]] == TRUE for head, for tail == FALSE
+# case 3: extreme_test_dt: no problems with subset of head/tail 5 obs. for val_var = val
+    # so list[["problems]] == FALSE
+    # but NA's have to be excluded the same way as in function sdc_extreme:
+    case_3 <- na.omit(extreme_test_dt, cols = "val_3")
+# case 4: extreme_test_dt_by: no problems with subset of head/tail 5 obs. for val_var = val and by = "sector"
+    # so list[["problems]] == FALSE
+# case 5: extreme_test_dt_by: problems with subset of head 5 obs. for val_var = val_2 and by = "sector", no problems for tail
+    # so list[["problems"]] == TRUE for head, for tail == FALSE
+# case 6: extreme_test_dt_by: problems with subset of head & tail 5 obs. for val_var = val_4 and by = "sector"
+    # so list[["problems"]] == TRUE
+    # but NA's have to be excluded the same way as in function sdc_extreme:
+    case_6 <- na.omit(extreme_test_dt_by, cols = "val_4")
+
+test_that("find_SD_problems() detects problems corretly", {
+    # case 1
+    expect_equal(find_SD_problems(extreme_test_dt, head, 5, "id", "val")[["problems"]], FALSE)
+    expect_equal(find_SD_problems(extreme_test_dt, tail, 5, "id", "val")[["problems"]], FALSE)
+
+    # case 2
+    expect_equal(find_SD_problems(extreme_test_dt, head, 5, "id", "val_2")[["problems"]], TRUE)
+    expect_equal(find_SD_problems(extreme_test_dt, tail, 5, "id", "val_2")[["problems"]], FALSE)
+
+    # case 3
+    expect_equal(find_SD_problems(case_3, head, 5, "id", "val_3")[["problems"]], FALSE)
+    expect_equal(find_SD_problems(case_3, tail, 5, "id", "val_3")[["problems"]], FALSE)
+
+    # case 4
+    expect_equal(find_SD_problems(extreme_test_dt_by, head, 5, "id", "val", "sector")[["problems"]], FALSE)
+    expect_equal(find_SD_problems(extreme_test_dt_by, tail, 5, "id", "val", "sector")[["problems"]], FALSE)
+
+    # case 5
+    expect_equal(find_SD_problems(extreme_test_dt_by, head, 5, "id", "val_2", "sector")[["problems"]], TRUE)
+    expect_equal(find_SD_problems(extreme_test_dt_by, tail, 5, "id", "val_2", "sector")[["problems"]], FALSE)
+
+    # case 6
+    expect_equal(find_SD_problems(case_6, head, 5, "id", "val_4", "sector")[["problems"]], TRUE)
+    expect_equal(find_SD_problems(case_6, tail, 5, "id", "val_4", "sector")[["problems"]], TRUE)
+}
+)
+
+
+#find SD problems:
+context("find_SD")
+
+# test that find_SD returns a data.table
+test_that("find_SD() returns a data.table", {
+    expect_true(is.data.table(find_SD(extreme_test_dt, "min", 5, "id", "val")))
+    expect_true(is.data.table(find_SD(extreme_test_dt, "max", 5, "id", "val")))
+}
+)
+
+# test that find_SD returns correct subset
+
+# setup 1: subset for val_var = val
+# no problems at all, so subset max: 1:5, subset min: 6:10
+test_1_results_min <- extreme_test_dt[6:10, ]
+test_1_results_max <- extreme_test_dt[1:5, ]
+
+# setup 2: subset for val_var = val_2
+# problems with dominance for max, so subset max: 1:9, subset min: 6:10
+test_2_results_min <- extreme_test_dt[6:10, ]
+test_2_results_max <- extreme_test_dt[1:9, ]
+
+# setup 3: subset for val_var = "val" and by = "sector"
+# no problems at all, so subsets with different col order
+test_3_results_max <- extreme_test_dt_by[c(1:5, 11:15), c(3, 1, 2, 4, 5, 6)]
+test_3_results_min <- extreme_test_dt_by[c(6:10, 16:20), c(3, 1, 2, 4, 5, 6)]
+
+
+test_that("find_SD() returns correct subset", {
+    expect_equal(find_SD(extreme_test_dt, "min", 5, "id", "val"), test_1_results_min)
+    expect_equal(find_SD(extreme_test_dt, "max", 5, "id", "val"), test_1_results_max)
+
+    expect_equal(find_SD(extreme_test_dt, "min", 5, "id", "val"), test_2_results_min)
+    expect_equal(find_SD(extreme_test_dt, "max", 9, "id", "val"), test_2_results_max)
+
+    expect_equal(find_SD(extreme_test_dt_by, "min", 5, "id", "val", "sector"), test_3_results_min)
+    expect_equal(find_SD(extreme_test_dt_by, "max", 5, "id", "val", "sector"), test_3_results_max)
+}
+)
+
+
 
 
 
