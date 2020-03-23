@@ -14,8 +14,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
 
     # status messages
     message_options()
-    by_for_msg <- by_to_char(substitute(by))
-    message_arguments(id_var = id_var, val_var = val_var, by = by_for_msg)
+    message_arguments(id_var, val_var, by)
 
     data <- data.table::as.data.table(data)
 
