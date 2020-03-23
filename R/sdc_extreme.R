@@ -64,13 +64,24 @@ sdc_extreme <- function(
   } else {
     message("It is impossible to compute extreme values for variable '",
             val_var, "' that comply to RDSC rules.")
-    data.table::data.table(
-      val_var = val_var,
-      min = NA_real_,
-      n_obs_min = NA_integer_,
-      max = NA_real_,
-      n_obs_max = NA_integer_
-    )
+      if(!is.null(by)){
+        data.table::data.table(
+            val_Var = val_var,
+            by = unique(data[, get(by)]),
+            min = rep(NA_real_, length(unique(data[, get(by)]))),
+            n_obs_min = rep(NA_integer_, length(unique(data[, get(by)]))),
+            max = rep(NA_real_, length(unique(data[, get(by)]))),
+            n_obs_max = rep(NA_integer_, length(unique(data[, get(by)])))
+        )
+        } else {
+        data.table::data.table(
+            val_var = val_var,
+            min = NA_real_,
+            n_obs_min = NA_integer_,
+            max = NA_real_,
+            n_obs_max = NA_integer_
+            )
+    }
   }
 }
 
