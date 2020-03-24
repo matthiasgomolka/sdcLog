@@ -77,7 +77,10 @@ sdc_model <- function(data, model, id_var) {
         if (getOption("sdc.info_level", 1L) > 1L) {
             message("No dummy variables in data.")
         }
-        invisible(return(TRUE))
+        # change to invisible TRUE return
+        # invisible(return(TRUE))
+        return(invisible(TRUE))
+        #invisible(TRUE)
     }
 
     dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
