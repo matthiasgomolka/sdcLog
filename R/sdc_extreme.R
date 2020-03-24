@@ -61,8 +61,11 @@ sdc_extreme <- function(
     message("It is impossible to compute extreme values for variable '",
             val_var, "' that comply to RDSC rules.")
 
-    for (var in c("min", "n_obs_min", "max", "n_obs_max")) {
-      data.table::set(res, j = var, value = NA)
+    for (var in c("min", "max")) {
+      data.table::set(res, j = var, value = NA_real_)
+    }
+    for (var in c("n_obs_min", "n_obs_max")) {
+      data.table::set(res, j = var, value = NA_integer_)
     }
     return(invisible(res))
   }

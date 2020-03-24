@@ -32,9 +32,9 @@ max_test_val <- extreme_test_dt[1:5, mean(val)]
 
 extreme_ref_1 <- data.table(val_var = "val",
                             min = min_test_val,
-                            n_obs_min = 5,
+                            n_obs_min = 5L,
                             max = max_test_val,
-                            n_obs_max = 5
+                            n_obs_max = 5L
 )
 
 
@@ -70,20 +70,20 @@ extreme_ref_3 <- data.table(val_var = "val_3",
 
 
 # test that sdc_extreme() computes corretly
-test_that("sdc_extreme() computes corretly", {
-    expect_equal(
-        sdc_extreme(extreme_test_dt, "id", "val"),
-        extreme_ref_1
-    )
-    expect_equal(
-        sdc_extreme(extreme_test_dt, "id", "val_2"),
-        extreme_ref_2
-    )
-    expect_equal(
-        sdc_extreme(extreme_test_dt, "id", "val_3"),
-        extreme_ref_3
-    )
-  }
+test_that("sdc_extreme() computes correctly", {
+  expect_equal(
+    sdc_extreme(extreme_test_dt, "id", "val"),
+    extreme_ref_1
+  )
+  expect_equal(
+    sdc_extreme(extreme_test_dt, "id", "val_2"),
+    extreme_ref_2
+  )
+  expect_equal(
+    sdc_extreme(extreme_test_dt, "id", "val_3"),
+    extreme_ref_3
+  )
+}
 )
 
 
@@ -92,50 +92,50 @@ test_that("sdc_extreme() computes corretly", {
 
 #1: val
 extreme_expect_1 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
+  messages <- capture_messages(x)
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val ]\n",
+           collapse = ""),
+    fixed = TRUE
+  )
 }
 
 #2: val_2
 extreme_expect_2 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val_2 ]\n",
-               "It is impossible to compute extreme values for variable 'val_2' that comply to RDSC rules.",
-               collapse = ""),
-        fixed = TRUE
-    )
+  messages <- capture_messages(x)
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val_2 ]\n",
+           "It is impossible to compute extreme values for variable 'val_2' that comply to RDSC rules.",
+           collapse = ""),
+    fixed = TRUE
+  )
 }
 
 #3: val_3
 extreme_expect_3 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val_3 ]\n",
-               "It is impossible to compute extreme values for variable 'val_3' that comply to RDSC rules.",
-               collapse = ""),
-        fixed = TRUE
-    )
+  messages <- capture_messages(x)
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val_3 ]\n",
+           "It is impossible to compute extreme values for variable 'val_3' that comply to RDSC rules.",
+           collapse = ""),
+    fixed = TRUE
+  )
 }
 
 # test that sdc_extreme returns correct messages
 test_that("sdc_extreme() returns correct messages", {
-    extreme_expect_1(
-        sdc_extreme(extreme_test_dt, "id", "val"))
-    extreme_expect_2(
-        sdc_extreme(extreme_test_dt, "id", "val_2"))
-    extreme_expect_3(
-        sdc_extreme(extreme_test_dt, "id", "val_3"))
+  extreme_expect_1(
+    sdc_extreme(extreme_test_dt, "id", "val"))
+  extreme_expect_2(
+    sdc_extreme(extreme_test_dt, "id", "val_2"))
+  extreme_expect_3(
+    sdc_extreme(extreme_test_dt, "id", "val_3"))
 })
 
 
@@ -143,13 +143,13 @@ test_that("sdc_extreme() returns correct messages", {
 # test dt für by argument
 n <- 20
 extreme_test_dt_by <- data.table(
-    id = rep_len(LETTERS[1L:10L], n),
-    val = c(20:1),
-    sector = sort(rep_len(paste0("S", 1L:2L), n)),
-    val_2 = c(200, 190, 18:1),
-    val_3 = c(NA, 19:1),
-    val_4 = c(20:7, rep(NA, 6)),
-    key = "id"
+  id = rep_len(LETTERS[1L:10L], n),
+  val = c(20:1),
+  sector = sort(rep_len(paste0("S", 1L:2L), n)),
+  val_2 = c(200, 190, 18:1),
+  val_3 = c(NA, 19:1),
+  val_4 = c(20:7, rep(NA, 6)),
+  key = "id"
 )
 
 # setup test extreme values for val_var = val, by = sector
@@ -168,7 +168,8 @@ extreme_ref_4 <- data.table(val_var = val_var_test_by,
                             min = c(min_test_val_by_S1, min_test_val_by_S2),
                             n_obs_min = n_obs_test_val_by,
                             max = c(max_test_val_by_S1, max_test_val_by_S2),
-                            n_obs_max = n_obs_test_val_by
+                            n_obs_max = n_obs_test_val_by,
+                            key = "sector"
 )
 
 
@@ -199,19 +200,20 @@ extreme_ref_5 <- data.table(val_var = val_var_test_by,
                             min = c(min_test_val_by_S1, min_test_val_by_S2),
                             n_obs_min = n_obs_test_val_2_by,
                             max = c(max_test_val_by_S1, max_test_val_by_S2),
-                            n_obs_max = n_obs_test_val_2_by
+                            n_obs_max = n_obs_test_val_2_by,
+                            key = "sector"
 )
 
 # test that sdc_extreme computes correctly with by argument
 test_that("sdc_extreme() computes correctly", {
-    expect_equal(
-        sdc_extreme(extreme_test_dt_by, "id", "val", by = "sector"),
-        extreme_ref_4
-        )
-    expect_equal(
-        sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
-        extreme_ref_5
-    )
+  expect_equal(
+    sdc_extreme(extreme_test_dt_by, "id", "val", by = "sector"),
+    extreme_ref_4
+  )
+  expect_equal(
+    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
+    extreme_ref_5
+  )
 })
 
 
@@ -219,35 +221,35 @@ test_that("sdc_extreme() computes correctly", {
 
 #set up: val, by = "sector"
 extreme_expect_4 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val | by: sector ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
+  messages <- capture_messages(x)
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val | by: sector ]\n",
+           collapse = ""),
+    fixed = TRUE
+  )
 }
 
 #set up: val_2, by = "sector"
 extreme_expect_5 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val_2 | by: sector ]\n",
-               "It is impossible to compute extreme values for variable 'val_2' that comply to RDSC rules.",
-               collapse = ""),
-        fixed = TRUE
-    )
+  messages <- capture_messages(x)
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val_2 | by: sector ]\n",
+           "It is impossible to compute extreme values for variable 'val_2' that comply to RDSC rules.",
+           collapse = ""),
+    fixed = TRUE
+  )
 }
 
 # test that sdc_extreme returns correct messages with by argument
 test_that("sdc_extreme() returns correct messages", {
-    extreme_expect_4(
-        sdc_extreme(extreme_test_dt_by, "id", "val", "sector"))
-    extreme_expect_5(
-        sdc_extreme(extreme_test_dt_by, "id", "val_2", "sector"))
+  extreme_expect_4(
+    sdc_extreme(extreme_test_dt_by, "id", "val", "sector"))
+  extreme_expect_5(
+    sdc_extreme(extreme_test_dt_by, "id", "val_2", "sector"))
 })
 
 
@@ -259,55 +261,55 @@ context("find_SD_problems")
 
 # test that find_SD_problems returns a list
 test_that("find_SD_problems() returns a list", {
-    expect_true(is.list(find_SD_problems(extreme_test_dt, head, 5, "id", "val")))
-    expect_true(is.list(find_SD_problems(extreme_test_dt, tail, 5, "id", "val")))
-    }
+  expect_type(sdcLog:::find_SD_problems(extreme_test_dt, head, 5, "id", "val"), "list")
+  expect_type(sdcLog:::find_SD_problems(extreme_test_dt, tail, 5, "id", "val"), "list")
+}
 )
 
 # test that find_SD_problems detects problems corretly
 
 # set up:
 # case 1: extreme_test_dt: no problems with subset of head/tail 5 obs. for val_var = val
-    # so list[["problems]] == FALSE
+# so list[["problems]] == FALSE
 # case 2: extreme_test_dt: problems with subset of head 5 obs. for val_var = val_2, no problems for tail
-    # so list[["problems"]] == TRUE for head, for tail == FALSE
+# so list[["problems"]] == TRUE for head, for tail == FALSE
 # case 3: extreme_test_dt: no problems with subset of head/tail 5 obs. for val_var = val
-    # so list[["problems]] == FALSE
-    # but NA's have to be excluded the same way as in function sdc_extreme:
-    case_3 <- na.omit(extreme_test_dt, cols = "val_3")
+# so list[["problems]] == FALSE
+# but NA's have to be excluded the same way as in function sdc_extreme:
+case_3 <- na.omit(extreme_test_dt, cols = "val_3")
 # case 4: extreme_test_dt_by: no problems with subset of head/tail 5 obs. for val_var = val and by = "sector"
-    # so list[["problems]] == FALSE
+# so list[["problems]] == FALSE
 # case 5: extreme_test_dt_by: problems with subset of head 5 obs. for val_var = val_2 and by = "sector", no problems for tail
-    # so list[["problems"]] == TRUE for head, for tail == FALSE
+# so list[["problems"]] == TRUE for head, for tail == FALSE
 # case 6: extreme_test_dt_by: problems with subset of head & tail 5 obs. for val_var = val_4 and by = "sector"
-    # so list[["problems"]] == TRUE
-    # but NA's have to be excluded the same way as in function sdc_extreme:
-    case_6 <- na.omit(extreme_test_dt_by, cols = "val_4")
+# so list[["problems"]] == TRUE
+# but NA's have to be excluded the same way as in function sdc_extreme:
+case_6 <- na.omit(extreme_test_dt_by, cols = "val_4")
 
-test_that("find_SD_problems() detects problems corretly", {
-    # case 1
-    expect_equal(find_SD_problems(extreme_test_dt, head, 5, "id", "val")[["problems"]], FALSE)
-    expect_equal(find_SD_problems(extreme_test_dt, tail, 5, "id", "val")[["problems"]], FALSE)
+test_that("find_SD_problems() detects problems correctly", {
+  # case 1
+  expect_false(sdcLog:::find_SD_problems(extreme_test_dt, head, 5, "id", "val")[["problems"]])
+  expect_false(sdcLog:::find_SD_problems(extreme_test_dt, tail, 5, "id", "val")[["problems"]])
 
-    # case 2
-    expect_equal(find_SD_problems(extreme_test_dt, head, 5, "id", "val_2")[["problems"]], TRUE)
-    expect_equal(find_SD_problems(extreme_test_dt, tail, 5, "id", "val_2")[["problems"]], FALSE)
+  # case 2
+  expect_true(sdcLog:::find_SD_problems(extreme_test_dt, head, 5, "id", "val_2")[["problems"]])
+  expect_false(sdcLog:::find_SD_problems(extreme_test_dt, tail, 5, "id", "val_2")[["problems"]])
 
-    # case 3
-    expect_equal(find_SD_problems(case_3, head, 5, "id", "val_3")[["problems"]], FALSE)
-    expect_equal(find_SD_problems(case_3, tail, 5, "id", "val_3")[["problems"]], FALSE)
+  # case 3
+  expect_false(sdcLog:::find_SD_problems(case_3, head, 5, "id", "val_3")[["problems"]])
+  expect_false(sdcLog:::find_SD_problems(case_3, tail, 5, "id", "val_3")[["problems"]])
 
-    # case 4
-    expect_equal(find_SD_problems(extreme_test_dt_by, head, 5, "id", "val", "sector")[["problems"]], FALSE)
-    expect_equal(find_SD_problems(extreme_test_dt_by, tail, 5, "id", "val", "sector")[["problems"]], FALSE)
+  # case 4
+  expect_false(sdcLog:::find_SD_problems(extreme_test_dt_by, head, 5, "id", "val", "sector")[["problems"]])
+  expect_false(sdcLog:::find_SD_problems(extreme_test_dt_by, tail, 5, "id", "val", "sector")[["problems"]])
 
-    # case 5
-    expect_equal(find_SD_problems(extreme_test_dt_by, head, 5, "id", "val_2", "sector")[["problems"]], TRUE)
-    expect_equal(find_SD_problems(extreme_test_dt_by, tail, 5, "id", "val_2", "sector")[["problems"]], FALSE)
+  # case 5
+  expect_true(sdcLog:::find_SD_problems(extreme_test_dt_by, head, 5, "id", "val_2", "sector")[["problems"]])
+  expect_false(sdcLog:::find_SD_problems(extreme_test_dt_by, tail, 5, "id", "val_2", "sector")[["problems"]])
 
-    # case 6
-    expect_equal(find_SD_problems(case_6, head, 5, "id", "val_4", "sector")[["problems"]], TRUE)
-    expect_equal(find_SD_problems(case_6, tail, 5, "id", "val_4", "sector")[["problems"]], TRUE)
+  # case 6
+  expect_true(sdcLog:::find_SD_problems(case_6, head, 5, "id", "val_4", "sector")[["problems"]])
+  expect_true(sdcLog:::find_SD_problems(case_6, tail, 5, "id", "val_4", "sector")[["problems"]])
 }
 )
 
@@ -317,8 +319,8 @@ context("find_SD")
 
 # test that find_SD returns a data.table
 test_that("find_SD() returns a data.table", {
-    expect_true(is.data.table(find_SD(extreme_test_dt, "min", 5, "id", "val")))
-    expect_true(is.data.table(find_SD(extreme_test_dt, "max", 5, "id", "val")))
+  expect_true(is.data.table(find_SD(extreme_test_dt, "min", 5, "id", "val")))
+  expect_true(is.data.table(find_SD(extreme_test_dt, "max", 5, "id", "val")))
 }
 )
 
@@ -341,14 +343,14 @@ test_3_results_min <- extreme_test_dt_by[c(6:10, 16:20), c(3, 1, 2, 4, 5, 6)]
 
 
 test_that("find_SD() returns correct subset", {
-    expect_equal(find_SD(extreme_test_dt, "min", 5, "id", "val"), test_1_results_min)
-    expect_equal(find_SD(extreme_test_dt, "max", 5, "id", "val"), test_1_results_max)
+  expect_equal(find_SD(extreme_test_dt, "min", 5, "id", "val"), test_1_results_min)
+  expect_equal(find_SD(extreme_test_dt, "max", 5, "id", "val"), test_1_results_max)
 
-    expect_equal(find_SD(extreme_test_dt, "min", 5, "id", "val"), test_2_results_min)
-    expect_equal(find_SD(extreme_test_dt, "max", 9, "id", "val"), test_2_results_max)
+  expect_equal(find_SD(extreme_test_dt, "min", 5, "id", "val"), test_2_results_min)
+  expect_equal(find_SD(extreme_test_dt, "max", 9, "id", "val"), test_2_results_max)
 
-    expect_equal(find_SD(extreme_test_dt_by, "min", 5, "id", "val", "sector"), test_3_results_min)
-    expect_equal(find_SD(extreme_test_dt_by, "max", 5, "id", "val", "sector"), test_3_results_max)
+  expect_equal(find_SD(extreme_test_dt_by, "min", 5, "id", "val", "sector"), test_3_results_min)
+  expect_equal(find_SD(extreme_test_dt_by, "max", 5, "id", "val", "sector"), test_3_results_max)
 }
 )
 
