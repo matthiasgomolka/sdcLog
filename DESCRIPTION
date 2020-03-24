@@ -1,7 +1,10 @@
 Package: sdcLog
-Title: Helper functions for statistical disclosure control in research data 
-  centres
+Title: Helper Functions for Statistical Disclosure Control in Research Data 
+  Centres
 Version: 0.0.0.9000
+Author: Matthias Gomolka [aut, cre],
+  Tim Becker [aut]
+Maintainer: Matthias Gomolka <matthias.gomolka@bundesbank.de>
 Authors@R: 
     c(person(given = "Matthias",
              family = "Gomolka",

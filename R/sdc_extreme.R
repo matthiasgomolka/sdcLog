@@ -9,7 +9,7 @@
 #'   [data.table::data.table()].
 #' @param n_min [integer] The number of values used to calculate the minimum, by default 5.
 #' @param n_max [integer] The number of values used to calculate the maximum, by default 5.
-#' @importFrom data.table as.data.table data.table setorderv fintersect
+#' @importFrom data.table as.data.table data.table setorderv fintersect .N set
 #' @importFrom checkmate assert_int
 #' @export
 
@@ -42,50 +42,33 @@ sdc_extreme <- function(
   results_min <- find_SD(data, "min", n_min, id_var, val_var, by)
   results_max <- find_SD(data, "max", n_max, id_var, val_var, by)
 
+  # generate results DT
+  res <- cbind(
+    eval(substitute(
+      results_min[, .(min = mean(get(val_var)), n_obs_min = .N), keyby = by]
+    )),
+    eval(substitute(
+      results_max[, .(max = mean(get(val_var)), n_obs_max = .N), keyby = by
+                  ][, c("max", "n_obs_max"), with = FALSE]
+    ))
+  )
+  res <- cbind(data.table::data.table(val_var = val_var), res)
+
   # check for overlaps of results
   sd_overlap <- nrow(data.table::fintersect(results_min, results_max)) > 0
-  if (!sd_overlap) {
-      if(!is.null(by)){
-          data.table::data.table(
-              val_var,
-              results_min[, .(min = mean(get(val_var))), by = by],
-              results_min[, .(n_obs_min = .N), by = by][, 2],
-              results_max[, .(max = mean(get(val_var))), by = by][, 2],
-              results_max[, .(n_obs_max = .N), by = by][, 2])
-      } else {
-          data.table::data.table(
-              val_var = val_var,
-              min = mean(results_min[[val_var]]),
-              n_obs_min = nrow(results_min),
-              max = mean(results_max[[val_var]]),
-              n_obs_max = nrow(results_max)
-          )
-      }
-  } else {
+
+  if (sd_overlap) {
     message("It is impossible to compute extreme values for variable '",
             val_var, "' that comply to RDSC rules.")
-      if(!is.null(by)){
-          setnames(sdc_extreme_dt_results <- data.table::data.table(
-              val_var,
-              unique(data[, get(by)]),
-              rep(NA_real_, length(unique(data[, get(by)]))),
-              rep(NA_integer_, length(unique(data[, get(by)]))),
-              rep(NA_real_, length(unique(data[, get(by)]))),
-              rep(NA_integer_, length(unique(data[, get(by)])))
-          ), c("val_var", by, "min", "n_obs_min",
-               "max", "n_obs_max"))
-          sdc_extreme_dt_results
-          } else {
-        data.table::data.table(
-            val_var = val_var,
-            min = NA_real_,
-            n_obs_min = NA_integer_,
-            max = NA_real_,
-            n_obs_max = NA_integer_
-            )
+
+    for (var in c("min", "n_obs_min", "max", "n_obs_max")) {
+      data.table::set(res, j = var, value = NA)
     }
+    return(invisible(res))
   }
+  res
 }
+
 
 #' @importFrom utils tail head
 find_SD <- function(data, type, n, id_var, val_var, by) {
@@ -97,7 +80,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
   while (SD_results[["problems"]]) {
-    n <- n + 1
+    n <- n + 1L
     SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
 
     # this assures that this is no infinite loop; problems will be catched
@@ -110,13 +93,17 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
   return(SD_results[["SD"]])
 }
 
+#' @importFrom data.table .SD
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
-    SD <- data[order(-get(val_var)), SD_fun(.SD, n), by = by]
+  SD <- eval(substitute(
+    data[order(-get(val_var)), SD_fun(.SD, n), by = by],
+    env = parent.frame(n = 2L)
+  ))
 
   results_distinct_ids <- eval(eval(substitute(
     check_distinct_ids(SD, id_var, val_var, by),
     env = parent.frame(n = 2L)
-    )))
+  )))
   class(results_distinct_ids) <- c("sdc_counts", class(results_distinct_ids))
 
   results_dominance <- eval(eval(substitute(
