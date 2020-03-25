@@ -1,7 +1,5 @@
 library(data.table)
-library(testthat)
-
-set.seed(1)
+set.seed(1L)
 
 # small test dt
 extreme_test_dt <- data.table(
