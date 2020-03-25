@@ -1,0 +1,35 @@
+---
+title: "Customizing sdcLog using options"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{options}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#"
+)
+```
+
+### sdc.n_ids
+By default, sdcLog expects at least five different entities behind each calculated number. The functions in sdcLog derive this number from `getOption("sdc.n_ids", 5L)`. That is, if the option `sdc.n_ids` is not set, it defaults to five. 
+
+This can be adapted to the policy of your Research Data Centre by setting the option `sdc.n_ids` to the desired value. For example, if your policy allows results to be released if there are at least three different entities behind each number, set
+
+```{r set_sdc.n_ids}
+options(sdc.n_ids = 3)
+```
+
+Now, `getOption("sdc.n_ids")` equals three and warnings are thrown only if there are less than three entities behind each result. Note that this is reflected in the first line of output from every function of sdcLog:
+
+```{r example_sdc.n_ids}
+library(sdcLog)
+sdc_descriptives(data = iris, id_var = "Species", val_var = "Sepal.Length")
+```
+
+### sdc.n_ids_dominance
+
+### sdc.share_dominance
