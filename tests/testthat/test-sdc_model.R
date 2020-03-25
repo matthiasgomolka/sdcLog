@@ -132,28 +132,137 @@ test_that("sdc_model() returns warning, if necessary", {
 })
 
 
-# return correct messages/output
+# sdc_model() returns correct messages
 
-#set up: val_2, by = "sector"
-extreme_expect_5 <- function(x) {
+# set up:
+# model_1, for sdc.info_level = 0|1
+options(sdc.info_level = 0)
+getOption("sdc.info_level")
+
+model_expect_1_info_0 <- function(x) {
     messages <- capture_messages(x)
     expect_match(
         paste0(messages, collapse = ""),
         paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val_2 | by: sector ]\n",
-               "It is impossible to compute extreme values for variable 'val_2' that comply to RDSC rules.",
+               "[ SETTINGS: id_var: id ]\n",
                collapse = ""),
         fixed = TRUE
     )
 }
 
-# test that sdc_extreme returns correct messages with by argument
-test_that("sdc_extreme() returns correct messages", {
-    extreme_expect_4(
-        sdc_extreme(extreme_test_dt_by, "id", "val", "sector"))
-    extreme_expect_5(
-        sdc_extreme(extreme_test_dt_by, "id", "val_2", "sector"))
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_1_info_0(
+        sdc_model(model_test_dt, model_1, "id"))
 })
+
+
+# model_1, for sdc.info_level = 2
+options(sdc.info_level = 2)
+getOption("sdc.info_level")
+
+model_expect_1_info_2 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               "No problem with number of distinct entities.\n",
+               "No dummy variables in data.\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+test_that("sdc_model() returns correct messages", {
+    model_expect_1_info_2(
+        sdc_model(model_test_dt, model_1, "id"))
+})
+
+
+
+# model_2, for sdc.info_level = 0|1
+options(sdc.info_level = 0)
+getOption("sdc.info_level")
+
+############# tests to get all together
+model_ref_2 <- data.table(distinct_ids = 4L)
+class(model_ref_2)    <- c("sdc_counts", class(model_ref_2))
+
+model_expect <- function(x) {
+    output <- capture_output(x)
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(output, collapse = ""),
+        paste0(model_ref_2,
+               collapse = ""),
+        fixed = TRUE
+    )
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+test_that("sdc_model() returns correct messages", {
+    model_expect_2_info_0(
+        sdc_model(model_test_dt, model_2, "id"))
+})
+
+###################
+
+# first set up output
+# model_2
+model_ref_2 <- data.table(distinct_ids = 4L)
+class(model_ref_2)    <- c("sdc_counts", class(model_ref_2))
+
+model_expect_2_info_0 <- function(x) {
+    output <- capture_output(x)
+    expect_match(
+        paste0(output, collapse = ""),
+        paste0(model_ref_2,
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+test_that("sdc_model() returns correct output", {
+    model_expect_2_info_0(
+        sdc_model(model_test_dt, model_2, "id"))
+})
+
+
+model_expect_2 <- function(x) {
+    expect_match(x,
+        "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+        "[ SETTINGS: id_var: id ]\n",
+        model_ref_2,
+        fixed = TRUE
+    )
+}
+
+model_expect_2_info_0 <- function(x) {
+    output <- capture_output(x)
+    expect_match(
+        paste0(output, collapse = ""),
+        paste0(model_ref_2,
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+test_that("sdc_model() returns correct", {
+    model_expect_2(
+        sdc_model(model_test_dt, model_2, "id"))
+})
+
 
 
 
