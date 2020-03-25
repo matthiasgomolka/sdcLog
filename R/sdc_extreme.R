@@ -1,14 +1,16 @@
 #' check if calculation of extreme values comply to RDSC rules.
 #'   If so, function returns average min and max values according to RDSC rules.
-#' @param data [data.frame] The dataset (anything which can be coerced to data.table) from
-#'   which the extreme values can be calculated.
+#' @param data [data.frame] The dataset from which the extreme values can be
+#'   calculated.
 #' @param id_var [character] The name of the id variable as a character.
-#' @param val_var [character] Character vector of value variables on which descriptives are
-#'   computed.
+#' @param val_var [character] Character vector of value variables on which
+#'   descriptives are computed.
 #' @param by Grouping variables. Can be provided as in
 #'   [data.table::data.table()].
-#' @param n_min [integer] The number of values used to calculate the minimum, by default 5.
-#' @param n_max [integer] The number of values used to calculate the maximum, by default 5.
+#' @param n_min [integer] The number of values used to calculate the minimum, by
+#'   default 5.
+#' @param n_max [integer] The number of values used to calculate the maximum, by
+#'   default 5.
 #' @importFrom data.table as.data.table data.table setorderv fintersect .N set
 #' @importFrom checkmate assert_int
 #' @export
@@ -61,8 +63,11 @@ sdc_extreme <- function(
     message("It is impossible to compute extreme values for variable '",
             val_var, "' that comply to RDSC rules.")
 
-    for (var in c("min", "n_obs_min", "max", "n_obs_max")) {
-      data.table::set(res, j = var, value = NA)
+    for (var in c("min", "max")) {
+      data.table::set(res, j = var, value = NA_real_)
+    }
+    for (var in c("n_obs_min", "n_obs_max")) {
+      data.table::set(res, j = var, value = NA_integer_)
     }
     return(invisible(res))
   }
