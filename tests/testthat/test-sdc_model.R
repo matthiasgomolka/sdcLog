@@ -48,8 +48,6 @@ model_1 <- lm(y ~ x_1 + x_2, data = model_test_dt)
 summary(model_1)
 
 sdc_model(model_test_dt, model_1, "id")
-# on first sight:
-# "no problems with dominance" message?
 
 # model 2:
 # problem distinct id's, no dummys
@@ -58,8 +56,6 @@ model_2 <- lm(y ~ x_1 + x_2 + x_3, data = model_test_dt)
 summary(model_2)
 
 sdc_model(model_test_dt, model_2, "id")
-# on first sight:
-# "no problems with dominance" message?
 
 # model 3:
 # problem dominance, no dummys
@@ -68,8 +64,7 @@ model_3 <- lm(y ~ x_1 + x_2 + x_4, data = model_test_dt)
 summary(model_3)
 
 sdc_model(model_test_dt, model_3, "id")
-# on first sight:
-# "problems with dominance" message?
+
 
 # model 4:
 # all good, with dummys
@@ -78,8 +73,6 @@ model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = model_test_dt)
 summary(model_4)
 
 sdc_model(model_test_dt, model_4, "id")
-# on first sight:
-# "no problems with dominance" message?
 
 
 # model 5:
@@ -90,31 +83,26 @@ model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = model_test_dt)
 summary(model_5)
 
 sdc_model(model_test_dt, model_5, "id")
-# on first sight:
-# "no problems with dominance" message?
-
 
 # tests: return, functionality etc.
-
 
 # test sdc_model ----
 context("sdc_model")
 
-# test that sdc_model returns corretly for different cases
 
-# test that sdc_model returns TRUE, if no dummys exist
-# use model 1-3
-test_that("sdc_model() without dummys returns TRUE", {
-    expect_equal((sdc_model(model_test_dt, model_1, "id")), TRUE)
-    expect_equal((sdc_model(model_test_dt, model_2, "id")), TRUE)
-    expect_equal((sdc_model(model_test_dt, model_3, "id")), TRUE)
-})
-
-# test that sdc_model returns a list, if dummys exist
-# use model 4 & 5
-test_that("sdc_model() with dummys returns a list", {
+# test that sdc_model returns a list
+test_that("sdc_model() returns a list", {
+    expect_true(is.list(sdc_model(model_test_dt, model_1, "id")))
+        capture_output(
+    expect_true(is.list(sdc_model(model_test_dt, model_2, "id")))
+        )
+        capture_output(
+    expect_true(is.list(sdc_model(model_test_dt, model_3, "id")))
+        )
     expect_true(is.list(sdc_model(model_test_dt, model_4, "id")))
+        capture_output(
     expect_true(is.list(sdc_model(model_test_dt, model_5, "id")))
+        )
 })
 
 # functionality tests
@@ -326,7 +314,7 @@ model_expect_4_info_2 <- function(x) {
                # "no problems with dominance" message?
                #"No problem with dominance.\n",
                # problems here
-               "Output complies to RDSC rules.",
+               #"Output complies to RDSC rules.\n",
                collapse = ""),
         fixed = TRUE
     )
@@ -343,8 +331,35 @@ test_that("sdc_model() returns correct messages", {
 
 
 ############# tests to get all together
+model_ref_1 <- data.table(distinct_ids = numeric())
+class(model_ref_1)    <- c("sdc_counts", class(model_ref_1))
+
+expect_message(sdc_model(model_test_dt, model_1, "id"),
+               "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               model_ref_1,
+               "No dummy variables in data.")
+
+expect_message(sdc_model(model_test_dt, model_1, "id"),
+               opt,
+               model_ref_1,
+               "No dummy variables in data.")
+
+opt <- paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+       "[ SETTINGS: id_var: id ]\n",
+       collapse = "")
+
+opt
+
 model_ref_2 <- data.table(distinct_ids = 4L)
-class(model_ref_2)    <- c("sdc_counts", class(model_ref_2))
+class(model_ref_2) <- c("sdc_counts", class(model_ref_2))
+
+expect_output(sdc_model(model_test_dt, model_2, "id"),
+               "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               model_ref_2,
+               "No dummy variables in data.")
+
 
 model_expect <- function(x) {
     messages <- capture_messages(x)

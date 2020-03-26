@@ -71,17 +71,17 @@ sdc_model <- function(data, model, id_var) {
     names(dominance_list) <- model_var_no_dummy
     conditional_print(dominance_list)
 
-
-    # return early if no dummy cols exist
-    if (length(dummy_vars) == 0) {
-        if (getOption("sdc.info_level", 1L) > 1L) {
-            message("No dummy variables in data.")
-        }
-        # change to invisible TRUE return
-        # invisible(return(TRUE))
-        return(invisible(TRUE))
-        #invisible(TRUE)
-    }
+  # without early return:
+  # return early if no dummy cols exist
+  #  if (length(dummy_vars) == 0) {
+  #     if (getOption("sdc.info_level", 1L) > 1L) {
+  #        message("No dummy variables in data.")
+  #   }
+  # change to invisible TRUE return
+  # invisible(return(TRUE))
+  #  return(invisible(TRUE))
+  #invisible(TRUE)
+  #}
 
     dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
 
@@ -109,9 +109,21 @@ sdc_model <- function(data, model, id_var) {
     res
 }
 
+# old print:
+#conditional_print <- function(list) {
+#   problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+#  if (sum(problems) > 0L) {
+#     print(list[problems])
+# }
+#}
+
+# new print:
 conditional_print <- function(list) {
     problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
-    if (sum(problems) > 0L) {
-        print(list[problems])
+       for (i in seq_along(problems)) {
+        if (problems[[i]] | getOption("sdc.info_level", 1L) > 1L) {
+            print(list[i])
+        }
     }
 }
+
