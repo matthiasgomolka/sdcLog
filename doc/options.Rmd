@@ -1,0 +1,93 @@
+---
+title: "Customizing sdcLog using options"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{options}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#"
+)
+options(datatable.print.class      = FALSE)
+options(datatable.print.keys       = FALSE)
+options(datatable.print.trunc.cols = FALSE)
+
+options(sdc.n_ids = 5L)
+options(sdc.n_dominance = 2L)
+options(sdc.share_dominance = 0.85)
+```
+
+### Example data
+We create a tiny `data.frame` to show the effects of the options:
+
+```{r label, options}
+library(sdcLog)
+df <- data.frame(id = LETTERS[1:3], v1 = 1L:3L, v2 = 0L:2L)
+df
+```
+
+### sdc.n_ids
+By default, sdcLog expects at least five different entities behind each calculated number. The functions in sdcLog derive this number from `getOption("sdc.n_ids", default = 5L)`. That is, if the option `sdc.n_ids` is not set, it defaults to five. Consider the following example:
+
+```{r example1_sdc.n_ids}
+sdc_descriptives(data = df, id_var = "id", val_var = "v1")
+```
+
+This can be adapted to the policy of your Research Data Centre by setting the option `sdc.n_ids` to the desired value. For example, if your policy allows results to be released if there are at least three different entities behind each number, set
+
+```{r set_sdc.n_ids}
+options(sdc.n_ids = 3)
+```
+
+Now, `getOption("sdc.n_ids", default = 5L)` evaluates to three and warnings are thrown only if there are less than three entities behind each result. Note that this is reflected in the first line of output from every function of sdcLog:
+label, options
+```{r example2_sdc.n_ids}
+sdc_descriptives(data = df, id_var = "id", val_var = "v1")
+```
+
+### sdc.n_ids_dominance
+
+The default value for `sdc.n_ids_dominance` is two. In our example, this leads to a warning:
+
+```{r example1_sdc.n_ids_dominance}
+sdc_descriptives(data = df, id_var = "id", val_var = "v2")
+```
+
+If your policy requires only the largest entity to attribute for a share of less than 0.85, set
+
+```{r set_sdc.n_ids_dominance}
+options(sdc.n_ids_dominance = 1)
+```
+
+Then, there is no problem in example:
+
+```{r example2_sdc.n_ids_dominance}
+sdc_descriptives(data = df, id_var = "id", val_var = "v2")
+```
+
+### sdc.share_dominance
+
+The last option of sdcLog is `sdc.share_dominance`. To demonstrate, we reset `sdc.n_dominance` to their default values:
+
+```{r reset_options}
+options(sdc.n_ids_dominance = 2L)
+```
+
+Let's consider a policy which allows the largest two entities to attribute for a share of 0.8. To reflect this, set
+
+```{r set_sdc.share_dominance}
+options(sdc.share_dominance = 0.8)
+```
+
+Now, the previous example throws a warning:
+
+```{r example1_sdc.share_dominance}
+sdc_descriptives(data = df, id_var = "id", val_var = "v1")
+```
+
+### General remarks
+Please note that these options affect all functions of sdcLog, not just `sdc_dominance()`. 
