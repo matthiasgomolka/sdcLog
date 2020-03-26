@@ -131,6 +131,13 @@ test_that("sdc_model() returns warning, if necessary", {
     expect_warning(sdc_model(model_test_dt, model_5, "id"))
 })
 
+test_that("sdc_model() returns warning, if necessary", {
+    capture.output(expect_warning(sdc_model(model_test_dt, model_2, "id")))
+    capture.output(expect_warning(sdc_model(model_test_dt, model_3, "id")))
+    capture.output(expect_warning(sdc_model(model_test_dt, model_5, "id")))
+})
+
+
 
 # sdc_model() returns correct messages
 
@@ -169,6 +176,8 @@ model_expect_1_info_2 <- function(x) {
         paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
                "[ SETTINGS: id_var: id ]\n",
                "No problem with number of distinct entities.\n",
+               # "no problems with dominance" message?
+               #"No problem with dominance.\n",
                "No dummy variables in data.\n",
                collapse = ""),
         fixed = TRUE
@@ -187,13 +196,159 @@ test_that("sdc_model() returns correct messages", {
 options(sdc.info_level = 0)
 getOption("sdc.info_level")
 
+model_expect_2_info_0 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_2_info_0(
+        capture_output(sdc_model(model_test_dt, model_2, "id")))
+})
+
+
+# model_2, for sdc.info_level = 2
+options(sdc.info_level = 2)
+getOption("sdc.info_level")
+
+model_expect_2_info_2 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               # "no problems with dominance" message?
+               #"No problem with dominance.\n",
+               "No dummy variables in data",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_2_info_2(
+        capture_output(sdc_model(model_test_dt, model_2, "id")))
+})
+
+
+# model_3, for sdc.info_level = 0|1
+options(sdc.info_level = 0)
+getOption("sdc.info_level")
+
+model_expect_3_info_0 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_3_info_0(
+        capture_output(sdc_model(model_test_dt, model_3, "id")))
+})
+
+
+# model_3, for sdc.info_level = 2
+options(sdc.info_level = 2)
+getOption("sdc.info_level")
+
+model_expect_3_info_2 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               "No problem with number of distinct entities.\n",
+               "No dummy variables in data",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_3_info_2(
+        capture_output(sdc_model(model_test_dt, model_3, "id")))
+})
+
+
+# model_4, for sdc.info_level = 0|1
+options(sdc.info_level = 0)
+getOption("sdc.info_level")
+
+model_expect_4_info_0 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_4_info_0(
+        capture_output(sdc_model(model_test_dt, model_4, "id")))
+})
+
+
+# model_4, for sdc.info_level = 2
+options(sdc.info_level = 2)
+getOption("sdc.info_level")
+
+model_expect_4_info_2 <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               "No problem with number of distinct entities.\n",
+               # "no problems with dominance" message?
+               #"No problem with dominance.\n",
+               # problems here
+               "Output complies to RDSC rules.",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+
+# test that sdc_model returns correct messages
+test_that("sdc_model() returns correct messages", {
+    model_expect_4_info_2(
+        capture_output(sdc_model(model_test_dt, model_4, "id")))
+})
+
+
+
+
 ############# tests to get all together
 model_ref_2 <- data.table(distinct_ids = 4L)
 class(model_ref_2)    <- c("sdc_counts", class(model_ref_2))
 
 model_expect <- function(x) {
-    output <- capture_output(x)
     messages <- capture_messages(x)
+    output <- capture_output(x)
     expect_match(
         paste0(output, collapse = ""),
         paste0(model_ref_2,
@@ -209,11 +364,54 @@ model_expect <- function(x) {
     )
 }
 
+model_expect <- function(x) {
+    messages <- eval(substitute(capture.output(x, type = "message")))
+    output <- eval(substitute(capture.output(x, type = "output")))
+    warning <- eval(substitute(capture_warning(x)))
+    expect_match(
+        paste0(output, collapse = ""),
+        paste0(model_ref_2,
+               collapse = ""),
+        fixed = TRUE
+    )
+    expect_match(
+        messages,
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               "No dummy variables in data.",
+               warning,
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
 
 test_that("sdc_model() returns correct messages", {
-    model_expect_2_info_0(
+    model_expect(
         sdc_model(model_test_dt, model_2, "id"))
 })
+
+model_expect <- function(x) {
+    expect_match(x,
+        model_ref_2,
+        fixed = TRUE)
+    }
+
+
+    expect_match(
+        paste0(output, collapse = ""),
+        paste0(model_ref_2,
+               collapse = ""),
+        fixed = TRUE
+    )
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
 
 ###################
 
