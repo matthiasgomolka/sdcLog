@@ -47,7 +47,7 @@ model_test_dt[id %chin% c("A", "B"), x_4 := x_4 * 100]
 model_1 <- lm(y ~ x_1 + x_2, data = model_test_dt)
 summary(model_1)
 
-sdc_model(model_test_dt, model_1, "id")
+# sdc_model(model_test_dt, model_1, "id")
 
 # model 2:
 # problem distinct id's, no dummys
@@ -55,7 +55,7 @@ sdc_model(model_test_dt, model_1, "id")
 model_2 <- lm(y ~ x_1 + x_2 + x_3, data = model_test_dt)
 summary(model_2)
 
-sdc_model(model_test_dt, model_2, "id")
+# sdc_model(model_test_dt, model_2, "id")
 
 # model 3:
 # problem dominance, no dummys
@@ -63,7 +63,7 @@ sdc_model(model_test_dt, model_2, "id")
 model_3 <- lm(y ~ x_1 + x_2 + x_4, data = model_test_dt)
 summary(model_3)
 
-sdc_model(model_test_dt, model_3, "id")
+# sdc_model(model_test_dt, model_3, "id")
 
 
 # model 4:
@@ -72,17 +72,16 @@ sdc_model(model_test_dt, model_3, "id")
 model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = model_test_dt)
 summary(model_4)
 
-sdc_model(model_test_dt, model_4, "id")
+# sdc_model(model_test_dt, model_4, "id")
 
 
 # model 5:
 # only problems with dummy (dummy_3)
 # y = β0 + β1*x_1 + β2*x_2 + β3*dummy_3 + u
-# dummy var trap, so exclude one dummy in dummy_3 col
 model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = model_test_dt)
 summary(model_5)
 
-sdc_model(model_test_dt, model_5, "id")
+# sdc_model(model_test_dt, model_5, "id")
 
 # tests: return, functionality etc.
 
@@ -105,6 +104,42 @@ test_that("sdc_model() returns a list", {
         )
 })
 
+
+### test status message in sdc_model
+# set up
+model_status_message_expect <- function(x) {
+    messages <- capture_messages(x)
+    expect_match(
+        paste0(messages, collapse = ""),
+        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
+               "[ SETTINGS: id_var: id ]\n",
+               collapse = ""),
+        fixed = TRUE
+    )
+}
+
+# test that sdc_model prints correct status messages
+test_that("sdc_model() prints correct status messages", {
+    model_status_message_expect(
+        sdc_model(model_test_dt, model_1, "id"))
+    capture_output(
+        model_status_message_expect(
+            sdc_model(model_test_dt, model_2, "id"))
+    )
+    capture_output(
+        model_status_message_expect(
+            sdc_model(model_test_dt, model_3, "id"))
+    )
+    capture_output(
+        model_status_message_expect(
+            sdc_model(model_test_dt, model_4, "id"))
+    )
+    capture_output(
+        model_status_message_expect(
+            sdc_model(model_test_dt, model_5, "id"))
+    )
+})
+
 # functionality tests
 
 # test that sdc_model() returns warnings, if necessary
@@ -114,373 +149,239 @@ test_that("sdc_model() returns a list", {
     # model 5 (dummy problem)
 
 test_that("sdc_model() returns warning, if necessary", {
+        capture.output(
     expect_warning(sdc_model(model_test_dt, model_2, "id"))
+        )
+        capture.output(
     expect_warning(sdc_model(model_test_dt, model_3, "id"))
+        )
+        capture.output(
     expect_warning(sdc_model(model_test_dt, model_5, "id"))
-})
-
-test_that("sdc_model() returns warning, if necessary", {
-    capture.output(expect_warning(sdc_model(model_test_dt, model_2, "id")))
-    capture.output(expect_warning(sdc_model(model_test_dt, model_3, "id")))
-    capture.output(expect_warning(sdc_model(model_test_dt, model_5, "id")))
+    )
 })
 
 
+# sdc_model() works/returns correctly
 
-# sdc_model() returns correct messages
+### set up model_1:
+# y = β0 + β1*x_1 + β2*x_2 + u
+# no problems at all
+# create distinct ref
+distinct_ref_1 <- data.table(distinct_ids = numeric())
+class(distinct_ref_1)    <- c("sdc_counts", class(distinct_ref_1))
 
-# set up:
-# model_1, for sdc.info_level = 0|1
-options(sdc.info_level = 0)
-getOption("sdc.info_level")
+# create dominance ref
+y <- data.table(value_share = numeric())
+class(y) <- c("sdc_dominance", class(y))
 
-model_expect_1_info_0 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
+x_1 <- data.table(value_share = numeric())
+class(x_1) <- c("sdc_dominance", class(x_1))
 
+x_2 <- data.table(value_share = numeric())
+class(x_2) <- c("sdc_dominance", class(x_2))
 
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_1_info_0(
-        sdc_model(model_test_dt, model_1, "id"))
-})
+dominance_ref_1 <- list(y, x_1, x_2)
+names(dominance_ref_1) <- c("y", "x_1", "x_2")
 
+# create dummy list ref
+dummy_ref_1 <- list()
+dummy_vars <- as.character()
+names(dummy_ref_1) <- dummy_vars
 
-# model_1, for sdc.info_level = 2
-options(sdc.info_level = 2)
-getOption("sdc.info_level")
+# create ref. list
+res_1 <- list(distinct_ref_1,
+              dominance_ref_1,
+              dummy_ref_1)
 
-model_expect_1_info_2 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               "No problem with number of distinct entities.\n",
-               # "no problems with dominance" message?
-               #"No problem with dominance.\n",
-               "No dummy variables in data.\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
+names(res_1) <- c("distinct_ids", "dominance_list", "dummy_list")
+class(res_1) <- c("sdc_model", class(res_1))
 
-
-test_that("sdc_model() returns correct messages", {
-    model_expect_1_info_2(
-        sdc_model(model_test_dt, model_1, "id"))
-})
-
-
-
-# model_2, for sdc.info_level = 0|1
-options(sdc.info_level = 0)
-getOption("sdc.info_level")
-
-model_expect_2_info_0 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_2_info_0(
-        capture_output(sdc_model(model_test_dt, model_2, "id")))
-})
-
-
-# model_2, for sdc.info_level = 2
-options(sdc.info_level = 2)
-getOption("sdc.info_level")
-
-model_expect_2_info_2 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               # "no problems with dominance" message?
-               #"No problem with dominance.\n",
-               "No dummy variables in data",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_2_info_2(
-        capture_output(sdc_model(model_test_dt, model_2, "id")))
-})
-
-
-# model_3, for sdc.info_level = 0|1
-options(sdc.info_level = 0)
-getOption("sdc.info_level")
-
-model_expect_3_info_0 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_3_info_0(
-        capture_output(sdc_model(model_test_dt, model_3, "id")))
-})
-
-
-# model_3, for sdc.info_level = 2
-options(sdc.info_level = 2)
-getOption("sdc.info_level")
-
-model_expect_3_info_2 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               "No problem with number of distinct entities.\n",
-               "No dummy variables in data",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_3_info_2(
-        capture_output(sdc_model(model_test_dt, model_3, "id")))
-})
-
-
-# model_4, for sdc.info_level = 0|1
-options(sdc.info_level = 0)
-getOption("sdc.info_level")
-
-model_expect_4_info_0 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_4_info_0(
-        capture_output(sdc_model(model_test_dt, model_4, "id")))
-})
-
-
-# model_4, for sdc.info_level = 2
-options(sdc.info_level = 2)
-getOption("sdc.info_level")
-
-model_expect_4_info_2 <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               "No problem with number of distinct entities.\n",
-               # "no problems with dominance" message?
-               #"No problem with dominance.\n",
-               # problems here
-               #"Output complies to RDSC rules.\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-# test that sdc_model returns correct messages
-test_that("sdc_model() returns correct messages", {
-    model_expect_4_info_2(
-        capture_output(sdc_model(model_test_dt, model_4, "id")))
-})
-
-
-
-
-############# tests to get all together
-model_ref_1 <- data.table(distinct_ids = numeric())
-class(model_ref_1)    <- c("sdc_counts", class(model_ref_1))
-
-expect_message(sdc_model(model_test_dt, model_1, "id"),
-               "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               model_ref_1,
-               "No dummy variables in data.")
-
-expect_message(sdc_model(model_test_dt, model_1, "id"),
-               opt,
-               model_ref_1,
-               "No dummy variables in data.")
-
-opt <- paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-       "[ SETTINGS: id_var: id ]\n",
-       collapse = "")
-
-opt
-
-model_ref_2 <- data.table(distinct_ids = 4L)
-class(model_ref_2) <- c("sdc_counts", class(model_ref_2))
-
-expect_output(sdc_model(model_test_dt, model_2, "id"),
-               "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               model_ref_2,
-               "No dummy variables in data.")
-
-
-model_expect <- function(x) {
-    messages <- capture_messages(x)
-    output <- capture_output(x)
-    expect_match(
-        paste0(output, collapse = ""),
-        paste0(model_ref_2,
-               collapse = ""),
-        fixed = TRUE
-    )
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-model_expect <- function(x) {
-    messages <- eval(substitute(capture.output(x, type = "message")))
-    output <- eval(substitute(capture.output(x, type = "output")))
-    warning <- eval(substitute(capture_warning(x)))
-    expect_match(
-        paste0(output, collapse = ""),
-        paste0(model_ref_2,
-               collapse = ""),
-        fixed = TRUE
-    )
-    expect_match(
-        messages,
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               "No dummy variables in data.",
-               warning,
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-test_that("sdc_model() returns correct messages", {
-    model_expect(
-        sdc_model(model_test_dt, model_2, "id"))
-})
-
-model_expect <- function(x) {
-    expect_match(x,
-        model_ref_2,
-        fixed = TRUE)
+# test that sdc_model works correctly
+test_that("sdc_model() returns/works correctly", {
+    expect_equal(sdc_model(model_test_dt, model_1, "id"), res_1)
     }
+)
 
+### set up model_2:
+# y = β0 + β1*x_1 + β2*x_2 + β3*x_3 + u
+# problems distinct id's
+# create distinct ref
+distinct_ref_2 <- data.table(distinct_ids = 4L)
+class(distinct_ref_2)    <- c("sdc_counts", class(distinct_ref_2))
 
-    expect_match(
-        paste0(output, collapse = ""),
-        paste0(model_ref_2,
-               collapse = ""),
-        fixed = TRUE
-    )
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
+# create dominance ref
+y <- data.table(value_share = numeric())
+class(y) <- c("sdc_dominance", class(y))
+
+x_1 <- data.table(value_share = numeric())
+class(x_1) <- c("sdc_dominance", class(x_1))
+
+x_2 <- data.table(value_share = numeric())
+class(x_2) <- c("sdc_dominance", class(x_2))
+
+x_3 <- data.table(value_share = numeric())
+class(x_3) <- c("sdc_dominance", class(x_3))
+
+dominance_ref_2 <- list(y, x_1, x_2, x_3)
+names(dominance_ref_2) <- c("y", "x_1", "x_2", "x_3")
+
+# create dummy list ref
+dummy_ref_2 <- list()
+dummy_vars <- as.character()
+names(dummy_ref_2) <- dummy_vars
+
+# create ref. list
+res_2 <- list(distinct_ref_2,
+              dominance_ref_2,
+              dummy_ref_2)
+
+names(res_2) <- c("distinct_ids", "dominance_list", "dummy_list")
+class(res_2) <- c("sdc_model", class(res_2))
+
+# test that sdc_model works correctly
+test_that("sdc_model() returns/works correctly", {
+        capture_output(
+    expect_equal(sdc_model(model_test_dt, model_2, "id"), res_2)
+        )
+}
+)
+
+### set up model_3:
+# y = β0 + β1*x_1 + β2*x_2 + β3*x_4 + u
+# problem dominance
+# create distinct ref
+distinct_ref_3 <- data.table(distinct_ids = numeric())
+class(distinct_ref_3)    <- c("sdc_counts", class(distinct_ref_3))
+
+# create dominance ref
+y <- data.table(value_share = numeric())
+class(y) <- c("sdc_dominance", class(y))
+
+x_1 <- data.table(value_share = numeric())
+class(x_1) <- c("sdc_dominance", class(x_1))
+
+x_2 <- data.table(value_share = numeric())
+class(x_2) <- c("sdc_dominance", class(x_2))
+
+x_4 <- data.table(value_share = 0.960505859602759)
+class(x_4) <- c("sdc_dominance", class(x_4))
+
+dominance_ref_3 <- list(y, x_1, x_2, x_4)
+names(dominance_ref_3) <- c("y", "x_1", "x_2", "x_4")
+
+# create dummy list ref
+dummy_ref_3 <- list()
+dummy_vars <- as.character()
+names(dummy_ref_3) <- dummy_vars
+
+# create ref. list
+res_3 <- list(distinct_ref_3,
+              (dominance_ref_3),
+              (dummy_ref_3))
+
+names(res_3) <- c("distinct_ids", "dominance_list", "dummy_list")
+class(res_3) <- c("sdc_model", class(res_3))
+
+# test that sdc_model works correctly
+test_that("sdc_model() returns/works correctly", {
+    capture_output(
+        expect_equal(sdc_model(model_test_dt, model_3, "id"), res_3)
     )
 }
+)
 
-###################
+### set up model_4:
+# y = β0 + β1*x_1 + β2*x_2 + β3*dummy_1 + β4*dummy_2 + u
+# all good, with dummys
+# create distinct ref
+distinct_ref_4 <- data.table(distinct_ids = numeric())
+class(distinct_ref_4)    <- c("sdc_counts", class(distinct_ref_4))
 
-# first set up output
-# model_2
-model_ref_2 <- data.table(distinct_ids = 4L)
-class(model_ref_2)    <- c("sdc_counts", class(model_ref_2))
+# create dominance ref
+y <- data.table(value_share = numeric())
+class(y) <- c("sdc_dominance", class(y))
 
-model_expect_2_info_0 <- function(x) {
-    output <- capture_output(x)
-    expect_match(
-        paste0(output, collapse = ""),
-        paste0(model_ref_2,
-               collapse = ""),
-        fixed = TRUE
-    )
+x_1 <- data.table(value_share = numeric())
+class(x_1) <- c("sdc_dominance", class(x_1))
+
+x_2 <- data.table(value_share = numeric())
+class(x_2) <- c("sdc_dominance", class(x_2))
+
+dominance_ref_4 <- list(y, x_1, x_2)
+names(dominance_ref_4) <- c("y", "x_1", "x_2")
+
+# create dummy list ref
+dummy_1 <- data.table(dummy_1 = character(),
+                      distinct_ids = numeric())
+
+dummy_2 <- data.table(dummy_2 = factor(),
+                      distinct_ids = numeric())
+
+dummy_ref_4 <- list(dummy_1, dummy_2)
+dummy_vars <- c("dummy_1", "dummy_2")
+names(dummy_ref_4) <- dummy_vars
+
+# create ref. list
+res_4 <- list(distinct_ref_4,
+              dominance_ref_4,
+              dummy_ref_4)
+
+names(res_4) <- c("distinct_ids", "dominance_list", "dummy_list")
+class(res_4) <- c("sdc_model", class(res_4))
+
+# test that sdc_model works correctly
+# check with equivalent (otherwise attributes (key) for dummys would have to be set)
+test_that("sdc_model() returns/works correctly", {
+    expect_equivalent(sdc_model(model_test_dt, model_4, "id"), res_4)
 }
-
-test_that("sdc_model() returns correct output", {
-    model_expect_2_info_0(
-        sdc_model(model_test_dt, model_2, "id"))
-})
+)
 
 
-model_expect_2 <- function(x) {
-    expect_match(x,
-        "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-        "[ SETTINGS: id_var: id ]\n",
-        model_ref_2,
-        fixed = TRUE
-    )
+### set up model_5:
+# y = β0 + β1*x_1 + β2*x_2 + β3*dummy_3 + u
+# only problems with dummy_3
+# create distinct ref
+distinct_ref_5 <- data.table(distinct_ids = numeric())
+class(distinct_ref_5)    <- c("sdc_counts", class(distinct_ref_5))
+
+# create dominance ref
+y <- data.table(value_share = numeric())
+class(y) <- c("sdc_dominance", class(y))
+
+x_1 <- data.table(value_share = numeric())
+class(x_1) <- c("sdc_dominance", class(x_1))
+
+x_2 <- data.table(value_share = numeric())
+class(x_2) <- c("sdc_dominance", class(x_2))
+
+dominance_ref_5 <- list(y, x_1, x_2)
+names(dominance_ref_5) <- c("y", "x_1", "x_2")
+
+# create dummy list ref
+dummy_3 <- data.table(dummy_3 = "FR",
+                      distinct_ids = 4L)
+
+dummy_ref_5 <- list(dummy_3)
+dummy_vars <- c("dummy_3")
+names(dummy_ref_5) <- dummy_vars
+
+# create ref. list
+res_5 <- list(distinct_ref_5,
+              dominance_ref_5,
+              dummy_ref_5)
+
+names(res_5) <- c("distinct_ids", "dominance_list", "dummy_list")
+class(res_5) <- c("sdc_model", class(res_5))
+
+# test that sdc_model works correctly
+# check with equivalent (otherwise attributes for dummys would have to be set)
+test_that("sdc_model() returns/works correctly", {
+        capture_output(
+    expect_equivalent(sdc_model(model_test_dt, model_5, "id"), res_5)
+        )
 }
+)
 
-model_expect_2_info_0 <- function(x) {
-    output <- capture_output(x)
-    expect_match(
-        paste0(output, collapse = ""),
-        paste0(model_ref_2,
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-
-test_that("sdc_model() returns correct", {
-    model_expect_2(
-        sdc_model(model_test_dt, model_2, "id"))
-})
-
-
-
-
-# test für model not supported
-# model finden, welches nicht supported wird
-# tests für versch. Modeltypen
+# tests für versch. Modeltypen ?
 
 
