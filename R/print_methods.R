@@ -1,7 +1,7 @@
 #' @importFrom crayon bold red
 #' @export
 print.sdc_counts <- function(x, ...) {
-    msg <- "Not enought distinct entities"
+    msg <- "Not enough distinct entities"
 
     # with problems
     if (nrow(x) > 0L) {
