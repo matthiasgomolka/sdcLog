@@ -31,32 +31,43 @@ df
 ```
 
 ### sdc.n_ids
-By default, sdcLog expects at least five different entities behind each calculated number. The functions in sdcLog derive this number from `getOption("sdc.n_ids", default = 5L)`. That is, if the option `sdc.n_ids` is not set, it defaults to five. Consider the following example:
+By default, sdcLog expects at least five different entities behind each
+calculated number. The functions in sdcLog derive this number from
+`getOption("sdc.n_ids", default = 5)`. That is, if the option `sdc.n_ids` is not
+set, it defaults to `5` Consider the following example:
 
 ```{r example1_sdc.n_ids}
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
 ```
 
-This can be adapted to the policy of your Research Data Centre by setting the option `sdc.n_ids` to the desired value. For example, if your policy allows results to be released if there are at least three different entities behind each number, set
+This can be adapted to the policy of your research data centre by setting the
+option `sdc.n_ids` to the desired value. For example, if your policy allows
+results to be released if there are at least three different entities behind
+each number, set
 
 ```{r set_sdc.n_ids}
 options(sdc.n_ids = 3)
 ```
 
-Now, `getOption("sdc.n_ids", default = 5L)` evaluates to three and warnings are thrown only if there are less than three entities behind each result. Note that this is reflected in the first line of output from every function of sdcLog:
+Now, `getOption("sdc.n_ids", default = 5)` evaluates to `3` and warnings are
+thrown only if there are less than three entities behind each result. Note that
+this is reflected in the first line of output from every function of sdcLog:
+
 ```{r example2_sdc.n_ids}
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
 ```
 
 ### sdc.n_ids_dominance
 
-The default value for `sdc.n_ids_dominance` is two. In our example, this leads to a warning:
+The default value for `sdc.n_ids_dominance` is `2`. In our example, this leads
+to a warning:
 
 ```{r example1_sdc.n_ids_dominance}
 sdc_descriptives(data = df, id_var = "id", val_var = "v2")
 ```
 
-If your policy requires only the largest entity alone to attribute for a share of less than 0.85, set
+If your policy requires only the largest entity alone to attribute for a share
+of less than `0.85`, set
 
 ```{r set_sdc.n_ids_dominance}
 options(sdc.n_ids_dominance = 1)
@@ -70,13 +81,16 @@ sdc_descriptives(data = df, id_var = "id", val_var = "v2")
 
 ### sdc.share_dominance
 
-The last option of sdcLog is `sdc.share_dominance`. To demonstrate, we reset `sdc.n_dominance` to their default values:
+The last option of sdcLog which affects internal calculations is
+`sdc.share_dominance`. To demonstrate, we reset `sdc.n_dominance` to it's
+default value:
 
-```{r reset_options}
+```{r reset_options1}
 options(sdc.n_ids_dominance = 2L)
 ```
 
-Let's consider a policy which allows the largest two entities to attribute for a share of 0.8. To reflect this, set
+Let's consider a policy which allows the largest two entities to attribute for a
+share of `0.8`. To reflect this, set
 
 ```{r set_sdc.share_dominance}
 options(sdc.share_dominance = 0.8)
@@ -88,5 +102,34 @@ Now, the previous example from `sdc.n_ids` throws a warning:
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
 ```
 
+### sdc.info_level
+
+This option differs from the previous ones in the sense that is does not affect
+actual calculations. Instead, it determines the verbosity of the output of
+sdcLog functions. Possible values are `0`, `1` (default), and `2`.
+
+Before demonstrating the effects of `sdc.info_level`, we reset
+`sdc.share_dominance` for the sake of the example:
+
+```{r reset_options2}
+options(sdc.share_dominance = 0.85)
+```
+
+The example below shows the different levels of information printed to the
+console based on the different levels of `sdc.info_level`:
+
+```{r example_sdc.info_level}
+for (i in 0:2) {
+    options(sdc.info_level = i)
+    cat("\nsdc.info_level: ", getOption("sdc.info_level"), "\n")
+    print(sdc_descriptives(data = df, id_var = "id", val_var = "v1"))
+}
+```
+
+At level `0`, only options and settings are printed. Level `1` also prints a
+short message about the overall outcome of the checks. Level `2` additionally
+prints the results of the separate checks on distinct entities and dominance.
+
 ### General remarks
-Please note that these options affect all functions of sdcLog, not just `sdc_descriptives()`. 
+Please note that these options affect all functions of sdcLog, not just
+`sdc_descriptives()`.
