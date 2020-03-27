@@ -31,8 +31,9 @@ sdc_model <- function(data, model, id_var) {
     model_vars <- setdiff(
         names(data_model),
         c(".fitted", ".se.fit", ".resid", ".hat", ".sigma", ".cooksd",
-          ".std.resid", ".rownames")
+          ".std.resid", ".rownames", ".cluster")
     )
+    # added ".cluster"
 
     model_df <- data[, c(id_var, model_vars), with = FALSE]
     model_df <- stats::na.omit(model_df)
