@@ -140,6 +140,67 @@ test_that("print.sdc_dominance works for problematic by case", {
 
 # test print.sdc_descriptives ----
 context("print.sdc_descriptives")
+descriptives_1 <- list(counts = counts_1, dominance = dominance_1)
+class(descriptives_1[["counts"]]) <-
+    c("sdc_counts", class(descriptives_1[["counts"]]))
+class(descriptives_1[["dominance"]]) <-
+    c("sdc_dominance", class(descriptives_1[["dominance"]]))
+class(descriptives_1) <- c("sdc_descriptives", class(descriptives_1))
+
+test_that("print.sdc_descriptives works for most simple case", {
+    options(sdc.info_level = 0L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_1))
+
+    options(sdc.info_level = 1L)
+    expect_message(
+        sdcLog:::print.sdc_descriptives(descriptives_1),
+        "Output complies to RDSC rules.")
+
+    options(sdc.info_level = 2L)
+    expect_message(
+        sdcLog:::print.sdc_descriptives(descriptives_1),
+        "Output complies to RDSC rules.",
+        fixed = TRUE
+    )
+})
+
+descriptives_2 <- list(counts = counts_2, dominance = dominance_2)
+class(descriptives_2[["counts"]]) <-
+    c("sdc_counts", class(descriptives_2[["counts"]]))
+class(descriptives_2[["dominance"]]) <-
+    c("sdc_dominance", class(descriptives_2[["dominance"]]))
+class(descriptives_2) <- c("sdc_descriptives", class(descriptives_2))
+
+test_that("print.sdc_descriptives works for problematic case", {
+    options(sdc.info_level = 0L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_2))
+
+    options(sdc.info_level = 1L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_2))
+
+    options(sdc.info_level = 2L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_2))
+})
+
+descriptives_3 <- list(counts = counts_3, dominance = dominance_3)
+class(descriptives_3[["counts"]]) <-
+    c("sdc_counts", class(descriptives_3[["counts"]]))
+class(descriptives_3[["dominance"]]) <-
+    c("sdc_dominance", class(descriptives_3[["dominance"]]))
+class(descriptives_3) <- c("sdc_descriptives", class(descriptives_3))
+
+test_that("print.sdc_descriptives works for problematic case", {
+    options(sdc.info_level = 0L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_3))
+
+    options(sdc.info_level = 1L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_3))
+
+    options(sdc.info_level = 2L)
+    expect_silent(sdcLog:::print.sdc_descriptives(descriptives_3))
+})
+
+
 
 #test print.sdc_model ----
 context("print.sdc_model")
