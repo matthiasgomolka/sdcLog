@@ -108,7 +108,10 @@ sdc_model <- function(data, model, id_var) {
 
 conditional_print <- function(list) {
     problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
-    if (sum(problems) > 0L) {
-        print(list[problems])
+
+    for (i in seq_along(problems)) {
+        if (problems[[i]] | getOption("sdc.info_level", 1L) > 1L) {
+            print(list[i])
+        }
     }
 }
