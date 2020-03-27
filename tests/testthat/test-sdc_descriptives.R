@@ -177,7 +177,7 @@ descriptives_expect_3 <- function(x) {
         warnings,
         paste0(
             "Potential disclosure problem\\: ",
-            "(Not enought distinct entities|Dominant entities)\\.")
+            "(Not enough distinct entities|Dominant entities)\\.")
     )
 }
 
