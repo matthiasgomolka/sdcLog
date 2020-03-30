@@ -45,7 +45,7 @@ sdc_model <- function(data, model, id_var) {
 
     # warning via print method for distinct ID's
     class(distinct_ids) <- c("sdc_counts", class(distinct_ids))
-    print(distinct_ids)
+    # print(distinct_ids)
 
     #extract dummy cols
     var_df <- model_df[, model_vars, with = FALSE]
@@ -69,7 +69,7 @@ sdc_model <- function(data, model, id_var) {
     })
 
     names(dominance_list) <- model_var_no_dummy
-    conditional_print(dominance_list)
+    # conditional_print(dominance_list)
 
 
     # return early if no dummy cols exist
@@ -93,7 +93,7 @@ sdc_model <- function(data, model, id_var) {
     })
 
     names(dummy_list) <- dummy_vars
-    conditional_print(dummy_list)
+    # conditional_print(dummy_list)
 
 
     # return list with all problem df's &| messages

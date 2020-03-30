@@ -24,7 +24,14 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     ))
     counts <- eval(expr_counts)
     class(counts) <- c("sdc_counts", class(counts))
-    print(counts)
+    # print(counts)
+    if (nrow(counts) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Not enough distinct entities", ".",
+            call. = FALSE
+        )
+    }
 
     # check dominance
     expr_dominance <- eval(substitute(
@@ -32,9 +39,9 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     ))
     dominance <- eval(expr_dominance)
     class(dominance) <- c("sdc_dominance", class(dominance))
-    print(dominance)
+    # print(dominance)
 
-    res <- list(counts = counts, dominance = dominance)
+    res <- list(distinct_ids = counts, dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))
     res
 }
