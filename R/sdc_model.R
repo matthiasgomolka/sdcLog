@@ -45,6 +45,14 @@ sdc_model <- function(data, model, id_var) {
 
     # warning via print method for distinct ID's
     class(distinct_ids) <- c("sdc_counts", class(distinct_ids))
+    if (nrow(distinct_ids) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Not enough distinct entities", ".",
+            call. = FALSE
+        )
+    }
+
     # print(distinct_ids)
 
     #extract dummy cols
@@ -69,16 +77,17 @@ sdc_model <- function(data, model, id_var) {
     })
 
     names(dominance_list) <- model_var_no_dummy
-    # conditional_print(dominance_list)
 
+    #conditional_print(dominance_list)
+    dominance_warning(dominance_list)
 
     # return early if no dummy cols exist
-    if (length(dummy_vars) == 0) {
-        if (getOption("sdc.info_level", 1L) > 1L) {
-            message("No dummy variables in data.")
-        }
-        invisible(return(TRUE))
-    }
+    #if (length(dummy_vars) == 0) {
+    #   if (getOption("sdc.info_level", 1L) > 1L) {
+    #      message("No dummy variables in data.")
+    # }
+    #invisible(return(TRUE))
+    #}
 
     dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
 
@@ -93,7 +102,11 @@ sdc_model <- function(data, model, id_var) {
     })
 
     names(dummy_list) <- dummy_vars
-    # conditional_print(dummy_list)
+
+    dummy_warning(dummy_list)
+
+    #conditional_print(dummy_list)
+
 
 
     # return list with all problem df's &| messages
@@ -106,9 +119,36 @@ sdc_model <- function(data, model, id_var) {
     res
 }
 
+
 conditional_print <- function(list) {
     problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
     if (sum(problems) > 0L) {
         print(list[problems])
     }
 }
+
+dummy_warning <- function(list) {
+    problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+    if (sum(problems) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Not enough distinct entities", ".",
+            call. = FALSE
+        )
+    }
+}
+
+dominance_warning <- function(list) {
+    problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+    if (sum(problems) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Dominant entities", ".",
+            call. = FALSE
+        )
+    }
+}
+
+
+
+

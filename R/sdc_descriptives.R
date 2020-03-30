@@ -24,6 +24,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     ))
     counts <- eval(expr_counts)
     class(counts) <- c("sdc_counts", class(counts))
+
     # print(counts)
     if (nrow(counts) > 0L) {
         warning(
@@ -39,7 +40,15 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     ))
     dominance <- eval(expr_dominance)
     class(dominance) <- c("sdc_dominance", class(dominance))
+
     # print(dominance)
+    if (nrow(dominance) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Dominant entities", ".",
+            call. = FALSE
+        )
+    }
 
     res <- list(distinct_ids = counts, dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))

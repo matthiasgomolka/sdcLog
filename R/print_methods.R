@@ -26,10 +26,10 @@ print.sdc_dominance <- function(x, ...) {
 
     # with problems
     if (nrow(x) > 0L) {
-        warning(
-            crayon::bold("Potential disclosure problem: "), msg, ".",
-            call. = FALSE
-        )
+        #warning(
+        #   crayon::bold("Potential disclosure problem: "), msg, ".",
+        #   call. = FALSE
+        #)
         msg <- paste0(msg, ":\n")
         cat(crayon::red(msg))
         print(as.data.table(x))
@@ -54,6 +54,8 @@ print.sdc_descriptives <- function(x, ...) {
 
 #' @export
 print.sdc_model <- function(x, ...) {
+
+
     print(x[["distinct_ids"]])
     if (getOption("sdc.info_level", 1L) <= 1L) {
         print_fun <- conditional_print
@@ -66,7 +68,10 @@ print.sdc_model <- function(x, ...) {
     #     `2` = print()
     # )
     print_fun(x[["dominance_list"]])
-    print_fun(x[["dummy_list"]])
+
+    if (length(x[["dummy_list"]]) != 0){
+        print_fun(x[["dummy_list"]])
+    }
 
     n_problems <- vapply(c("dominance_list", "dummy_list"), function(lst) {
         sum(vapply(x[[lst]], nrow, FUN.VALUE = integer(1L)))
