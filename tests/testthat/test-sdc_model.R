@@ -386,57 +386,6 @@ test_that("sdc_model() returns/works correctly", {
 
 # test arguments in sdc_model
 
-### Übergabe nicht existierender Argumente
-sdc_model(model_test_dt, wrong_model, "id")
-# reicht einfache error message aus?
-
-# id_var & data
-sdc_model(model_test_dt, model_1, wrong_id)
-sdc_model(wrong_model_dt, model_1, "id")
-# Error messages angemessen
-
-### pass id_var unquoted
-sdc_model(model_test_dt, model_1, id)
-# sollte zusätzlich hilfreichere Meldung kommen?
-# bspw.: "id_var has to be provided as character"
-
-### pass arguments quoted
-sdc_model("model_test_dt", model_1, "id")
-# angemessene Fehlermeldung
-
-# pass model as character works
-sdc_model(model_test_dt, "model_1", "id")
-
-
-### missing arguments
-sdc_model(model_test_dt, model_1)
-sdc_model(model_test_dt, id_var = "id")
-sdc_model(model = model_1, id_var = "id")
-# angemessene errors
-
-
-# tests
-# test that sdc_model retruns error
-test_that("sdc_model() returns an error, if necessary", {
-    # error für nichtexistierende Elemente
-    expect_error(sdc_model(model_test_dt, wrong_model, "id"))
-    expect_error(sdc_model(model_test_dt, model_1, wrong_id))
-    expect_error(sdc_model(wrong_model_dt, model_1, "id"))
-
-    # error für id_var unquoted
-    expect_error(sdc_model(model_test_dt, model_1, id))
-
-    # error für data quoted
-    expect_error(sdc_model("model_test_dt", model_1, "id"))
-
-    # error für missing arguments
-    expect_error(sdc_model(model_test_dt, model_1))
-    expect_error(sdc_model(model_test_dt, id_var = "id"))
-    expect_error(sdc_model(model = model_1, id_var = "id"))
-
-})
-
-
 # test that sdc_model retruns appropriate error
 test_that("sdc_model() returns appropriate error", {
 
