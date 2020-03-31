@@ -13,8 +13,10 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     check_args(data, id_var, val_var, by)
 
     # status messages
-    message_options()
-    message_arguments(id_var, val_var, by)
+    # message_options()
+    # message_arguments(id_var, val_var, by)
+    message_options <- capture_messages(message_options())
+    message_arguments <- capture_messages(message_arguments(id_var, val_var, by))
 
     data <- data.table::as.data.table(data)
 
@@ -50,7 +52,12 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
         )
     }
 
-    res <- list(distinct_ids = counts, dominance = dominance)
+    res <- list(message_options = message_options,
+                message_arguments = message_arguments,
+                distinct_ids = counts,
+                dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))
+    message(res$message_options)
+    message(res$message_arguments)
     res
 }
