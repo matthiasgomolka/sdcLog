@@ -168,7 +168,7 @@ test_that("sdc_model() returns warning, if necessary", {
 # no problems at all
 # create distinct ref
 distinct_ref_1 <- data.table(distinct_ids = numeric())
-class(distinct_ref_1)    <- c("sdc_counts", class(distinct_ref_1))
+class(distinct_ref_1)    <- c("sdc_distinct_ids", class(distinct_ref_1))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -207,7 +207,7 @@ test_that("sdc_model() returns/works correctly", {
 # problems distinct id's
 # create distinct ref
 distinct_ref_2 <- data.table(distinct_ids = 4L)
-class(distinct_ref_2)    <- c("sdc_counts", class(distinct_ref_2))
+class(distinct_ref_2)    <- c("sdc_distinct_ids", class(distinct_ref_2))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -251,7 +251,7 @@ test_that("sdc_model() returns/works correctly", {
 # problem dominance
 # create distinct ref
 distinct_ref_3 <- data.table(distinct_ids = numeric())
-class(distinct_ref_3)    <- c("sdc_counts", class(distinct_ref_3))
+class(distinct_ref_3)    <- c("sdc_distinct_ids", class(distinct_ref_3))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -295,7 +295,7 @@ test_that("sdc_model() returns/works correctly", {
 # all good, with dummys
 # create distinct ref
 distinct_ref_4 <- data.table(distinct_ids = numeric())
-class(distinct_ref_4)    <- c("sdc_counts", class(distinct_ref_4))
+class(distinct_ref_4)    <- c("sdc_distinct_ids", class(distinct_ref_4))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -342,7 +342,7 @@ test_that("sdc_model() returns/works correctly", {
 # only problems with dummy_3
 # create distinct ref
 distinct_ref_5 <- data.table(distinct_ids = numeric())
-class(distinct_ref_5)    <- c("sdc_counts", class(distinct_ref_5))
+class(distinct_ref_5)    <- c("sdc_distinct_ids", class(distinct_ref_5))
 
 # create dominance ref
 y <- data.table(value_share = numeric())

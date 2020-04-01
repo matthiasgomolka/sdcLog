@@ -45,7 +45,7 @@ sdc_model <- function(data, model, id_var) {
                ][distinct_ids < getOption("sdc.n_ids", 5L)]
 
     # warning via print method for distinct ID's
-    class(distinct_ids) <- c("sdc_counts", class(distinct_ids))
+    class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
     if (nrow(distinct_ids) > 0L) {
         warning(
             crayon::bold("Potential disclosure problem: "),
@@ -98,7 +98,7 @@ sdc_model <- function(data, model, id_var) {
             check_distinct_ids(dummy_data, id_var, val_var = x, by = x)
         )
         class(distinct_ids_per_value) <-
-            c("sdc_counts", class(distinct_ids_per_value))
+            c("sdc_distinct_ids", class(distinct_ids_per_value))
         distinct_ids_per_value
     })
 

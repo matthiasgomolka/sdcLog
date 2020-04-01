@@ -1,6 +1,6 @@
 #' @importFrom crayon bold red
 #' @export
-print.sdc_counts <- function(x, ...) {
+print.sdc_distinct_ids <- function(x, ...) {
     msg <- "Not enough distinct entities"
 
     # with problems
