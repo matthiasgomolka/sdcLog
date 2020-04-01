@@ -15,8 +15,9 @@ sdc_model <- function(data, model, id_var) {
     check_args(data, id_var)
 
     # status messages
-    message_options <- capture_messages(message_options())
-    message_arguments <- capture_messages(message_arguments(id_var = id_var))
+    #message_options <- capture.output(message_options(), type = "message")
+    #message_arguments <- capture.output(message_arguments(id_var = id_var), type = "message")
+
 
     data <- data.table::as.data.table(data)
 
@@ -109,15 +110,13 @@ sdc_model <- function(data, model, id_var) {
 
     # return list with all problem df's &| messages
     res <- list(
-        message_options = message_options,
-        message_arguments = message_arguments,
+        message_options = message_options(),
+        message_arguments = message_arguments(id_var = id_var),
         distinct_ids = distinct_ids,
         dominance_list = dominance_list,
         dummy_list = dummy_list
     )
     class(res) <- c("sdc_model", class(res))
-    message(res$message_options)
-    message(res$message_arguments)
     res
 }
 
