@@ -238,3 +238,29 @@ test_that("sdc_descriptives works in complex cases", {
     )
 })
 
+
+
+# test arguments in sdc_descriptives
+
+# test that sdc_descriptives retruns appropriate error
+test_that("sdc_descriptives() returns appropriate error", {
+
+    # error für nichtexistierende Elemente
+    expect_error(sdc_descriptives(test_dt, "wrong_id", "val"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
+    expect_error(sdc_descriptives(test_dt, "id", "wrong_val"), "Object 'wrong_val' not found amongst id, sector, year, val", fixed = TRUE)
+    expect_error(sdc_descriptives(wrong_test_dt, "id", "val"), "object 'wrong_test_dt' not found")
+    expect_error(sdc_descriptives(test_dt, "id", "val", wrong_by), "object 'wrong_by' not found")
+
+    # error für elements unquoted
+    expect_error(sdc_descriptives(test_dt, id, "val"), "object 'id' not found")
+    expect_error(sdc_descriptives(test_dt, "id", val), "object 'val' not found")
+
+    # error für data quoted
+    expect_error(sdc_descriptives("test_dt", "id", "val"), "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.")
+
+    # error für missing arguments
+    expect_error(sdc_descriptives(test_dt, "id"), "argument \"val_var\" is missing, with no default")
+    expect_error(sdc_descriptives(test_dt, val_var = "val"), "argument \"id_var\" is missing, with no default")
+    expect_error(sdc_descriptives(id = "id", val_var = "val"), "argument \"data\" is missing, with no default")
+
+})
