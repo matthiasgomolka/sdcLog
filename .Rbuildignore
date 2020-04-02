@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^data-raw$
+^\.travis\.yml$
+^codecov\.yml$
+^\.covrignore$
+^\.github$

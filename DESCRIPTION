@@ -1,10 +1,7 @@
 Package: sdcLog
-Title: Helper Functions for Statistical Disclosure Control in Research Data 
-  Centres
+Title: Helper Functions for Statistical Disclosure Control in
+    Research Data Centres
 Version: 0.0.0.9000
-Author: Matthias Gomolka [aut, cre],
-  Tim Becker [aut]
-Maintainer: Matthias Gomolka <matthias.gomolka@bundesbank.de>
 Authors@R: 
     c(person(given = "Matthias",
              family = "Gomolka",
@@ -12,23 +9,26 @@ Authors@R:
              email = "matthias.gomolka@bundesbank.de"),
       person(given = "Tim",
              family = "Becker",
-             role = c("aut"),
+             role = "aut",
              email = "tim.becker@bundesbank.de"))
-URL: https://github.com/Plebejer/sdcLog
-BugReports: https://github.com/Plebejer/sdcLog/issues
+Author: Matthias Gomolka [aut, cre], Tim Becker [aut]
+Maintainer: Matthias Gomolka <matthias.gomolka@bundesbank.de>
 Description: What the package does (one paragraph).
 License: GPL-3
-Encoding: UTF-8
-LazyData: true
+URL: https://github.com/Plebejer/sdcLog
+BugReports: https://github.com/Plebejer/sdcLog/issues
 Depends: 
-    R (>= 2.10)
+    R (>= 3.2)
 Imports: 
-    broom,
-    data.table,
-    crayon,
-    checkmate,
+    broom (>= 0.5.5),
+    checkmate (>= 2.0.0),
+    crayon (>= 1.3.4),
+    data.table (>= 1.12.8),
     methods
 Suggests: 
+    covr (>= 3.5.0),
     testthat (>= 2.1.0)
+Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
