@@ -29,8 +29,8 @@ sdc_extreme <- function(
   checkmate::assert_int(n_min)
 
   # status messages
-  message_options()
-  message_arguments(id_var, val_var, by)
+  message(message_options())
+  message(message_arguments(id_var, val_var, by))
 
   data <- data.table::as.data.table(data)
 
