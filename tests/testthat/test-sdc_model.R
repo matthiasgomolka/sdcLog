@@ -88,57 +88,10 @@ summary(model_5)
 # test sdc_model ----
 context("sdc_model")
 
-
+# redundante tests, da später sowieso getestet - rausgenommen:
 # test that sdc_model returns a list
-test_that("sdc_model() returns a list", {
-    expect_true(is.list(sdc_model(model_test_dt, model_1, "id")))
-        capture_output(
-    expect_true(is.list(sdc_model(model_test_dt, model_2, "id")))
-        )
-        capture_output(
-    expect_true(is.list(sdc_model(model_test_dt, model_3, "id")))
-        )
-    expect_true(is.list(sdc_model(model_test_dt, model_4, "id")))
-        capture_output(
-    expect_true(is.list(sdc_model(model_test_dt, model_5, "id")))
-        )
-})
+# test status message in sdc_model
 
-
-### test status message in sdc_model
-# set up
-model_status_message_expect <- function(x) {
-    messages <- capture_messages(x)
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
-
-# test that sdc_model prints correct status messages
-test_that("sdc_model() prints correct status messages", {
-    model_status_message_expect(
-        sdc_model(model_test_dt, model_1, "id"))
-    capture_output(
-        model_status_message_expect(
-            sdc_model(model_test_dt, model_2, "id"))
-    )
-    capture_output(
-        model_status_message_expect(
-            sdc_model(model_test_dt, model_3, "id"))
-    )
-    capture_output(
-        model_status_message_expect(
-            sdc_model(model_test_dt, model_4, "id"))
-    )
-    capture_output(
-        model_status_message_expect(
-            sdc_model(model_test_dt, model_5, "id"))
-    )
-})
 
 # functionality tests
 
@@ -168,7 +121,7 @@ test_that("sdc_model() returns warning, if necessary", {
 # no problems at all
 # create distinct ref
 distinct_ref_1 <- data.table(distinct_ids = numeric())
-class(distinct_ref_1)    <- c("sdc_counts", class(distinct_ref_1))
+class(distinct_ref_1)    <- c("sdc_distinct_ids", class(distinct_ref_1))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -188,12 +141,15 @@ dummy_ref_1 <- list()
 dummy_vars <- as.character()
 names(dummy_ref_1) <- dummy_vars
 
+
 # create ref. list
-res_1 <- list(distinct_ref_1,
+res_1 <- list(message_options = message_options(),
+              message_arguments = message_arguments(id_var = "id"),
+              distinct_ref_1,
               dominance_ref_1,
               dummy_ref_1)
 
-names(res_1) <- c("distinct_ids", "dominance_list", "dummy_list")
+names(res_1) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
 class(res_1) <- c("sdc_model", class(res_1))
 
 # test that sdc_model works correctly
@@ -207,7 +163,7 @@ test_that("sdc_model() returns/works correctly", {
 # problems distinct id's
 # create distinct ref
 distinct_ref_2 <- data.table(distinct_ids = 4L)
-class(distinct_ref_2)    <- c("sdc_counts", class(distinct_ref_2))
+class(distinct_ref_2)    <- c("sdc_distinct_ids", class(distinct_ref_2))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -231,11 +187,14 @@ dummy_vars <- as.character()
 names(dummy_ref_2) <- dummy_vars
 
 # create ref. list
-res_2 <- list(distinct_ref_2,
+res_2 <- list(message_options = message_options(),
+              message_arguments = message_arguments(id_var = "id"),
+              distinct_ref_2,
               dominance_ref_2,
               dummy_ref_2)
 
-names(res_2) <- c("distinct_ids", "dominance_list", "dummy_list")
+names(res_2) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
+
 class(res_2) <- c("sdc_model", class(res_2))
 
 # test that sdc_model works correctly
@@ -251,7 +210,7 @@ test_that("sdc_model() returns/works correctly", {
 # problem dominance
 # create distinct ref
 distinct_ref_3 <- data.table(distinct_ids = numeric())
-class(distinct_ref_3)    <- c("sdc_counts", class(distinct_ref_3))
+class(distinct_ref_3)    <- c("sdc_distinct_ids", class(distinct_ref_3))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -275,11 +234,13 @@ dummy_vars <- as.character()
 names(dummy_ref_3) <- dummy_vars
 
 # create ref. list
-res_3 <- list(distinct_ref_3,
-              (dominance_ref_3),
-              (dummy_ref_3))
+res_3 <- list(message_options = message_options(),
+              message_arguments = message_arguments(id_var = "id"),
+              distinct_ref_3,
+              dominance_ref_3,
+              dummy_ref_3)
 
-names(res_3) <- c("distinct_ids", "dominance_list", "dummy_list")
+names(res_3) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
 class(res_3) <- c("sdc_model", class(res_3))
 
 # test that sdc_model works correctly
@@ -295,7 +256,7 @@ test_that("sdc_model() returns/works correctly", {
 # all good, with dummys
 # create distinct ref
 distinct_ref_4 <- data.table(distinct_ids = numeric())
-class(distinct_ref_4)    <- c("sdc_counts", class(distinct_ref_4))
+class(distinct_ref_4)    <- c("sdc_distinct_ids", class(distinct_ref_4))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -322,11 +283,13 @@ dummy_vars_4 <- c("dummy_1", "dummy_2")
 names(dummy_ref_4) <- dummy_vars_4
 
 # create ref. list
-res_4 <- list(distinct_ref_4,
+res_4 <- list(message_options = message_options(),
+              message_arguments = message_arguments(id_var = "id"),
+              distinct_ref_4,
               dominance_ref_4,
               dummy_ref_4)
 
-names(res_4) <- c("distinct_ids", "dominance_list", "dummy_list")
+names(res_4) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
 class(res_4) <- c("sdc_model", class(res_4))
 
 # test that sdc_model works correctly
@@ -342,7 +305,7 @@ test_that("sdc_model() returns/works correctly", {
 # only problems with dummy_3
 # create distinct ref
 distinct_ref_5 <- data.table(distinct_ids = numeric())
-class(distinct_ref_5)    <- c("sdc_counts", class(distinct_ref_5))
+class(distinct_ref_5)    <- c("sdc_distinct_ids", class(distinct_ref_5))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -366,11 +329,13 @@ dummy_vars_5 <- c("dummy_3")
 names(dummy_ref_5) <- dummy_vars_5
 
 # create ref. list
-res_5 <- list(distinct_ref_5,
+res_5 <- list(message_options = message_options(),
+              message_arguments = message_arguments(id_var = "id"),
+              distinct_ref_5,
               dominance_ref_5,
               dummy_ref_5)
 
-names(res_5) <- c("distinct_ids", "dominance_list", "dummy_list")
+names(res_5) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
 class(res_5) <- c("sdc_model", class(res_5))
 
 # test that sdc_model works correctly

@@ -15,20 +15,20 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     # status messages
     # message_options()
     # message_arguments(id_var, val_var, by)
-    message_options <- capture_messages(message_options())
-    message_arguments <- capture_messages(message_arguments(id_var, val_var, by))
+    #message_options <- capture_messages(message_options())
+    #message_arguments <- capture_messages(message_arguments(id_var, val_var, by))
 
     data <- data.table::as.data.table(data)
 
-    # check counts
-    expr_counts <- eval(substitute(
+    # check distinct_ids
+    expr_distinct_ids <- eval(substitute(
         check_distinct_ids(data, id_var, val_var, by)
     ))
-    counts <- eval(expr_counts)
-    class(counts) <- c("sdc_counts", class(counts))
+    distinct_ids <- eval(expr_distinct_ids)
+    class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
 
-    # print(counts)
-    if (nrow(counts) > 0L) {
+    # print(distinct_ids)
+    if (nrow(distinct_ids) > 0L) {
         warning(
             crayon::bold("Potential disclosure problem: "),
             "Not enough distinct entities", ".",
@@ -52,12 +52,10 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
         )
     }
 
-    res <- list(message_options = message_options,
-                message_arguments = message_arguments,
-                distinct_ids = counts,
+    res <- list(message_options = message_options(),
+                message_arguments = message_arguments(id_var, val_var, by),
+                distinct_ids = distinct_ids,
                 dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))
-    message(res$message_options)
-    message(res$message_arguments)
     res
 }

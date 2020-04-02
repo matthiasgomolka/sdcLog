@@ -1,6 +1,6 @@
 #' @importFrom crayon bold red
 #' @export
-print.sdc_counts <- function(x, ...) {
+print.sdc_distinct_ids <- function(x, ...) {
     msg <- "Not enough distinct entities"
 
     # with problems
@@ -43,6 +43,9 @@ print.sdc_dominance <- function(x, ...) {
 
 #' @export
 print.sdc_descriptives <- function(x, ...) {
+    message(x[["message_options"]])
+    message(x[["message_arguments"]])
+
     print(x[["distinct_ids"]])
     print(x[["dominance"]])
     no_problems <- sum(nrow(x[["distinct_ids"]]), nrow(x[["dominance"]])) == 0L
@@ -54,7 +57,8 @@ print.sdc_descriptives <- function(x, ...) {
 
 #' @export
 print.sdc_model <- function(x, ...) {
-
+    message(x[["message_options"]])
+    message(x[["message_arguments"]])
 
     print(x[["distinct_ids"]])
     if (getOption("sdc.info_level", 1L) <= 1L) {
