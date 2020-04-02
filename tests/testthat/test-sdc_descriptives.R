@@ -83,54 +83,70 @@ context("sdc_descriptives")
 # descriptives setup 1 ####
 class(distinct_ids_ref_1)    <- c("sdc_distinct_ids"   , class(distinct_ids_ref_1))
 class(dominance_ref_1) <- c("sdc_dominance", class(dominance_ref_1))
-descriptives_ref_1 <- list(distinct_ids = distinct_ids_ref_1,
-                           dominance = dominance_ref_1)
+descriptives_ref_1 <- list(message_options = message_options(),
+                            message_arguments = message_arguments("id", "val"),
+                            distinct_ids = distinct_ids_ref_1,
+                            dominance = dominance_ref_1)
 class(descriptives_ref_1) <- c("sdc_descriptives", class(descriptives_ref_1))
 
-descriptives_expect_1 <- function(x) {
-    messages <- capture_messages(expect_identical(x, descriptives_ref_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
+# descriptives_expect_1 <- function(x) {
+#     messages <- capture_messages(expect_identical(x, descriptives_ref_1))
+#     expect_match(
+#         paste0(messages, collapse = ""),
+#         paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+#                "sdc.share_dominance: 0.85 ]\n",
+#                "[ SETTINGS: id_var: id | val_var: val ]\n",
+#                collapse = ""),
+#         fixed = TRUE
+#     )
+# }
 
 # descriptives tests 1 ####
 test_that("sdc_descriptives works in simple cases", {
-    descriptives_expect_1(
-        sdc_descriptives(test_dt, "id", "val")
+    expect_equivalent(
+        sdc_descriptives(test_dt, "id", "val"), descriptives_ref_1
     )
 })
 
 # descriptives setup 2 ####
 class(distinct_ids_ref_2)    <- c("sdc_distinct_ids"   , class(distinct_ids_ref_2))
 class(dominance_ref_2) <- c("sdc_dominance", class(dominance_ref_2))
-descriptives_ref_2 <- list(distinct_ids = distinct_ids_ref_2,
+
+
+descriptives_ref_2 <- list(message_options = message_options(),
+                           message_arguments = c(
+                               "[ SETTINGS: ",
+                               paste0("id_var: ", "id"),
+                               paste0(" | val_var: ", "val"),
+                               paste0(" | by: ", "sector"),
+                               " ]"
+                           ),
+                           distinct_ids = distinct_ids_ref_2,
                            dominance = dominance_ref_2)
 class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
 
-descriptives_expect_2 <- function(x) {
-    expect_output(
-        expect_warning(
-            expect_message(
-                expect_equal(x, descriptives_ref_2),
-                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-                "sdc.share_dominance: 0.85 ]\n",
-                "[ SETTINGS: id_var: id | val_var: val | by: sector ]\n",
-                fixed = TRUE
-            ),
-            ifelse(getOption("sdc.info_level", 1L) > 1L,
-                   "Potential disclosure problem: Dominant entities.", ""),
-            fixed = TRUE
-        ),
-        "Dominant entities:",
-        fixed = TRUE
-    )
-}
+ # descriptives_expect_2 <- function(x) {
+ #     expect_output(
+ #         expect_warning(
+ #                 expect_equivalent(x, descriptives_ref_2),
+ #             ifelse(getOption("sdc.info_level", 1L) > 1L,
+ #                    "Potential disclosure problem: Dominant entities.", ""),
+ #             fixed = TRUE
+ #         ),
+ #         "Dominant entities:",
+ #         fixed = TRUE
+ #     )
+ # }
+
+ descriptives_expect_2 <- function(x) {
+           expect_warning(
+             expect_equivalent(x, descriptives_ref_2),
+             ifelse(getOption("sdc.info_level", 1L) > 1L,
+                    "Potential disclosure problem: Dominant entities.", ""),
+             fixed = TRUE
+         )
+ }
+
 
 # descriptives tests 2 ####
 test_that("sdc_descriptives works in medium cases", {
@@ -151,28 +167,38 @@ test_that("sdc_descriptives works in medium cases", {
     )
 })
 
+
 # descriptives setup 3 ####
 class(distinct_ids_ref_3)    <- c("sdc_distinct_ids"   , class(distinct_ids_ref_3))
 class(dominance_ref_3) <- c("sdc_dominance", class(dominance_ref_3))
-descriptives_ref_3 <- list(distinct_ids = distinct_ids_ref_3,
+descriptives_ref_3 <- list(message_options = message_options(),
+                           message_arguments = c(
+                               "[ SETTINGS: ",
+                               paste0("id_var: ", "id"),
+                               paste0(" | val_var: ", "val"),
+                               paste0(" | by: ", "sector, year"),
+                               " ]"
+                           ),
+                           distinct_ids = distinct_ids_ref_3,
                            dominance = dominance_ref_3)
 class(descriptives_ref_3) <- c("sdc_descriptives", class(descriptives_ref_3))
 
 descriptives_expect_3 <- function(x) {
-    warnings <- capture_warnings({
-        expect_output(
-            expect_message(
-                expect_equal(x, descriptives_ref_3),
-                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-                "sdc.share_dominance: 0.85 ]\n",
-                "[ SETTINGS: id_var: id | val_var: val | by: sector, year ]\n",
-                fixed = TRUE
-            ),
-            ifelse(getOption("sdc.info_level", 1L) > 1L,
-                   "Potential disclosure problem: Dominant entities.", ""),
-            fixed = TRUE
-        )
-    })
+    warnings <- capture_warnings(#{
+        # expect_output(
+        #     # expect_message(
+                    expect_equivalent(x, descriptives_ref_3)
+        #     #     "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+        #     #     "sdc.share_dominance: 0.85 ]\n",
+        #     #     "[ SETTINGS: id_var: id | val_var: val | by: sector, year ]\n",
+        #     #     fixed = TRUE
+        #     # ),
+         #    ifelse(getOption("sdc.info_level", 1L) > 1L,
+          #          "Potential disclosure problem: Dominant entities.", ""),
+           #  fixed = TRUE
+         )
+    #}
+#)
     expect_match(
         warnings,
         paste0(
@@ -180,6 +206,18 @@ descriptives_expect_3 <- function(x) {
             "(Not enough distinct entities|Dominant entities)\\.")
     )
 }
+
+descriptives_expect_3 <- function(x) {
+    warnings <- capture_warnings(
+        expect_equivalent(x, descriptives_ref_3))
+    expect_match(
+        warnings,
+        paste0(
+            "Potential disclosure problem: Not enough distinct entities",
+            "Potential disclosure problem: Dominant entities")
+        )
+}
+
 
 # descriptives tests 3 ####
 test_that("sdc_descriptives works in complex cases", {
@@ -199,3 +237,4 @@ test_that("sdc_descriptives works in complex cases", {
         sdc_descriptives(test_dt, "id", "val", by = sector:year)
     )
 })
+
