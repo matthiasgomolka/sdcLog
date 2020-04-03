@@ -88,23 +88,6 @@ summary(model_5)
 # test sdc_model ----
 context("sdc_model")
 
-
-# test that sdc_model returns a list
-test_that("sdc_model() returns a list", {
-    expect_true(is.list(sdc_model(model_test_dt, model_1, "id")))
-        capture_output(
-    expect_true(is.list(sdc_model(model_test_dt, model_2, "id")))
-        )
-        capture_output(
-    expect_true(is.list(sdc_model(model_test_dt, model_3, "id")))
-        )
-    expect_true(is.list(sdc_model(model_test_dt, model_4, "id")))
-        capture_output(
-    expect_true(is.list(sdc_model(model_test_dt, model_5, "id")))
-        )
-})
-
-
 ### test status message in sdc_model
 # set up
 model_status_message_expect <- function(x) {
