@@ -13,18 +13,28 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     check_args(data, id_var, val_var, by)
 
     # status messages
-    message_options()
-    message_arguments(id_var, val_var, by)
+    # message_options()
+    # message_arguments(id_var, val_var, by)
+    #message_options <- capture_messages(message_options())
+    #message_arguments <- capture_messages(message_arguments(id_var, val_var, by))
 
     data <- data.table::as.data.table(data)
 
-    # check counts
-    expr_counts <- eval(substitute(
+    # check distinct_ids
+    expr_distinct_ids <- eval(substitute(
         check_distinct_ids(data, id_var, val_var, by)
     ))
-    counts <- eval(expr_counts)
-    class(counts) <- c("sdc_counts", class(counts))
-    print(counts)
+    distinct_ids <- eval(expr_distinct_ids)
+    class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
+
+    # print(distinct_ids)
+    if (nrow(distinct_ids) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Not enough distinct entities", ".",
+            call. = FALSE
+        )
+    }
 
     # check dominance
     expr_dominance <- eval(substitute(
@@ -32,9 +42,20 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL) {
     ))
     dominance <- eval(expr_dominance)
     class(dominance) <- c("sdc_dominance", class(dominance))
-    print(dominance)
 
-    res <- list(counts = counts, dominance = dominance)
+    # print(dominance)
+    if (nrow(dominance) > 0L) {
+        warning(
+            crayon::bold("Potential disclosure problem: "),
+            "Dominant entities", ".",
+            call. = FALSE
+        )
+    }
+
+    res <- list(message_options = message_options(),
+                message_arguments = message_arguments(id_var, val_var, by),
+                distinct_ids = distinct_ids,
+                dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))
     res
 }

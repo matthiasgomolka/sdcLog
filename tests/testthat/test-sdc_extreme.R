@@ -346,3 +346,36 @@ test_that("find_SD() returns correct subset", {
     extreme_test_dt_by[c(1L:5L, 11L:15L), row_order, with = FALSE]
   )
 })
+
+
+
+# test arguments in sdc_extreme
+
+# test that sdc_extreme retruns appropriate error
+test_that("sdc_extreme() returns appropriate error", {
+
+    # error für nichtexistierende Elemente
+    expect_error(sdc_extreme(extreme_test_dt, "wrong_id", "val_1"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
+    expect_error(sdc_extreme(extreme_test_dt, "id", "wrong_val"), "argument specifying columns specify non existing column(s): cols[1]='wrong_val'", fixed = TRUE)
+    expect_error(sdc_extreme(wrong_test_dt, "id", "val_1"), "object 'wrong_test_dt' not found")
+    expect_error(sdc_extreme(extreme_test_dt_by, "id", "val_1", wrong_by), "object 'wrong_by' not found")
+
+    # error für elements unquoted
+    expect_error(sdc_extreme(extreme_test_dt, id, "val_1"), "object 'id' not found")
+    expect_error(sdc_extreme(extreme_test_dt, "id", val_1), "object 'val_1' not found")
+
+    # error für data quoted
+    expect_error(sdc_extreme("extreme_test_dt", "id", "val_1"), "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.")
+
+    # error für missing arguments
+    expect_error(sdc_extreme(extreme_test_dt, "id"), "argument \"val_var\" is missing, with no default")
+    expect_error(sdc_extreme(extreme_test_dt, val_var = "val_1"), "argument \"id_var\" is missing, with no default")
+    expect_error(sdc_extreme(id = "id", val_var = "val_1"), "argument \"data\" is missing, with no default")
+
+})
+
+
+
+
+
+
