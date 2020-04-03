@@ -88,11 +88,6 @@ summary(model_5)
 # test sdc_model ----
 context("sdc_model")
 
-# redundante tests, da später sowieso getestet - rausgenommen:
-# test that sdc_model returns a list
-# test status message in sdc_model
-
-
 # functionality tests
 
 # test that sdc_model() returns warnings, if necessary
@@ -141,7 +136,6 @@ dummy_ref_1 <- list()
 dummy_vars <- as.character()
 names(dummy_ref_1) <- dummy_vars
 
-
 # create ref. list
 res_1 <- list(message_options = message_options(),
               message_arguments = message_arguments(id_var = "id"),
@@ -163,7 +157,7 @@ test_that("sdc_model() returns/works correctly", {
 # problems distinct id's
 # create distinct ref
 distinct_ref_2 <- data.table(distinct_ids = 4L)
-class(distinct_ref_2)    <- c("sdc_distinct_ids", class(distinct_ref_2))
+class(distinct_ref_2) <- c("sdc_distinct_ids", class(distinct_ref_2))
 
 # create dominance ref
 y <- data.table(value_share = numeric())
@@ -194,7 +188,6 @@ res_2 <- list(message_options = message_options(),
               dummy_ref_2)
 
 names(res_2) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
-
 class(res_2) <- c("sdc_model", class(res_2))
 
 # test that sdc_model works correctly
@@ -241,6 +234,7 @@ res_3 <- list(message_options = message_options(),
               dummy_ref_3)
 
 names(res_3) <- c("message_options", "message_arguments", "distinct_ids", "dominance_list", "dummy_list")
+
 class(res_3) <- c("sdc_model", class(res_3))
 
 # test that sdc_model works correctly
@@ -346,7 +340,6 @@ test_that("sdc_model() returns/works correctly", {
         )
 }
 )
-
 
 
 # test arguments in sdc_model

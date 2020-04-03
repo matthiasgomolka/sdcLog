@@ -6,3 +6,5 @@
 ^codecov\.yml$
 ^\.covrignore$
 ^\.github$
+^doc$
+^Meta$
