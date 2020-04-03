@@ -29,14 +29,14 @@ model_test_dt[id %chin% c("A", "B"), x_4 := x_4 * 100]
 
 
 # characteristics variables:
-    # id: id variable
-    # y: dependent variable
-    # independent variables:
-    # x_1 & x_2: should lead to no problems at all in model
-    # x_3: leads in model to problems with distinct id's
-    # x_4: leads in model to problems with dominance
-    # dummy_1 & dummy_2: lead in model to no problems at all
-    # dummy_3: leads in model to probelms with dummy variable
+# id: id variable
+# y: dependent variable
+# independent variables:
+# x_1 & x_2: should lead to no problems at all in model
+# x_3: leads in model to problems with distinct id's
+# x_4: leads in model to problems with dominance
+# dummy_1 & dummy_2: lead in model to no problems at all
+# dummy_3: leads in model to probelms with dummy variable
 
 
 ## set up: models
@@ -92,19 +92,19 @@ context("sdc_model")
 
 # test that sdc_model() returns warnings, if necessary
 # warnings expected:
-    # model 2 (distinct id's problem),
-    # model 3 (dominance problem)
-    # model 5 (dummy problem)
+# model 2 (distinct id's problem),
+# model 3 (dominance problem)
+# model 5 (dummy problem)
 
 test_that("sdc_model() returns warning, if necessary", {
-        capture.output(
-    expect_warning(sdc_model(model_test_dt, model_2, "id"))
-        )
-        capture.output(
-    expect_warning(sdc_model(model_test_dt, model_3, "id"))
-        )
-        capture.output(
-    expect_warning(sdc_model(model_test_dt, model_5, "id"))
+    capture.output(
+        expect_warning(sdc_model(model_test_dt, model_2, "id"))
+    )
+    capture.output(
+        expect_warning(sdc_model(model_test_dt, model_3, "id"))
+    )
+    capture.output(
+        expect_warning(sdc_model(model_test_dt, model_5, "id"))
     )
 })
 
@@ -149,7 +149,7 @@ class(res_1) <- c("sdc_model", class(res_1))
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
     expect_equal(sdc_model(model_test_dt, model_1, "id"), res_1)
-    }
+}
 )
 
 ### set up model_2:
@@ -192,9 +192,12 @@ class(res_2) <- c("sdc_model", class(res_2))
 
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
+    expect_warning(
         capture_output(
-    expect_equal(sdc_model(model_test_dt, model_2, "id"), res_2)
-        )
+            expect_equal(sdc_model(model_test_dt, model_2, "id"), res_2)
+        ),
+        "Potential disclosure problem: Not enough distinct entities."
+    )
 }
 )
 
@@ -239,8 +242,11 @@ class(res_3) <- c("sdc_model", class(res_3))
 
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
-    capture_output(
-        expect_equal(sdc_model(model_test_dt, model_3, "id"), res_3)
+    expect_warning(
+        capture_output(
+            expect_equal(sdc_model(model_test_dt, model_3, "id"), res_3)
+        ),
+        "Potential disclosure problem: Dominant entities."
     )
 }
 )
@@ -335,11 +341,13 @@ class(res_5) <- c("sdc_model", class(res_5))
 # test that sdc_model works correctly
 # check with equivalent (otherwise attributes for dummys would have to be set)
 test_that("sdc_model() returns/works correctly", {
+    expect_warning(
         capture_output(
-    expect_equivalent(sdc_model(model_test_dt, model_5, "id"), res_5)
-        )
-}
-)
+            expect_equivalent(sdc_model(model_test_dt, model_5, "id"), res_5)
+        ),
+        "Potential disclosure problem: Not enough distinct entities."
+    )
+})
 
 
 # test arguments in sdc_model
@@ -348,7 +356,13 @@ test_that("sdc_model() returns/works correctly", {
 test_that("sdc_model() returns appropriate error", {
 
     # error für nichtexistierende Elemente
-    expect_error(sdc_model(model_test_dt, wrong_model, "id"), "object 'wrong_model' not found")
+    expect_warning(
+        expect_error(
+            sdc_model(model_test_dt, wrong_model, "id"),
+            "object 'wrong_model' not found"
+        ),
+        "restarting interrupted promise evaluation"
+    )
     expect_error(sdc_model(model_test_dt, model_1, wrong_id), "object 'wrong_id' not found")
     expect_error(sdc_model(wrong_model_dt, model_1, "id"), "object 'wrong_model_dt' not found")
 

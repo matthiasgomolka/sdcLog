@@ -34,7 +34,7 @@ options(sdc.n_ids_dominance = 1)
 ## ----example2_sdc.n_ids_dominance---------------------------------------------
 sdc_descriptives(data = df, id_var = "id", val_var = "v2")
 
-## ----reset_options------------------------------------------------------------
+## ----reset_options1-----------------------------------------------------------
 options(sdc.n_ids_dominance = 2L)
 
 ## ----set_sdc.share_dominance--------------------------------------------------
@@ -42,4 +42,14 @@ options(sdc.share_dominance = 0.8)
 
 ## ----example1_sdc.share_dominance---------------------------------------------
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
+
+## ----reset_options2-----------------------------------------------------------
+options(sdc.share_dominance = 0.85)
+
+## ----example_sdc.info_level---------------------------------------------------
+for (i in 0:2) {
+    options(sdc.info_level = i)
+    cat("\nsdc.info_level: ", getOption("sdc.info_level"), "\n")
+    print(sdc_descriptives(data = df, id_var = "id", val_var = "v1"))
+}
 
