@@ -43,7 +43,7 @@ message_options <- function() {
 #     )
 # }
 
-message_arguments <- function(id_var, val_var = NULL, by = NULL) {
+message_arguments <- function(id_var, val_var = NULL, by = NULL, NA_vals = NULL) {
     msg_id_var  <- paste0("id_var: ", id_var)
 
     msg_val_var <- ""
@@ -58,11 +58,19 @@ message_arguments <- function(id_var, val_var = NULL, by = NULL) {
         msg_by <- paste0(" | by: ", by_char)
     }
 
+    msg_NA_vals <- ""
+    if (!is.null(NA_vals)) {
+        str <- as.character(NA_vals)
+        NA_vals <- paste(str, collapse = ", ")
+        msg_NA_vals <- paste0(" | NA_vals: ", NA_vals)
+    }
+
     c(
         "[ SETTINGS: ",
         msg_id_var,
         msg_val_var,
         msg_by,
+        msg_NA_vals,
         " ]"
     )
 }
