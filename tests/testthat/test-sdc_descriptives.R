@@ -234,7 +234,7 @@ test_that("sdc_descriptives() returns appropriate error", {
 
     # error für nichtexistierende Elemente
     expect_error(sdc_descriptives(test_dt, "wrong_id", "val"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
-    expect_error(sdc_descriptives(test_dt, "id", "wrong_val"), "Object 'wrong_val' not found amongst id, sector, year, val", fixed = TRUE)
+    expect_error(sdc_descriptives(test_dt, "id", "wrong_val"), "object 'wrong_val' not found")
     expect_error(sdc_descriptives(wrong_test_dt, "id", "val"), "object 'wrong_test_dt' not found")
     expect_error(sdc_descriptives(test_dt, "id", "val", wrong_by), "object 'wrong_by' not found")
 
