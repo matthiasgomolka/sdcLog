@@ -26,6 +26,16 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, NA_vals = NULL) {
         eval(substitute(data[get(val_var) %in% NA_vals, val_var := NA_real_]))
     }
 
+    # best guess NA's
+    possible_na_df <- data[ , `:=`(count = .N) , by = val_var][which.max(count)
+                        ][, .(possible_na = get(val_var),
+            value_share = count/length(data[[val_var]]))
+            ][value_share >= getOption("sdc.share_possible_na", 0.25)]
+
+    if (nrow(possible_na_df) > 0){
+        message("The value '",possible_na_df[[1,1]],"' occurs frequently in the data: Is it used as coding for NA?")}
+
+
     # check distinct_ids
     expr_distinct_ids <- eval(substitute(
         check_distinct_ids(data, id_var, val_var, by)

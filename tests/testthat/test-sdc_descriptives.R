@@ -285,6 +285,20 @@ test_that("sdc_descriptives() handles NA values correctly", {
 })
 
 
+# test that "na_best_guess" works correctly
+n <- 20
+na_guess_test_dt <- data.table(
+    id = rep_len(LETTERS[1L:10L], n),
+    val = runif(n, min = 1, max = 10),
+    val_2 = c(c(0,0,0,0,0), 1:15)
+)
 
+test_that("sdc_descriptives() guesses NA values correctly", {
+
+    expect_message(sdc_descriptives(na_guess_test_dt, "id", "val_2"), "The value '0' occurs frequently in the data: Is it used as coding for NA?")
+
+    expect_failure(expect_message(sdc_descriptives(na_guess_test_dt, "id", "val")))
+
+})
 
 
