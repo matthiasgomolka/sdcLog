@@ -6,7 +6,7 @@
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
 #' @param NA_vals [numeric] Value(s) to be recognized as NA's.
-#' @importFrom data.table as.data.table
+#' @importFrom data.table as.data.table :=
 #' @export
 
 sdc_descriptives <- function(data, id_var, val_var, by = NULL, NA_vals = NULL) {
@@ -28,7 +28,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, NA_vals = NULL) {
 
     # best guess NA's
     possible_na_df <- data[ , `:=`(count = .N) , by = val_var][which.max(count)
-                        ][, .(possible_na = get(val_var),
+                        ][, list(possible_na = get(val_var),
             value_share = count/length(data[[val_var]]))
             ][value_share >= getOption("sdc.share_possible_na", 0.25)]
 
