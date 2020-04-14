@@ -138,15 +138,23 @@ class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
 #     )
 # }
 
+# descriptives_expect_2 <- function(x) {
+#     expect_warning(
+#         expect_equivalent(x, descriptives_ref_2),
+#         ifelse(getOption("sdc.info_level", 1L) > 1L,
+#                "Potential disclosure problem: Dominant entities.", ""),
+#         fixed = TRUE
+#     )
+# }
+
 descriptives_expect_2 <- function(x) {
     expect_warning(
         expect_equivalent(x, descriptives_ref_2),
         ifelse(getOption("sdc.info_level", 1L) > 1L,
-               "Potential disclosure problem: Dominant entities.", ""),
+               paste0(bold("Potential disclosure problem: "),"Dominant entities."), ""),
         fixed = TRUE
     )
 }
-
 
 # descriptives tests 2 ####
 test_that("sdc_descriptives works in medium cases", {
