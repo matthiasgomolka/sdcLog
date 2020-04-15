@@ -119,6 +119,7 @@ descriptives_ref_2 <- list(message_options = message_options(),
                                paste0("id_var: ", "id"),
                                paste0(" | val_var: ", "val"),
                                paste0(" | by: ", "sector"),
+                               paste0(""),
                                " ]"
                            ),
                            distinct_ids = distinct_ids_ref_2,
@@ -178,6 +179,7 @@ descriptives_ref_3 <- list(
         paste0("id_var: ", "id"),
         paste0(" | val_var: ", "val"),
         paste0(" | by: ", "sector, year"),
+        paste0(""),
         " ]"
     ),
     distinct_ids = distinct_ids_ref_3,
@@ -232,7 +234,7 @@ test_that("sdc_descriptives() returns appropriate error", {
 
     # error für nichtexistierende Elemente
     expect_error(sdc_descriptives(test_dt, "wrong_id", "val"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
-    expect_error(sdc_descriptives(test_dt, "id", "wrong_val"), "Object 'wrong_val' not found amongst id, sector, year, val", fixed = TRUE)
+    expect_error(sdc_descriptives(test_dt, "id", "wrong_val"), "object 'wrong_val' not found")
     expect_error(sdc_descriptives(wrong_test_dt, "id", "val"), "object 'wrong_test_dt' not found")
     expect_error(sdc_descriptives(test_dt, "id", "val", wrong_by), "object 'wrong_by' not found")
 
@@ -249,3 +251,54 @@ test_that("sdc_descriptives() returns appropriate error", {
     expect_error(sdc_descriptives(id = "id", val_var = "val"), "argument \"data\" is missing, with no default")
 
 })
+
+# Tests für NA_vals
+n <- 20L
+NA_vals_test_dt <- data.table(
+    id = rep_len(LETTERS[1L:10L], n),
+    year = sort(rep_len(2019L:2020L, n)),
+    val = runif(n, min = 1, max = 10),
+    val_2 = c(rep(NA, 16), runif(4, min = 1, max = 10)),
+    val_3 = c(rep(0, 16), runif(4, min = 1, max = 10)),
+    val_4 = c(rep(9999, 16), runif(4, min = 1, max = 10)),
+    val_5 = c(rep(NA, 4), rep(0, 4), rep(9999, 4), rep(-99, 4), runif(4, min = 1, max = 10)),
+    key = "id"
+)
+
+
+# test that sdc_descriptives handles NA values correctly
+test_that("sdc_descriptives() handles NA values correctly", {
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_2"))
+
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_3")))
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_3", NA_vals = 0))
+
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_4")))
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_4", NA_vals = 9999))
+
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5")))
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5", NA_vals = c(0, 9999))))
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5", NA_vals = c(-99, 9999))))
+
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5", NA_vals = c(0, 9999, -99)))
+
+})
+
+
+# test that "na_best_guess" works correctly
+n <- 20
+na_guess_test_dt <- data.table(
+    id = rep_len(LETTERS[1L:10L], n),
+    val = runif(n, min = 1, max = 10),
+    val_2 = c(c(0,0,0,0,0), 1:15)
+)
+
+test_that("sdc_descriptives() guesses NA values correctly", {
+
+    expect_message(sdc_descriptives(na_guess_test_dt, "id", "val_2"), "The value '0' occurs frequently in the data: Is it used as coding for NA?")
+
+    expect_failure(expect_message(sdc_descriptives(na_guess_test_dt, "id", "val")))
+
+})
+
+
