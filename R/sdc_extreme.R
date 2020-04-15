@@ -29,8 +29,8 @@ sdc_extreme <- function(
   checkmate::assert_int(n_min)
 
   # status messages
-  message_options()
-  message_arguments(id_var, val_var, by)
+  message(message_options())
+  message(message_arguments(id_var, val_var, by))
 
   data <- data.table::as.data.table(data)
 
@@ -109,7 +109,7 @@ find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
     check_distinct_ids(SD, id_var, val_var, by),
     env = parent.frame(n = 2L)
   )))
-  class(results_distinct_ids) <- c("sdc_counts", class(results_distinct_ids))
+  class(results_distinct_ids) <- c("sdc_distinct_ids", class(results_distinct_ids))
 
   results_dominance <- eval(eval(substitute(
     check_dominance(SD, id_var, val_var, by),

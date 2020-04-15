@@ -22,24 +22,24 @@ test_that("check_distinct_ids() returns a call", {
 })
 
 ## functionality tests
-counts_ref_1 <- data.table(distinct_ids = integer())
-counts_ref_2 <- data.table(sector = character(), distinct_ids = integer(),
-                           key = "sector")
-counts_ref_3 <- data.table(sector = "S1", year = 2019L, distinct_ids = 4L,
-                           key = c("sector", "year"))
-test_that("check_distinct_ids() counts correctly", {
+distinct_ids_ref_1 <- data.table(distinct_ids = integer())
+distinct_ids_ref_2 <- data.table(sector = character(), distinct_ids = integer(),
+                                 key = "sector")
+distinct_ids_ref_3 <- data.table(sector = "S1", year = 2019L, distinct_ids = 4L,
+                                 key = c("sector", "year"))
+test_that("check_distinct_ids() distinct_ids correctly", {
     expect_identical(
         eval(sdcLog:::check_distinct_ids(test_dt, "id", "val")),
-        counts_ref_1
+        distinct_ids_ref_1
     )
     expect_identical(
         eval(sdcLog:::check_distinct_ids(test_dt, "id", "val", by = sector)),
-        counts_ref_2
+        distinct_ids_ref_2
     )
     expect_identical(
         eval(sdcLog:::check_distinct_ids(test_dt, "id", "val",
                                          by = .(sector, year))),
-        counts_ref_3
+        distinct_ids_ref_3
     )
 })
 
@@ -81,53 +81,78 @@ test_that("check_dominance() calculates correctly", {
 # test sdc_descriptives ####
 context("sdc_descriptives")
 # descriptives setup 1 ####
-class(counts_ref_1)    <- c("sdc_counts"   , class(counts_ref_1))
+class(distinct_ids_ref_1)    <- c("sdc_distinct_ids"   , class(distinct_ids_ref_1))
 class(dominance_ref_1) <- c("sdc_dominance", class(dominance_ref_1))
-descriptives_ref_1 <- list(counts = counts_ref_1,
+descriptives_ref_1 <- list(message_options = message_options(),
+                           message_arguments = message_arguments("id", "val"),
+                           distinct_ids = distinct_ids_ref_1,
                            dominance = dominance_ref_1)
 class(descriptives_ref_1) <- c("sdc_descriptives", class(descriptives_ref_1))
 
-descriptives_expect_1 <- function(x) {
-    messages <- capture_messages(expect_identical(x, descriptives_ref_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               collapse = ""),
-        fixed = TRUE
-    )
-}
+# descriptives_expect_1 <- function(x) {
+#     messages <- capture_messages(expect_identical(x, descriptives_ref_1))
+#     expect_match(
+#         paste0(messages, collapse = ""),
+#         paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+#                "sdc.share_dominance: 0.85 ]\n",
+#                "[ SETTINGS: id_var: id | val_var: val ]\n",
+#                collapse = ""),
+#         fixed = TRUE
+#     )
+# }
 
 # descriptives tests 1 ####
 test_that("sdc_descriptives works in simple cases", {
-    descriptives_expect_1(
-        sdc_descriptives(test_dt, "id", "val")
+    expect_equivalent(
+        sdc_descriptives(test_dt, "id", "val"), descriptives_ref_1
     )
 })
 
 # descriptives setup 2 ####
-class(counts_ref_2)    <- c("sdc_counts"   , class(counts_ref_2))
+class(distinct_ids_ref_2)    <- c("sdc_distinct_ids"   , class(distinct_ids_ref_2))
 class(dominance_ref_2) <- c("sdc_dominance", class(dominance_ref_2))
-descriptives_ref_2 <- list(counts = counts_ref_2,
+
+
+descriptives_ref_2 <- list(message_options = message_options(),
+                           message_arguments = c(
+                               "[ SETTINGS: ",
+                               paste0("id_var: ", "id"),
+                               paste0(" | val_var: ", "val"),
+                               paste0(" | by: ", "sector"),
+                               paste0(""),
+                               " ]"
+                           ),
+                           distinct_ids = distinct_ids_ref_2,
                            dominance = dominance_ref_2)
 class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
 
+# descriptives_expect_2 <- function(x) {
+#     expect_output(
+#         expect_warning(
+#                 expect_equivalent(x, descriptives_ref_2),
+#             ifelse(getOption("sdc.info_level", 1L) > 1L,
+#                    "Potential disclosure problem: Dominant entities.", ""),
+#             fixed = TRUE
+#         ),
+#         "Dominant entities:",
+#         fixed = TRUE
+#     )
+# }
+
+# descriptives_expect_2 <- function(x) {
+#     expect_warning(
+#         expect_equivalent(x, descriptives_ref_2),
+#         ifelse(getOption("sdc.info_level", 1L) > 1L,
+#                "Potential disclosure problem: Dominant entities.", ""),
+#         fixed = TRUE
+#     )
+# }
+
 descriptives_expect_2 <- function(x) {
-    expect_output(
-        expect_warning(
-            expect_message(
-                expect_equal(x, descriptives_ref_2),
-                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-                "sdc.share_dominance: 0.85 ]\n",
-                "[ SETTINGS: id_var: id | val_var: val | by: sector ]\n",
-                fixed = TRUE
-            ),
-            ifelse(getOption("sdc.info_level", 1L) > 1L,
-                   "Potential disclosure problem: Dominant entities.", ""),
-            fixed = TRUE
-        ),
-        "Dominant entities:",
+    expect_warning(
+        expect_equivalent(x, descriptives_ref_2),
+        ifelse(getOption("sdc.info_level", 1L) > 1L,
+               paste0(bold("Potential disclosure problem: "),"Dominant entities."), ""),
         fixed = TRUE
     )
 }
@@ -151,33 +176,41 @@ test_that("sdc_descriptives works in medium cases", {
     )
 })
 
+
 # descriptives setup 3 ####
-class(counts_ref_3)    <- c("sdc_counts"   , class(counts_ref_3))
+class(distinct_ids_ref_3)    <- c("sdc_distinct_ids"   , class(distinct_ids_ref_3))
 class(dominance_ref_3) <- c("sdc_dominance", class(dominance_ref_3))
-descriptives_ref_3 <- list(counts = counts_ref_3,
-                           dominance = dominance_ref_3)
+descriptives_ref_3 <- list(
+    message_options = message_options(),
+    message_arguments = c(
+        "[ SETTINGS: ",
+        paste0("id_var: ", "id"),
+        paste0(" | val_var: ", "val"),
+        paste0(" | by: ", "sector, year"),
+        paste0(""),
+        " ]"
+    ),
+    distinct_ids = distinct_ids_ref_3,
+    dominance = dominance_ref_3
+)
 class(descriptives_ref_3) <- c("sdc_descriptives", class(descriptives_ref_3))
 
+## expect identical??
 descriptives_expect_3 <- function(x) {
-    warnings <- capture_warnings({
-        expect_output(
-            expect_message(
-                expect_equal(x, descriptives_ref_3),
-                "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-                "sdc.share_dominance: 0.85 ]\n",
-                "[ SETTINGS: id_var: id | val_var: val | by: sector, year ]\n",
-                fixed = TRUE
-            ),
-            ifelse(getOption("sdc.info_level", 1L) > 1L,
-                   "Potential disclosure problem: Dominant entities.", ""),
-            fixed = TRUE
-        )
-    })
+    warnings <- capture_warnings(expect_equivalent(
+        sdc_descriptives(test_dt, "id", "val", by = .(sector, year)),
+        descriptives_ref_3
+    ))
+    warnings <- gsub("\\\033\\[[1-2]{1,2}m", "", warnings)
     expect_match(
-        warnings,
-        paste0(
-            "Potential disclosure problem\\: ",
-            "(Not enought distinct entities|Dominant entities)\\.")
+        warnings[1],
+        "Potential disclosure problem: Not enough distinct entities.",
+        fixed = TRUE
+    )
+    expect_match(
+        warnings[2],
+        "Potential disclosure problem: Dominant entities.",
+        fixed = TRUE
     )
 }
 
@@ -199,3 +232,81 @@ test_that("sdc_descriptives works in complex cases", {
         sdc_descriptives(test_dt, "id", "val", by = sector:year)
     )
 })
+
+
+
+# test arguments in sdc_descriptives
+
+# test that sdc_descriptives retruns appropriate error
+test_that("sdc_descriptives() returns appropriate error", {
+
+    # error für nichtexistierende Elemente
+    expect_error(sdc_descriptives(test_dt, "wrong_id", "val"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
+    expect_error(sdc_descriptives(test_dt, "id", "wrong_val"), "object 'wrong_val' not found")
+    expect_error(sdc_descriptives(wrong_test_dt, "id", "val"), "object 'wrong_test_dt' not found")
+    expect_error(sdc_descriptives(test_dt, "id", "val", wrong_by), "object 'wrong_by' not found")
+
+    # error für elements unquoted
+    expect_error(sdc_descriptives(test_dt, id, "val"), "object 'id' not found")
+    expect_error(sdc_descriptives(test_dt, "id", val), "object 'val' not found")
+
+    # error für data quoted
+    expect_error(sdc_descriptives("test_dt", "id", "val"), "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.")
+
+    # error für missing arguments
+    expect_error(sdc_descriptives(test_dt, "id"), "argument \"val_var\" is missing, with no default")
+    expect_error(sdc_descriptives(test_dt, val_var = "val"), "argument \"id_var\" is missing, with no default")
+    expect_error(sdc_descriptives(id = "id", val_var = "val"), "argument \"data\" is missing, with no default")
+
+})
+
+# Tests für NA_vals
+n <- 20L
+NA_vals_test_dt <- data.table(
+    id = rep_len(LETTERS[1L:10L], n),
+    year = sort(rep_len(2019L:2020L, n)),
+    val = runif(n, min = 1, max = 10),
+    val_2 = c(rep(NA, 16), runif(4, min = 1, max = 10)),
+    val_3 = c(rep(0, 16), runif(4, min = 1, max = 10)),
+    val_4 = c(rep(9999, 16), runif(4, min = 1, max = 10)),
+    val_5 = c(rep(NA, 4), rep(0, 4), rep(9999, 4), rep(-99, 4), runif(4, min = 1, max = 10)),
+    key = "id"
+)
+
+
+# test that sdc_descriptives handles NA values correctly
+test_that("sdc_descriptives() handles NA values correctly", {
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_2"))
+
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_3")))
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_3", NA_vals = 0))
+
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_4")))
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_4", NA_vals = 9999))
+
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5")))
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5", NA_vals = c(0, 9999))))
+    expect_failure(expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5", NA_vals = c(-99, 9999))))
+
+    expect_warning(sdc_descriptives(NA_vals_test_dt, "id", "val_5", NA_vals = c(0, 9999, -99)))
+
+})
+
+
+# test that "na_best_guess" works correctly
+n <- 20
+na_guess_test_dt <- data.table(
+    id = rep_len(LETTERS[1L:10L], n),
+    val = runif(n, min = 1, max = 10),
+    val_2 = c(c(0,0,0,0,0), 1:15)
+)
+
+test_that("sdc_descriptives() guesses NA values correctly", {
+
+    expect_message(sdc_descriptives(na_guess_test_dt, "id", "val_2"), "The value '0' occurs frequently in the data: Is it used as coding for NA?")
+
+    expect_failure(expect_message(sdc_descriptives(na_guess_test_dt, "id", "val")))
+
+})
+
+
