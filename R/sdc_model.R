@@ -19,9 +19,11 @@ sdc_model <- function(data, model, id_var) {
     #model df
     data_model <- tryCatch(
         broom::augment(model),
-        error = function(error) {paste0(
-            "Models of class '", class(model), "' are not yet supported."
-            )}
+        error = function(error) {
+            paste0(
+                "Models of class '", class(model), "' are not yet supported."
+                )
+            }
         )
 
     model_vars <- setdiff(
@@ -49,9 +51,8 @@ sdc_model <- function(data, model, id_var) {
         )
     }
 
-    # print(distinct_ids)
 
-    #extract dummy cols
+    # extract dummy cols
     var_df <- model_df[, model_vars, with = FALSE]
 
     dummy_vars <- vapply(var_df, is_dummy, FUN.VALUE = logical(1L))

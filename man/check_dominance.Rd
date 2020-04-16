@@ -4,11 +4,9 @@
 \alias{check_dominance}
 \title{Internal function which creates cross-tables with number of distinct id's}
 \usage{
-check_dominance(DT, id_var, val_var, by = NULL)
+check_dominance(dt, id_var, val_var, by = NULL)
 }
 \arguments{
-\item{DT}{\link{data.table} from which the descriptives are calculated.}
-
 \item{id_var}{\link{character} The name of the id variable.}
 
 \item{val_var}{\link{character} vector of value variables on which descriptives
@@ -16,6 +14,8 @@ are computed.}
 
 \item{by}{Grouping variables (or expression). Can be provided as in
 \code{\link[data.table:data.table]{data.table::data.table()}}.}
+
+\item{DT}{\link{data.table} from which the descriptives are calculated.}
 }
 \description{
 Internal function which creates cross-tables with number of distinct id's
