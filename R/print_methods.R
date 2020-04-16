@@ -5,10 +5,6 @@ print.sdc_distinct_ids <- function(x, ...) {
 
     # with problems
     if (nrow(x) > 0L) {
-        # warning(
-        #     crayon::bold("Potential disclosure problem: "), msg, ".",
-        #     call. = FALSE
-        # )
         msg <- paste0(msg, ":\n")
         cat(crayon::red(msg))
         print(as.data.table(x))
@@ -26,10 +22,6 @@ print.sdc_dominance <- function(x, ...) {
 
     # with problems
     if (nrow(x) > 0L) {
-        #warning(
-        #   crayon::bold("Potential disclosure problem: "), msg, ".",
-        #   call. = FALSE
-        #)
         msg <- paste0(msg, ":\n")
         cat(crayon::red(msg))
         print(as.data.table(x))
@@ -66,14 +58,9 @@ print.sdc_model <- function(x, ...) {
     } else {
         print_fun <- print
     }
-    # print_fun <- switch(getOption("sdc.info_level", 1L),
-    #     `0` = conditional_print(),
-    #     `1` = conditional_print(),
-    #     `2` = print()
-    # )
     print_fun(x[["dominance_list"]])
 
-    if (length(x[["dummy_list"]]) != 0){
+    if (length(x[["dummy_list"]]) != 0) {
         print_fun(x[["dummy_list"]])
     }
 
@@ -86,4 +73,3 @@ print.sdc_model <- function(x, ...) {
         message("Output complies to RDSC rules.")
     }
 }
-

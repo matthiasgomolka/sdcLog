@@ -109,7 +109,8 @@ find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
     check_distinct_ids(SD, id_var, val_var, by),
     env = parent.frame(n = 2L)
   )))
-  class(results_distinct_ids) <- c("sdc_distinct_ids", class(results_distinct_ids))
+  class(results_distinct_ids) <-
+    c("sdc_distinct_ids", class(results_distinct_ids))
 
   results_dominance <- eval(eval(substitute(
     check_dominance(SD, id_var, val_var, by),
@@ -122,4 +123,3 @@ find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
     problems = sum(nrow(results_distinct_ids), nrow(results_dominance)) != 0L
   )
 }
-
