@@ -1,12 +1,10 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![R build
-status](https://www.r-pkg.org/badges/version/sdcLog)](https://github.com/Plebejer/sdcLog/actions)
+[![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![](https://www.r-pkg.org/badges/version/sdcLog?color=orange)](https://cran.r-project.org/package=sdcLog)
 [![R build
 status](https://github.com/Plebejer/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/Plebejer/sdcLog/actions)
-[![R build
-status](https://codecov.io/gh/plebejer/sdcLog/branch/master/graph/badge.svg)](https://github.com/Plebejer/sdcLog/actions)
-[![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![](https://codecov.io/gh/Plebejer/sdcLog/branch/master/graph/badge.svg)](https://codecov.io/gh/Plebejer/sdcLog)
 [![Dependencies](https://tinyverse.netlify.com/badge/sdcLog)](https://cran.r-project.org/package=sdcLog)
 
 sdcLog is work in progress and aims to provide tools which simplify
