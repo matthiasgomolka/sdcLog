@@ -1,8 +1,8 @@
 on:
   push:
     paths:
-      - examples/README.Rmd
-      - examples/*yaml
+      - README.Rmd
+      - .github/workflows/*yaml
 
 name: Render README
 
