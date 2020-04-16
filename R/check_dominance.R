@@ -6,9 +6,9 @@
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
 
-check_dominance <- function(dt, id_var, val_var, by = NULL) {
+check_dominance <- function(DT, id_var, val_var, by = NULL) {
     substitute(
-        dt[!is.na(get(val_var)),
+        DT[!is.na(get(val_var)),
            # base::sum needed to avoid error with gsum
            .SD[,
                .(agg_val_var = base::sum(.SD)),

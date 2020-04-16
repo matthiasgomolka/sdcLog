@@ -7,9 +7,9 @@
 #'   [data.table::data.table()].
 #' @importFrom data.table uniqueN
 
-check_distinct_ids <- function(dt, id_var, val_var, by = NULL) {
+check_distinct_ids <- function(DT, id_var, val_var, by = NULL) {
     substitute(
-        dt[!is.na(get(val_var)),
+        DT[!is.na(get(val_var)),
            .(distinct_ids = data.table::uniqueN(.SD)),
            .SDcols = id_var,
            keyby = by

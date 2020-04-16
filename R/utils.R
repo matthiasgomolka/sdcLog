@@ -4,7 +4,7 @@
 #' @importFrom checkmate assert_data_frame assert_string assert check_class
 #' @importFrom methods hasArg
 check_args <- function(
-    data, id_var, val_var = NULL, by = NULL, NA_vals = NULL
+    data, id_var, val_var = NULL, by = NULL, zero_as_NA = NULL
 ) {
     checkmate::assert_data_frame(data)
     checkmate::assert_string(id_var)
@@ -20,8 +20,8 @@ check_args <- function(
             checkmate::check_class(substitute(by), "character")
         )
     }
-    if (!is.null(NA_vals)) {
-        checkmate::assert_numeric(NA_vals)
+    if (!is.null(zero_as_NA)) {
+        checkmate::assert_logical(zero_as_NA)
     }
 }
 

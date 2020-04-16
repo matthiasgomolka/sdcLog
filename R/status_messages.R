@@ -10,7 +10,7 @@ message_options <- function() {
 
 
 message_arguments <- function(
-    id_var, val_var = NULL, by = NULL, NA_vals = NULL
+    id_var, val_var = NULL, by = NULL, zero_as_NA = NULL
 ) {
     msg_id_var  <- paste0("id_var: ", id_var)
 
@@ -26,11 +26,11 @@ message_arguments <- function(
         msg_by <- paste0(" | by: ", by_char)
     }
 
-    msg_NA_vals <- ""
-    if (!is.null(NA_vals)) {
-        str <- as.character(NA_vals)
-        NA_vals <- paste(str, collapse = ", ")
-        msg_NA_vals <- paste0(" | NA_vals: ", NA_vals)
+    msg_zero_as_NA <- ""
+    if (!is.null(zero_as_NA)) {
+        str <- as.character(zero_as_NA)
+        zero_as_NA <- paste(str, collapse = ", ")
+        msg_zero_as_NA <- paste0(" | zero_as_NA: ", zero_as_NA)
     }
 
     c(
@@ -38,7 +38,7 @@ message_arguments <- function(
         msg_id_var,
         msg_val_var,
         msg_by,
-        msg_NA_vals,
+        msg_zero_as_NA,
         " ]"
     )
 }
