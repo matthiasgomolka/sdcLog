@@ -11,7 +11,7 @@ html_preview: false
 library(badger)
 ```
 
-[![R build status](https://www.r-pkg.org/badges/version/sdcLog)](https://github.com/Plebejer/sdcLog/actions)
+`r badge_cran("badger", "orange")`
 [![R build status](https://github.com/Plebejer/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/Plebejer/sdcLog/actions)
 [![R build status](https://codecov.io/gh/plebejer/sdcLog/branch/master/graph/badge.svg)](https://github.com/Plebejer/sdcLog/actions)
 `r badge_lifecycle("experimental")`
