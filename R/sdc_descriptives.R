@@ -5,13 +5,10 @@
 #'   are computed.
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
-<<<<<<< HEAD
 #' @param NA_vals [numeric] Value(s) to be recognized as NA's.
 #' @importFrom data.table as.data.table set :=
-=======
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
 #' @importFrom data.table as.data.table set
->>>>>>> f1443b30e54278732623f46e466d65f59e794048
 #' @export
 
 sdc_descriptives <- function(
@@ -50,15 +47,15 @@ sdc_descriptives <- function(
     }
 
     # best guess NA's
-    possible_na_df <-
-        data[ , `:=`(count = .N) , by = val_var
-           ][which.max(count)
-           ][, list(possible_na = get(val_var),
-                    value_share = count/length(data[[val_var]]))
-           ][value_share >= getOption("sdc.share_possible_na", 0.20)]
-
-    if (nrow(possible_na_df) > 0 && !is.na(possible_na_df[[1]])) {
-        message("The value '", possible_na_df[[1, 1]], "' occurs frequently in the data: Is it used as coding for NA?")}
+    # possible_na_df <-
+    #     data[ , `:=`(count = .N) , by = val_var
+    #        ][which.max(count)
+    #        ][, list(possible_na = get(val_var),
+    #                 value_share = count/length(data[[val_var]]))
+    #        ][value_share >= getOption("sdc.share_possible_na", 0.20)]
+    #
+    # if (nrow(possible_na_df) > 0 && !is.na(possible_na_df[[1]])) {
+    #     message("The value '", possible_na_df[[1, 1]], "' occurs frequently in the data: Is it used as coding for NA?")}
 
 
     # check distinct_ids
@@ -94,7 +91,7 @@ sdc_descriptives <- function(
     }
 
     res <- list(message_options = message_options(),
-                message_arguments = message_arguments(id_var, val_var, by, NA_vals),
+                message_arguments = message_arguments(id_var, val_var, by, zero_as_NA),
                 distinct_ids = distinct_ids,
                 dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))
