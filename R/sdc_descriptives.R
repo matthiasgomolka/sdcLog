@@ -6,7 +6,7 @@
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
 #' @param NA_vals [numeric] Value(s) to be recognized as NA's.
-#' @importFrom data.table as.data.table set
+#' @importFrom data.table as.data.table set :=
 #' @export
 
 sdc_descriptives <- function(data, id_var, val_var, by = NULL, NA_vals = NULL) {
@@ -31,9 +31,9 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, NA_vals = NULL) {
            ][which.max(count)
            ][, list(possible_na = get(val_var),
                     value_share = count/length(data[[val_var]]))
-           ][value_share >= getOption("sdc.share_possible_na", 0.25)]
+           ][value_share >= getOption("sdc.share_possible_na", 0.20)]
 
-    if (nrow(possible_na_df) > 0) {
+    if (nrow(possible_na_df) > 0 && !is.na(possible_na_df[[1]])) {
         message("The value '", possible_na_df[[1, 1]], "' occurs frequently in the data: Is it used as coding for NA?")}
 
 
