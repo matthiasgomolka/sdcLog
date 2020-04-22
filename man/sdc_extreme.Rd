@@ -2,8 +2,8 @@
 % Please edit documentation in R/sdc_extreme.R
 \name{sdc_extreme}
 \alias{sdc_extreme}
-\title{check if calculation of extreme values comply to RDSC rules.
-If so, function returns average min and max values according to RDSC rules.}
+\title{check if calculation of extreme values comply to RDC rules.
+If so, function returns average min and max values according to RDC rules.}
 \usage{
 sdc_extreme(data, id_var, val_var, by = NULL, n_min = 5L, n_max = n_min)
 }
@@ -26,6 +26,6 @@ default 5.}
 default 5.}
 }
 \description{
-check if calculation of extreme values comply to RDSC rules.
-If so, function returns average min and max values according to RDSC rules.
+check if calculation of extreme values comply to RDC rules.
+If so, function returns average min and max values according to RDC rules.
 }

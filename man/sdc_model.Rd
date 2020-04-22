@@ -2,7 +2,7 @@
 % Please edit documentation in R/sdc_model.R
 \name{sdc_model}
 \alias{sdc_model}
-\title{check if your model complies to RDSC rules}
+\title{check if your model complies to RDC rules}
 \usage{
 sdc_model(data, model, id_var)
 }
@@ -15,5 +15,5 @@ various others (anything which can be handled by \code{\link[broom:augment]{broo
 \item{id_var}{\link{character} The name of the id variable as a character.}
 }
 \description{
-check if your model complies to RDSC rules
+check if your model complies to RDC rules
 }

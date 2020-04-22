@@ -41,13 +41,13 @@ n <- 20L
 sdc_descriptives_DT <- data.table::data.table(
     id = rep_len(LETTERS[1L:10L], n),
     year = sort(rep_len(2019L:2020L, n)),
-    val = runif(n, min = 1, max = 10),
-    val_1 = c(runif(13, min = 2, max = 10), rep(0, 4), runif(3, min = 2, max = 10)),
+    val_1 = runif(n, min = 1, max = 10),
+    val_2 = c(runif(13, min = 2, max = 10), rep(0, 4), runif(3, min = 2, max = 10)),
     key = "id"
 )
 sdc_descriptives_DT[, sector := sort(rep_len(paste0("S", 1L:2L), n))]
-sdc_descriptives_DT[id == "A" & year == 2019L, val := NA_real_]
-sdc_descriptives_DT[id %chin% c("A", "F") & year == 2020L, val := val * 33]
+sdc_descriptives_DT[id == "A" & year == 2019L, val_1 := NA_real_]
+sdc_descriptives_DT[id %chin% c("A", "F") & year == 2020L, val_1 := val_1 * 33]
 data.table::setcolorder(sdc_descriptives_DT, c("id", "sector", "year"))
 
 usethis::use_data(sdc_descriptives_DT, overwrite = TRUE)
