@@ -12,12 +12,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
+options(sdc.info_level = 1L)
+options(datatable.print.keys = FALSE)
+options(datatable.print.class = FALSE)
 
-```{r, include=FALSE}
 #library(sdcLog)
 devtools::load_all()
-library(data.table)
+library(knitr)
 ```
 
 This vignette introduces the sdcLog package and its main functions, illustrated with various examples. The sdcLog package provides tools which simplify statistical disclosure control in the context of research data centres (RDSC).
@@ -40,7 +41,7 @@ To introduce the function `sdc_descriptives()`, a simple dataset is used. There 
 
 ```{r}
 data("sdc_descriptives_DT")
-sdc_descriptives_DT
+kable(sdc_descriptives_DT)
 ```
 
 ### Applying `sdc_descriptives()`
