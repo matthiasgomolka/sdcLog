@@ -264,7 +264,7 @@ test_that("sdc_descriptives() handles NA values correctly", {
             sdc_descriptives(NA_vals_test_dt, "id", "val_3")
         ),
         paste0(
-            "0.8% of 'val_var' are zero. These will be treated as 'NA'.\n",
+            "A share of 0.8 of 'val_var' are zero. These will be treated as 'NA'.\n",
             "To prevent this behaviour and / or avoid this message, set ",
             "'zero_as_NA' explicitly."),
         fixed = TRUE
@@ -276,7 +276,7 @@ test_that("sdc_descriptives() handles NA values correctly", {
             sdc_descriptives(NA_vals_test_dt, "id", "val_3")
         ),
         paste0(
-            "0.8% of 'val_var' are zero. These will be treated as 'NA'.\n",
+            "A share of 0.8 of 'val_var' are zero. These will be treated as 'NA'.\n",
             "To prevent this behaviour and / or avoid this message, set ",
             "'zero_as_NA' explicitly."),
         fixed = TRUE
