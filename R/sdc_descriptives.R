@@ -6,7 +6,7 @@
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
 #' @param NA_vals [numeric] Value(s) to be recognized as NA's.
-#' @importFrom data.table as.data.table set :=
+#' @importFrom data.table as.data.table set
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
 #' @importFrom data.table as.data.table set
 #' @export
@@ -27,8 +27,9 @@ sdc_descriptives <- function(
         if (zero_as_NA_guess) {
             zero_as_NA <- TRUE
             message(
+                "A share of ",
                 signif(share_0, digits = 1L),
-                "% of 'val_var' are zero. These will be treated as 'NA'.\n",
+                " of 'val_var' are zero. These will be treated as 'NA'.\n",
                 "To prevent this behaviour and / or avoid this message, set ",
                 "'zero_as_NA' explicitly."
             )
