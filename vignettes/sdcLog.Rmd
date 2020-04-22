@@ -21,7 +21,7 @@ devtools::load_all()
 library(knitr)
 ```
 
-This vignette introduces the sdcLog package and its main functions, illustrated with various examples. The sdcLog package provides tools which simplify statistical disclosure control in the context of research data centres (RDSC).
+This vignette introduces the sdcLog package and its main functions, illustrated with various examples. The sdcLog package provides tools which simplify statistical disclosure control in the context of research data centres (RDC).
 
 The package includes three main functions:
 
@@ -45,7 +45,7 @@ kable(sdc_descriptives_DT)
 ```
 
 ### Applying `sdc_descriptives()`
-For instance, the standard deviation and the mean for 'val' and 'val_1' have been calculated for different cases and are now to be output as results. Before this can happen, it must be checked whether all RDSC-rules for calculating these values have been followed. Thus the data basis is checked with the function `sdc_descriptives()` for compliance with the rules. The following examples serve to illustrate the examination of these different cases.
+For instance, the standard deviation and the mean for 'val' and 'val_1' have been calculated for different cases and are now to be output as results. Before this can happen, it must be checked whether all RDC-rules for calculating these values have been followed. Thus the data basis is checked with the function `sdc_descriptives()` for compliance with the rules. The following examples serve to illustrate the examination of these different cases.
 
 ### Simple cases
 This is the simplest case, the descriptive statistics were calculated for the variable 'val' without further specifications. The data set, the ID variable and the variable for which the statistics were calculated are required as arguments.
@@ -74,7 +74,7 @@ sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val", by 
 
 ```
 
-The grouped descriptive statistics by sector do not generate a warning and therefore comply with RDSC rules. Therefore, the results could be released in this from.
+The grouped descriptive statistics by sector do not generate a warning and therefore comply with RDC rules. Therefore, the results could be released in this from.
 
 In order to extend this case even further, it is now proposed to group the descriptive statistics of 'val' not only by sector, but also additionally by year. This can be checked as following.
 
@@ -201,7 +201,7 @@ Now an error occurs, since the rules of the research data center would not be fo
 
 
 ## `sdc_model()`
-This function checks if your model complies to RDSC rules. The criteria distinct_ids and dominance are also checked here. In addition, when using dummy variables, it is checked whether there are enough different observations (according to the rules of the RDSC) for each attribute/value. The function can be used to check a broad range of models like lm, glm and various others (anything which can be handled by [broom::augment()]).
+This function checks if your model complies to RDC rules. The criteria distinct_ids and dominance are also checked here. In addition, when using dummy variables, it is checked whether there are enough different observations (according to the rules of the RDC) for each attribute/value. The function can be used to check a broad range of models like lm, glm and various others (anything which can be handled by [broom::augment()]).
 
 ### Data & models
 To introduce the function `sdc_model()`, a dataset with different variables is used, which include dummy-variables. 
@@ -226,7 +226,7 @@ model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 ```
 
 ### Applying `sdc_model()`
-The previously specified models are now checked for compliance with the rules of the RDSC. It is checked, if there are enough distinct_ids in the whole model and each model variable is checked if there are problems with dominance. Also every dummy variable is checked for compliance with the rules.
+The previously specified models are now checked for compliance with the rules of the RDC. It is checked, if there are enough distinct_ids in the whole model and each model variable is checked if there are problems with dominance. Also every dummy variable is checked for compliance with the rules.
 
 A pre-selection of problematic and unproblematic models has been made to better explain the differences. To check for compliance, the model object, the data used and the ID variable must be specified in `sdc_model()`.
 
@@ -254,7 +254,7 @@ sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
 
 ```
 
-Now some difficulties occur with these models. The 'model_2' leads to problems with the number of distinct_ids - this problem arises with the inclusion of variable 'x_3' due to a high number of NA's. In 'model_3' there are problems with dominance for variable 'x_4'. Thus, according to the rules of the RDSC, these models cannot be released for output.
+Now some difficulties occur with these models. The 'model_2' leads to problems with the number of distinct_ids - this problem arises with the inclusion of variable 'x_3' due to a high number of NA's. In 'model_3' there are problems with dominance for variable 'x_4'. Thus, according to the rules of the RDC, these models cannot be released for output.
 
 Subsequently 'model_5' is checked. This time we set sdc.info_level = 2 to get more detailed information about each variable separately - although this is not absolutely necessary, since potential problems are always printed.
 ```{r}
@@ -266,6 +266,9 @@ sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
 ```
 
 This also causes problems with the model, because the dummy variable 'dummy_3' does not contain sufficient observations for the value 'FR'. Therefore this model cannot be released either.
+
+## Return values
+
 
 
 

@@ -1,4 +1,4 @@
-#' check if your model complies to RDSC rules
+#' check if your model complies to RDC rules
 #' @param data [data.frame] The dataset from which the model is estimated.
 #' @param model The estimated model object. Can be a model type like lm, glm and
 #'   various others (anything which can be handled by [broom::augment()]).

@@ -154,7 +154,7 @@ test_that("print.sdc_descriptives works for most simple case", {
         paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
                "sdc.share_dominance: 0.85 ]\n",
                "[ SETTINGS: id_var: id | val_var: val ]\n",
-               "Output complies to RDSC rules.",
+               "Output complies to RDC rules.",
                collapse = ""),
         fixed = TRUE)
 
@@ -167,7 +167,7 @@ test_that("print.sdc_descriptives works for most simple case", {
                "[ SETTINGS: id_var: id | val_var: val ]\n",
                "No problem with number of distinct entities.\n",
                "No problem with dominance.\n",
-               "Output complies to RDSC rules.",
+               "Output complies to RDC rules.",
                collapse = ""),
         fixed = TRUE)
 })
@@ -334,7 +334,7 @@ test_that("print.sdc_model works for most simple case", {
         paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
                "sdc.share_dominance: 0.85 ]\n",
                "[ SETTINGS: id_var: id ]\n",
-               "Output complies to RDSC rules.\n",
+               "Output complies to RDC rules.\n",
                collapse = ""),
             fixed = TRUE)
 
@@ -349,7 +349,7 @@ test_that("print.sdc_model works for most simple case", {
                "No problem with dominance.\n",
                "No problem with dominance.\n",
                "No problem with dominance.\n",
-               "Output complies to RDSC rules.\n",
+               "Output complies to RDC rules.\n",
                collapse = ""),
             fixed = TRUE)
 })

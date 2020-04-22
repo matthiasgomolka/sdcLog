@@ -42,7 +42,7 @@ print.sdc_descriptives <- function(x, ...) {
     print(x[["dominance"]])
     no_problems <- sum(nrow(x[["distinct_ids"]]), nrow(x[["dominance"]])) == 0L
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
-        message("Output complies to RDSC rules.")
+        message("Output complies to RDC rules.")
     }
 }
 
@@ -70,6 +70,6 @@ print.sdc_model <- function(x, ...) {
     no_problems <- sum(nrow(x[["distinct_ids"]]), n_problems) == 0L
 
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
-        message("Output complies to RDSC rules.")
+        message("Output complies to RDC rules.")
     }
 }

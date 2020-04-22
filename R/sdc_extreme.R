@@ -1,5 +1,5 @@
-#' check if calculation of extreme values comply to RDSC rules.
-#'   If so, function returns average min and max values according to RDSC rules.
+#' check if calculation of extreme values comply to RDC rules.
+#'   If so, function returns average min and max values according to RDC rules.
 #' @param data [data.frame] The dataset from which the extreme values can be
 #'   calculated.
 #' @param id_var [character] The name of the id variable as a character.
@@ -61,7 +61,7 @@ sdc_extreme <- function(
 
   if (sd_overlap) {
     message("It is impossible to compute extreme values for variable '",
-            val_var, "' that comply to RDSC rules.")
+            val_var, "' that comply to RDC rules.")
 
     for (var in c("min", "max")) {
       data.table::set(res, j = var, value = NA_real_)
