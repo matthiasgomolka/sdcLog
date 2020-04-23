@@ -8,6 +8,25 @@
 #' @importFrom stats na.omit
 #' @importFrom checkmate assert_data_frame assert_string
 #' @export
+#' @examples
+#' # Check simple models
+#' model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
+#' sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
+#'
+#' model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
+#' sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
+#'
+#' model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+#' sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
+#'
+#' model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+#' sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
+#'
+#' model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
+#' sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
+#'
+
+#' @return A list with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
 
 sdc_model <- function(data, model, id_var) {
 

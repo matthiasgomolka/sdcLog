@@ -14,6 +14,17 @@
 #' @importFrom data.table as.data.table data.table setorderv fintersect .N set
 #' @importFrom checkmate assert_int
 #' @export
+#' @examples
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_1")
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2")
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2", n_min = 7)
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_max = 10)
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+#'
+#' @return A list [list] with detailed information about options, settings and the calculated extreme values (if possible).
+
 
 sdc_extreme <- function(
   data,
