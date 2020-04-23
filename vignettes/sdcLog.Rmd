@@ -264,7 +264,72 @@ This also causes problems with the model, because the dummy variable `dummy_3` d
 
 
 # Return values
+This section introduces the return value(s) of sdc_functions in more detail. The functions `sdc_descriptives()`, `sdc_extreme()` and `sdc_model()` return a list with options and settings as well as further information.
+
 Object: type, class, infos etc.
 
+```{r}
+sdc_object <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
 
+typeof(sdc_object)
+```
+
+If the object is assigned, no more than warnings and notes are printed (if they occur).
+
+```{r}
+sdc_object <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+
+sdc_object_1 <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1",
+                                 by = c("sector", "year"))
+```
+
+If the object itself is printed, the user receives the same information that would have been printed directly without assignment. 
+
+```{r}
+sdc_object <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+
+sdc_object
+
+sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+```
+
+There are additional information that vary depending on the function. The function `sdc_descriptives()` gives, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for the checked variable. The object has class `list` as well as `sdc_descriptives`. Shown here for `sdc.info_level = 2`.
+
+```{r}
+options(sdc.info_level = 2)
+sdc_object <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+
+class(sdc_object)
+sdc_object
+
+```
+
+The function `sdc_extreme()` returns, besides settings and options, a `data.table` with computed extreme values. The object has class `list` as well as `sdc_extreme`.
+
+```{r echo = FALSE}
+options(sdc.info_level = 1)
+
+```
+
+```{r}
+sdc_extreme_values <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
+
+class(sdc_extreme_values)
+sdc_extreme_values
+
+```
+
+The function `sdc_model()` returns, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for every variable of the model. The object has class `list` as well as `sdc_model`.
+
+```{r}
+sdc_model <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+
+sdc_model_object <- sdc_model(data = sdc_model_DT, model = sdc_model, id_var = "id")
+
+class(sdc_model_object)
+sdc_model_object
+
+options(sdc.info_level = 2)
+sdc_model_object
+```
 
