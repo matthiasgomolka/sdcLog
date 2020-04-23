@@ -74,7 +74,7 @@ n <- 80
 
 y <- rnorm(n, mean = 120, sd = 8)
 sdc_model_DT <- data.table(
-    id = rep_len(LETTERS[1L:10L], n),
+    id = as.factor(rep_len(LETTERS[1L:10L], n)),
     y = y,
     x_1 = jitter(y, factor = 10000),
     x_2 = jitter(y, factor = 15000),
@@ -88,10 +88,12 @@ sdc_model_DT <- data.table(
 
 
 # create problems id's for x_3
-sdc_model_DT[id %chin% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
+#sdc_model_DT[id %chin% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
+sdc_model_DT[id %in% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
 
 # create problems dominance for x_4
-sdc_model_DT[id %chin% c("A", "B"), x_4 := x_4 * 100]
+#sdc_model_DT[id %chin% c("A", "B"), x_4 := x_4 * 100]
+sdc_model_DT[id %in% c("A", "B"), x_4 := x_4 * 100]
 
 usethis::use_data(sdc_model_DT, overwrite = TRUE)
 
