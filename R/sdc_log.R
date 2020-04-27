@@ -14,26 +14,41 @@
 
 sdc_log <- function(r_scripts, log_files, replace = FALSE, silent = TRUE) {
   # check inputs
-  # should be rewritten using checkmate
-  if (!is.character(r_scripts))
-    stop("Argument 'r_scripts' must be of type 'character'.")
-  if (!is.character(log_files))
-    stop("Argument 'log_files' must be of type 'character'.")
-  if (!is.logical((silent)))
-    stop("Argument 'silent' must be of type 'logical'.")
+  # rewritten using checkmate
 
-  if (length(r_scripts) != length(log_files))
-    stop("Arguments 'r_scripts' and 'log_files' must be of the same length.")
-
-  if (any(!file.exists(r_scripts)))
-    stop("At least one input file in 'r_scripts' does not exist.")
-  if (any(tools::file_ext(r_scripts) != "R"))
-    stop("At least one input file in 'r_scripts' is not an R script, e.g. does not end with '.R'.")
+  checkmate::assert_character(r_scripts)
+  checkmate::assert_character(log_files)
+  checkmate::assert_logical(silent)
+  checkmate::assert_set_equal(length(r_scripts), length(log_files))
+  checkmate::assert_file(r_scripts, extension = "R")
 
   if (!replace) {
-    if (any(file.exists(log_files)))
-      stop("At least one log file in 'log_files' already exists. Please check 'log_files' argument or use 'replace = TRUE' in case you want to replace existing files.")
-  }
+        if (any(checkmate::checkFile(log_files)))
+          stop("At least one log file in 'log_files' already exists. Please check 'log_files' argument or use 'replace = TRUE' in case you want to replace existing files.")
+      }
+
+  #if (!is.character(r_scripts))
+  #stop("Argument 'r_scripts' must be of type 'character'.")
+
+  #if (!is.character(log_files))
+    #stop("Argument 'log_files' must be of type 'character'.")
+
+  #if (!is.logical((silent)))
+   # stop("Argument 'silent' must be of type 'logical'.")
+
+  #if (length(r_scripts) != length(log_files))
+    #stop("Arguments 'r_scripts' and 'log_files' must be of the same length.")
+
+  #if (any(!file.exists(r_scripts)))
+   # stop("At least one input file in 'r_scripts' does not exist.")
+
+  #if (any(tools::file_ext(r_scripts) != "R"))
+   # stop("At least one input file in 'r_scripts' is not an R script, e.g. does not end with '.R'.")
+
+  #if (!replace) {
+  #  if (any(file.exists(log_files)))
+  #    stop("At least one log file in 'log_files' already exists. Please check 'log_files' argument or use 'replace = TRUE' in case you want to replace existing files.")
+  #}
 
   # write log
   # wir könnten eine Option für parallel processing ergänzen
