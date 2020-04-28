@@ -18,8 +18,10 @@ Imports:
     methods
 Suggests: 
     covr (>= 3.5.0),
+    devtools,
     knitr,
     rmarkdown,
+    skimr,
     testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr

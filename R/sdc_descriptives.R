@@ -10,11 +10,40 @@
 #' @importFrom data.table as.data.table set
 #' @export
 #' @examples
-#' sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
-#' sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = sector)
-#' sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-#' sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_2", by = c("sector", "year"))
-#' sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_2", by = c("sector", "year"), zero_as_NA = FALSE)
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_1"
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_1",
+#'     by = sector
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_1",
+#'     by = c("sector", "year")
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_2",
+#'     by = c("sector", "year")
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_2",
+#'     by = c("sector", "year"),
+#'     zero_as_NA = FALSE
+#' )
 #'
 #' @return A list [list] with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
 
