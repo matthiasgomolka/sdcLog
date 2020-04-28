@@ -257,6 +257,17 @@ extreme_vals
 ```
 
 
+# `sdc_log()`
+This function serves to create Stata-like log files from R Scripts. The function is called after the other sdc-functions to get the corresponding code into the log file. It can handle single files or a list of files at once.
+
+A character vector containing the path(s) of the R script(s) which should be run must be specified in the function arguments As well as a character vector containing the path(s) of the text file(s) where the log(s) should be stored. Due to additional arguments it is also possible to specify whether to replace already existing log files and whether it is desired to receive warnings and messages from running the 'r_scripts'. 
+
+A simple call of this function could look as follows.
+```{r eval = FALSE}
+sdc_log(r_scripts = "C:/Beispielprojekt/r_scripts/sdc_log_example.R",
+        log_files = "C:/Beispielprojekt/sdc_log/log_file.txt")
+```
+
 # Return values
 This section explains the return value(s) of `sdc_functions` in more detail. `sdc_descriptives()`, `sdc_extreme()` and `sdc_model()` each return a list containing options and settings as well as additional, function specific information.
 
