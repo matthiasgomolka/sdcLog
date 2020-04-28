@@ -62,7 +62,7 @@ has been calculated and is now to be output as a result:^[Since sdcLog heavily r
 sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE))]
 ```
 
-Before this result can be released, it must be checked whether all RDC rules for calculating these values have been followed. Thus, the underlying data is checked for compliance with the RDC rules. 
+Before this result can be released, it must be checked whether all RDC rules for calculating this value have been followed. Thus, the underlying data is checked for compliance with the RDC rules. 
 <!-- The following examples serve to illustrate the examination of these different cases. -->
 
 This is the simplest case, the descriptive statistic (mean) was calculated for the variable `val_1` without further specifications. Required arguments of `sdc_descriptives()` are the data set (`data`), the ID variable (`id_var`) and the variable for which the statistics were calculated (`val_var`):
@@ -170,7 +170,7 @@ sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
 As we see, there are no problems and the models could be released as output.
 
 ### Problematic cases
-Now we turn to the problematic cases. We start with checking `model_2` and `model_3`:
+Now we turn to the problematic cases. We are checking the models `model_2` and `model_3` as well as `model_5`:
 ```{r model_prob1}
 sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 
