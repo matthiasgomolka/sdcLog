@@ -22,9 +22,7 @@ options(sdc.info_level = 1L)
 options(datatable.print.keys = FALSE)
 options(datatable.print.class = FALSE)
 
-#library(sdcLog)
-library(devtools)
-load_all()
+library(sdcLog)
 library(knitr)
 library(skimr)
 ```

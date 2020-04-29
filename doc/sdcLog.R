@@ -8,9 +8,7 @@ options(sdc.info_level = 1L)
 options(datatable.print.keys = FALSE)
 options(datatable.print.class = FALSE)
 
-#library(sdcLog)
-library(devtools)
-load_all()
+library(sdcLog)
 library(knitr)
 library(skimr)
 
@@ -101,6 +99,10 @@ extreme_vals <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val
 
 ## ----extreme_by3--------------------------------------------------------------
 extreme_vals
+
+## ----eval = FALSE-------------------------------------------------------------
+#  sdc_log(r_scripts = "C:/Beispielprojekt/r_scripts/sdc_log_example.R",
+#          log_files = "C:/Beispielprojekt/sdc_log/log_file.txt")
 
 ## ----return_descriptives1-----------------------------------------------------
 typeof(sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"))

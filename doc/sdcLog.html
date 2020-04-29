@@ -326,6 +326,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><a href="#extreme-values-by-groups">Extreme values by groups</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#sdc_log"><code>sdc_log()</code></a></li>
 <li><a href="#return-values">Return values</a></li>
 </ul>
 </div>
@@ -660,117 +661,125 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 </div>
 </div>
+<div id="sdc_log" class="section level1">
+<h1><code>sdc_log()</code></h1>
+<p>This function serves to create Stata-like log files from R Scripts. The function is called after the other sdc-functions to get the corresponding code into the log file. It can handle single files or a list of files at once.</p>
+<p>A character vector containing the path(s) of the R script(s) which should be run must be specified in the function arguments As well as a character vector containing the path(s) of the text file(s) where the log(s) should be stored. Due to additional arguments it is also possible to specify whether to replace already existing log files and whether it is desired to receive warnings and messages from running the ‘r_scripts’.</p>
+<p>A simple call of this function could look as follows.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">sdc_log</span>(<span class="dt">r_scripts =</span> <span class="st">&quot;C:/Beispielprojekt/r_scripts/sdc_log_example.R&quot;</span>,</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">        <span class="dt">log_files =</span> <span class="st">&quot;C:/Beispielprojekt/sdc_log/log_file.txt&quot;</span>)</a></code></pre></div>
+</div>
 <div id="return-values" class="section level1">
 <h1>Return values</h1>
 <p>This section explains the return value(s) of <code>sdc_functions</code> in more detail. <code>sdc_descriptives()</code>, <code>sdc_extreme()</code> and <code>sdc_model()</code> each return a list containing options and settings as well as additional, function specific information.</p>
 <p>Each function returns a list, e.g. for <code>sdc_descriptives()</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>))</a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="co">#&gt; [1] &quot;list&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">typeof</span>(<span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>))</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="co">#&gt; [1] &quot;list&quot;</span></a></code></pre></div>
 <p>If the object is assigned, only warnings and messages are printed (if they occur at all):</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(</a>
-<a class="sourceLine" id="cb25-2" data-line-number="2">  <span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3">)</a>
-<a class="sourceLine" id="cb25-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb25-5" data-line-number="5">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(</a>
-<a class="sourceLine" id="cb25-6" data-line-number="6">  <span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, <span class="st">&quot;year&quot;</span>)</a>
-<a class="sourceLine" id="cb25-7" data-line-number="7">)</a>
-<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="co">#&gt; Warning: Potential disclosure problem: Dominant entities.</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">  <span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span></a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(</a>
+<a class="sourceLine" id="cb26-6" data-line-number="6">  <span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, <span class="st">&quot;year&quot;</span>)</a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">)</a>
+<a class="sourceLine" id="cb26-8" data-line-number="8"><span class="co">#&gt; Warning: Potential disclosure problem: Dominant entities.</span></a></code></pre></div>
 <p>If the object itself is printed, the user receives the same information that would have been printed directly without assignment.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb26-3" data-line-number="3">result_sdc_descriptives</a>
-<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb26-6" data-line-number="6"><span class="co">#&gt; Output complies to RDC rules.</span></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb26-8" data-line-number="8"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
-<a class="sourceLine" id="cb26-9" data-line-number="9"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb26-10" data-line-number="10"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb26-11" data-line-number="11"><span class="co">#&gt; Output complies to RDC rules.</span></a></code></pre></div>
-<p>There are additional information that vary depending on the function. The function <code>sdc_descriptives()</code> gives, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for the checked variable. The object is of class <code>sdc_descriptives</code> as well as <code>list</code>.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
 <a class="sourceLine" id="cb27-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw">class</span>(result_sdc_descriptives)</a>
-<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="co">#&gt; [1] &quot;sdc_descriptives&quot; &quot;list&quot;</span></a>
-<a class="sourceLine" id="cb27-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb27-6" data-line-number="6">result_sdc_descriptives</a>
-<a class="sourceLine" id="cb27-7" data-line-number="7"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb27-8" data-line-number="8"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb27-9" data-line-number="9"><span class="co">#&gt; Output complies to RDC rules.</span></a>
-<a class="sourceLine" id="cb27-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb27-11" data-line-number="11"><span class="kw">str</span>(result_sdc_descriptives)</a>
-<a class="sourceLine" id="cb27-12" data-line-number="12"><span class="co">#&gt; List of 4</span></a>
-<a class="sourceLine" id="cb27-13" data-line-number="13"><span class="co">#&gt;  $ message_options  : chr [1:8] &quot;[ OPTIONS:  &quot; &quot;sdc.n_ids: &quot; &quot;3&quot; &quot; | sdc.n_ids_dominance: &quot; ...</span></a>
-<a class="sourceLine" id="cb27-14" data-line-number="14"><span class="co">#&gt;  $ message_arguments: chr [1:6] &quot;[ SETTINGS: &quot; &quot;id_var: id&quot; &quot; | val_var: val_1&quot; &quot;&quot; ...</span></a>
-<a class="sourceLine" id="cb27-15" data-line-number="15"><span class="co">#&gt;  $ distinct_ids     :Classes 'sdc_distinct_ids', 'data.table' and 'data.frame':  0 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb27-16" data-line-number="16"><span class="co">#&gt;   ..$ distinct_ids: int(0) </span></a>
-<a class="sourceLine" id="cb27-17" data-line-number="17"><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb27-18" data-line-number="18"><span class="co">#&gt;  $ dominance        :Classes 'sdc_dominance', 'data.table' and 'data.frame': 0 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb27-19" data-line-number="19"><span class="co">#&gt;   ..$ value_share: num(0) </span></a>
-<a class="sourceLine" id="cb27-20" data-line-number="20"><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb27-21" data-line-number="21"><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;sdc_descriptives&quot; &quot;list&quot;</span></a></code></pre></div>
-<p>The function <code>sdc_model()</code> returns, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for every variable of the model. The object is of class <code>sdc_model</code> as well as <code>list</code>.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">2</span>, <span class="dt">data =</span> sdc_model_DT)</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">result_sdc_descriptives</a>
+<a class="sourceLine" id="cb27-4" data-line-number="4"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6"><span class="co">#&gt; Output complies to RDC rules.</span></a>
+<a class="sourceLine" id="cb27-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb27-8" data-line-number="8"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
+<a class="sourceLine" id="cb27-9" data-line-number="9"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
+<a class="sourceLine" id="cb27-10" data-line-number="10"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></a>
+<a class="sourceLine" id="cb27-11" data-line-number="11"><span class="co">#&gt; Output complies to RDC rules.</span></a></code></pre></div>
+<p>There are additional information that vary depending on the function. The function <code>sdc_descriptives()</code> gives, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for the checked variable. The object is of class <code>sdc_descriptives</code> as well as <code>list</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
 <a class="sourceLine" id="cb28-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb28-3" data-line-number="3">result_sdc_model &lt;-<span class="st"> </span><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</a>
-<a class="sourceLine" id="cb28-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="kw">class</span>(result_sdc_model)</a>
-<a class="sourceLine" id="cb28-6" data-line-number="6"><span class="co">#&gt; [1] &quot;sdc_model&quot; &quot;list&quot;</span></a>
-<a class="sourceLine" id="cb28-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb28-8" data-line-number="8">result_sdc_model</a>
-<a class="sourceLine" id="cb28-9" data-line-number="9"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb28-10" data-line-number="10"><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></a>
-<a class="sourceLine" id="cb28-11" data-line-number="11"><span class="co">#&gt; Output complies to RDC rules.</span></a>
-<a class="sourceLine" id="cb28-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb28-13" data-line-number="13"><span class="kw">str</span>(result_sdc_model)</a>
-<a class="sourceLine" id="cb28-14" data-line-number="14"><span class="co">#&gt; List of 5</span></a>
-<a class="sourceLine" id="cb28-15" data-line-number="15"><span class="co">#&gt;  $ message_options  : chr [1:8] &quot;[ OPTIONS:  &quot; &quot;sdc.n_ids: &quot; &quot;3&quot; &quot; | sdc.n_ids_dominance: &quot; ...</span></a>
-<a class="sourceLine" id="cb28-16" data-line-number="16"><span class="co">#&gt;  $ message_arguments: chr [1:6] &quot;[ SETTINGS: &quot; &quot;id_var: id&quot; &quot;&quot; &quot;&quot; ...</span></a>
-<a class="sourceLine" id="cb28-17" data-line-number="17"><span class="co">#&gt;  $ distinct_ids     :Classes 'sdc_distinct_ids', 'data.table' and 'data.frame':  0 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb28-18" data-line-number="18"><span class="co">#&gt;   ..$ distinct_ids: int(0) </span></a>
-<a class="sourceLine" id="cb28-19" data-line-number="19"><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb28-20" data-line-number="20"><span class="co">#&gt;  $ dominance_list   :List of 3</span></a>
-<a class="sourceLine" id="cb28-21" data-line-number="21"><span class="co">#&gt;   ..$ y  :Classes 'sdc_dominance', 'data.table' and 'data.frame':    0 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb28-22" data-line-number="22"><span class="co">#&gt;   .. ..$ value_share: num(0) </span></a>
-<a class="sourceLine" id="cb28-23" data-line-number="23"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb28-24" data-line-number="24"><span class="co">#&gt;   ..$ x_1:Classes 'sdc_dominance', 'data.table' and 'data.frame':    0 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb28-25" data-line-number="25"><span class="co">#&gt;   .. ..$ value_share: num(0) </span></a>
-<a class="sourceLine" id="cb28-26" data-line-number="26"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb28-27" data-line-number="27"><span class="co">#&gt;   ..$ x_2:Classes 'sdc_dominance', 'data.table' and 'data.frame':    0 obs. of  1 variable:</span></a>
-<a class="sourceLine" id="cb28-28" data-line-number="28"><span class="co">#&gt;   .. ..$ value_share: num(0) </span></a>
-<a class="sourceLine" id="cb28-29" data-line-number="29"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb28-30" data-line-number="30"><span class="co">#&gt;  $ dummy_list       :List of 2</span></a>
-<a class="sourceLine" id="cb28-31" data-line-number="31"><span class="co">#&gt;   ..$ dummy_1:Classes 'sdc_distinct_ids', 'data.table' and 'data.frame': 0 obs. of  2 variables:</span></a>
-<a class="sourceLine" id="cb28-32" data-line-number="32"><span class="co">#&gt;   .. ..$ dummy_1     : Factor w/ 2 levels &quot;S1&quot;,&quot;S2&quot;: </span></a>
-<a class="sourceLine" id="cb28-33" data-line-number="33"><span class="co">#&gt;   .. ..$ distinct_ids: int(0) </span></a>
-<a class="sourceLine" id="cb28-34" data-line-number="34"><span class="co">#&gt;   .. ..- attr(*, &quot;sorted&quot;)= chr &quot;dummy_1&quot;</span></a>
-<a class="sourceLine" id="cb28-35" data-line-number="35"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb28-36" data-line-number="36"><span class="co">#&gt;   ..$ dummy_2:Classes 'sdc_distinct_ids', 'data.table' and 'data.frame': 0 obs. of  2 variables:</span></a>
-<a class="sourceLine" id="cb28-37" data-line-number="37"><span class="co">#&gt;   .. ..$ dummy_2     : Factor w/ 8 levels &quot;Y1&quot;,&quot;Y2&quot;,&quot;Y3&quot;,..: </span></a>
-<a class="sourceLine" id="cb28-38" data-line-number="38"><span class="co">#&gt;   .. ..$ distinct_ids: int(0) </span></a>
-<a class="sourceLine" id="cb28-39" data-line-number="39"><span class="co">#&gt;   .. ..- attr(*, &quot;sorted&quot;)= chr &quot;dummy_2&quot;</span></a>
-<a class="sourceLine" id="cb28-40" data-line-number="40"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
-<a class="sourceLine" id="cb28-41" data-line-number="41"><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;sdc_model&quot; &quot;list&quot;</span></a></code></pre></div>
-<p>The function <code>sdc_extreme()</code> returns, besides settings and options, a <code>data.table</code> with computed extreme values. The object is of class <code>sdc_extreme</code> as well as <code>list</code>.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">result_sdc_extreme &lt;-<span class="st"> </span><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 ]</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3"><span class="kw">class</span>(result_sdc_descriptives)</a>
+<a class="sourceLine" id="cb28-4" data-line-number="4"><span class="co">#&gt; [1] &quot;sdc_descriptives&quot; &quot;list&quot;</span></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">result_sdc_descriptives</a>
+<a class="sourceLine" id="cb28-7" data-line-number="7"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
+<a class="sourceLine" id="cb28-8" data-line-number="8"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></a>
+<a class="sourceLine" id="cb28-9" data-line-number="9"><span class="co">#&gt; Output complies to RDC rules.</span></a>
+<a class="sourceLine" id="cb28-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb28-11" data-line-number="11"><span class="kw">str</span>(result_sdc_descriptives)</a>
+<a class="sourceLine" id="cb28-12" data-line-number="12"><span class="co">#&gt; List of 4</span></a>
+<a class="sourceLine" id="cb28-13" data-line-number="13"><span class="co">#&gt;  $ message_options  : chr [1:8] &quot;[ OPTIONS:  &quot; &quot;sdc.n_ids: &quot; &quot;3&quot; &quot; | sdc.n_ids_dominance: &quot; ...</span></a>
+<a class="sourceLine" id="cb28-14" data-line-number="14"><span class="co">#&gt;  $ message_arguments: chr [1:6] &quot;[ SETTINGS: &quot; &quot;id_var: id&quot; &quot; | val_var: val_1&quot; &quot;&quot; ...</span></a>
+<a class="sourceLine" id="cb28-15" data-line-number="15"><span class="co">#&gt;  $ distinct_ids     :Classes 'sdc_distinct_ids', 'data.table' and 'data.frame':  0 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb28-16" data-line-number="16"><span class="co">#&gt;   ..$ distinct_ids: int(0) </span></a>
+<a class="sourceLine" id="cb28-17" data-line-number="17"><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb28-18" data-line-number="18"><span class="co">#&gt;  $ dominance        :Classes 'sdc_dominance', 'data.table' and 'data.frame': 0 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb28-19" data-line-number="19"><span class="co">#&gt;   ..$ value_share: num(0) </span></a>
+<a class="sourceLine" id="cb28-20" data-line-number="20"><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb28-21" data-line-number="21"><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;sdc_descriptives&quot; &quot;list&quot;</span></a></code></pre></div>
+<p>The function <code>sdc_model()</code> returns, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for every variable of the model. The object is of class <code>sdc_model</code> as well as <code>list</code>.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">2</span>, <span class="dt">data =</span> sdc_model_DT)</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">result_sdc_model &lt;-<span class="st"> </span><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</a>
 <a class="sourceLine" id="cb29-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb29-5" data-line-number="5"><span class="kw">class</span>(result_sdc_extreme)</a>
-<a class="sourceLine" id="cb29-6" data-line-number="6"><span class="co">#&gt; [1] &quot;data.table&quot; &quot;data.frame&quot;</span></a>
+<a class="sourceLine" id="cb29-5" data-line-number="5"><span class="kw">class</span>(result_sdc_model)</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6"><span class="co">#&gt; [1] &quot;sdc_model&quot; &quot;list&quot;</span></a>
 <a class="sourceLine" id="cb29-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb29-8" data-line-number="8">result_sdc_extreme</a>
-<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="co">#&gt;    val_var min n_obs_min max n_obs_max</span></a>
-<a class="sourceLine" id="cb29-10" data-line-number="10"><span class="co">#&gt; 1:   val_1   3         5  18         5</span></a>
-<a class="sourceLine" id="cb29-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb29-12" data-line-number="12"><span class="kw">str</span>(result_sdc_extreme)</a>
-<a class="sourceLine" id="cb29-13" data-line-number="13"><span class="co">#&gt; Classes 'data.table' and 'data.frame':   1 obs. of  5 variables:</span></a>
-<a class="sourceLine" id="cb29-14" data-line-number="14"><span class="co">#&gt;  $ val_var  : chr &quot;val_1&quot;</span></a>
-<a class="sourceLine" id="cb29-15" data-line-number="15"><span class="co">#&gt;  $ min      : num 3</span></a>
-<a class="sourceLine" id="cb29-16" data-line-number="16"><span class="co">#&gt;  $ n_obs_min: int 5</span></a>
-<a class="sourceLine" id="cb29-17" data-line-number="17"><span class="co">#&gt;  $ max      : num 18</span></a>
-<a class="sourceLine" id="cb29-18" data-line-number="18"><span class="co">#&gt;  $ n_obs_max: int 5</span></a>
-<a class="sourceLine" id="cb29-19" data-line-number="19"><span class="co">#&gt;  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb29-8" data-line-number="8">result_sdc_model</a>
+<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
+<a class="sourceLine" id="cb29-10" data-line-number="10"><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></a>
+<a class="sourceLine" id="cb29-11" data-line-number="11"><span class="co">#&gt; Output complies to RDC rules.</span></a>
+<a class="sourceLine" id="cb29-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb29-13" data-line-number="13"><span class="kw">str</span>(result_sdc_model)</a>
+<a class="sourceLine" id="cb29-14" data-line-number="14"><span class="co">#&gt; List of 5</span></a>
+<a class="sourceLine" id="cb29-15" data-line-number="15"><span class="co">#&gt;  $ message_options  : chr [1:8] &quot;[ OPTIONS:  &quot; &quot;sdc.n_ids: &quot; &quot;3&quot; &quot; | sdc.n_ids_dominance: &quot; ...</span></a>
+<a class="sourceLine" id="cb29-16" data-line-number="16"><span class="co">#&gt;  $ message_arguments: chr [1:6] &quot;[ SETTINGS: &quot; &quot;id_var: id&quot; &quot;&quot; &quot;&quot; ...</span></a>
+<a class="sourceLine" id="cb29-17" data-line-number="17"><span class="co">#&gt;  $ distinct_ids     :Classes 'sdc_distinct_ids', 'data.table' and 'data.frame':  0 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb29-18" data-line-number="18"><span class="co">#&gt;   ..$ distinct_ids: int(0) </span></a>
+<a class="sourceLine" id="cb29-19" data-line-number="19"><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb29-20" data-line-number="20"><span class="co">#&gt;  $ dominance_list   :List of 3</span></a>
+<a class="sourceLine" id="cb29-21" data-line-number="21"><span class="co">#&gt;   ..$ y  :Classes 'sdc_dominance', 'data.table' and 'data.frame':    0 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb29-22" data-line-number="22"><span class="co">#&gt;   .. ..$ value_share: num(0) </span></a>
+<a class="sourceLine" id="cb29-23" data-line-number="23"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb29-24" data-line-number="24"><span class="co">#&gt;   ..$ x_1:Classes 'sdc_dominance', 'data.table' and 'data.frame':    0 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb29-25" data-line-number="25"><span class="co">#&gt;   .. ..$ value_share: num(0) </span></a>
+<a class="sourceLine" id="cb29-26" data-line-number="26"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb29-27" data-line-number="27"><span class="co">#&gt;   ..$ x_2:Classes 'sdc_dominance', 'data.table' and 'data.frame':    0 obs. of  1 variable:</span></a>
+<a class="sourceLine" id="cb29-28" data-line-number="28"><span class="co">#&gt;   .. ..$ value_share: num(0) </span></a>
+<a class="sourceLine" id="cb29-29" data-line-number="29"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb29-30" data-line-number="30"><span class="co">#&gt;  $ dummy_list       :List of 2</span></a>
+<a class="sourceLine" id="cb29-31" data-line-number="31"><span class="co">#&gt;   ..$ dummy_1:Classes 'sdc_distinct_ids', 'data.table' and 'data.frame': 0 obs. of  2 variables:</span></a>
+<a class="sourceLine" id="cb29-32" data-line-number="32"><span class="co">#&gt;   .. ..$ dummy_1     : Factor w/ 2 levels &quot;S1&quot;,&quot;S2&quot;: </span></a>
+<a class="sourceLine" id="cb29-33" data-line-number="33"><span class="co">#&gt;   .. ..$ distinct_ids: int(0) </span></a>
+<a class="sourceLine" id="cb29-34" data-line-number="34"><span class="co">#&gt;   .. ..- attr(*, &quot;sorted&quot;)= chr &quot;dummy_1&quot;</span></a>
+<a class="sourceLine" id="cb29-35" data-line-number="35"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb29-36" data-line-number="36"><span class="co">#&gt;   ..$ dummy_2:Classes 'sdc_distinct_ids', 'data.table' and 'data.frame': 0 obs. of  2 variables:</span></a>
+<a class="sourceLine" id="cb29-37" data-line-number="37"><span class="co">#&gt;   .. ..$ dummy_2     : Factor w/ 8 levels &quot;Y1&quot;,&quot;Y2&quot;,&quot;Y3&quot;,..: </span></a>
+<a class="sourceLine" id="cb29-38" data-line-number="38"><span class="co">#&gt;   .. ..$ distinct_ids: int(0) </span></a>
+<a class="sourceLine" id="cb29-39" data-line-number="39"><span class="co">#&gt;   .. ..- attr(*, &quot;sorted&quot;)= chr &quot;dummy_2&quot;</span></a>
+<a class="sourceLine" id="cb29-40" data-line-number="40"><span class="co">#&gt;   .. ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></a>
+<a class="sourceLine" id="cb29-41" data-line-number="41"><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;sdc_model&quot; &quot;list&quot;</span></a></code></pre></div>
+<p>The function <code>sdc_extreme()</code> returns, besides settings and options, a <code>data.table</code> with computed extreme values. The object is of class <code>sdc_extreme</code> as well as <code>list</code>.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">result_sdc_extreme &lt;-<span class="st"> </span><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 ]</span></a>
+<a class="sourceLine" id="cb30-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="kw">class</span>(result_sdc_extreme)</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6"><span class="co">#&gt; [1] &quot;data.table&quot; &quot;data.frame&quot;</span></a>
+<a class="sourceLine" id="cb30-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">result_sdc_extreme</a>
+<a class="sourceLine" id="cb30-9" data-line-number="9"><span class="co">#&gt;    val_var min n_obs_min max n_obs_max</span></a>
+<a class="sourceLine" id="cb30-10" data-line-number="10"><span class="co">#&gt; 1:   val_1   3         5  18         5</span></a>
+<a class="sourceLine" id="cb30-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb30-12" data-line-number="12"><span class="kw">str</span>(result_sdc_extreme)</a>
+<a class="sourceLine" id="cb30-13" data-line-number="13"><span class="co">#&gt; Classes 'data.table' and 'data.frame':   1 obs. of  5 variables:</span></a>
+<a class="sourceLine" id="cb30-14" data-line-number="14"><span class="co">#&gt;  $ val_var  : chr &quot;val_1&quot;</span></a>
+<a class="sourceLine" id="cb30-15" data-line-number="15"><span class="co">#&gt;  $ min      : num 3</span></a>
+<a class="sourceLine" id="cb30-16" data-line-number="16"><span class="co">#&gt;  $ n_obs_min: int 5</span></a>
+<a class="sourceLine" id="cb30-17" data-line-number="17"><span class="co">#&gt;  $ max      : num 18</span></a>
+<a class="sourceLine" id="cb30-18" data-line-number="18"><span class="co">#&gt;  $ n_obs_max: int 5</span></a>
+<a class="sourceLine" id="cb30-19" data-line-number="19"><span class="co">#&gt;  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</span></a></code></pre></div>
 </div>
 <div class="footnotes">
 <hr />
