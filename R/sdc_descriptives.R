@@ -5,7 +5,6 @@
 #'   are computed.
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
-#' @param NA_vals [numeric] Value(s) to be recognized as NA's.
 #' @importFrom data.table as.data.table set :=
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
 #' @importFrom data.table as.data.table set

@@ -5,18 +5,31 @@ vignette: >
   %\VignetteIndexEntry{sdcLog}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+params:
+  - dev: yes
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  tidy = TRUE,
+  tidy.opts = list(
+    indent = 2L,
+    width.cutoff = 80L,
+    wrap = TRUE
+  )
 )
+if (isTRUE(params$dev)) {
+  devtools::load_all()
+} else {
+  library(sdcLog)
+}
+
+options("datatable.print")
 ```
 
 ```{r, include=FALSE}
-#library(sdcLog)
-devtools::load_all()
 library(data.table)
 ```
 
@@ -50,10 +63,7 @@ For instance, the standard deviation and the mean for 'val' and 'val_1' have bee
 This is the simplest case, the descriptive statistics were calculated for the variable 'val' without further specifications. The data set, the ID variable and the variable for which the statistics were calculated are required as arguments.
 
 ```{r}
-#library(sdcLog)
-devtools::load_all()
 sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val")
-
 ```
 
 Since there are no problems at this point, the function runs without warnings and returns a list of information about options, settings and the checked criteria distinct_ids and dominance. Depending on the specification of option 'sdc.info_level' variously detailed information are printed to the console. Here the default value (sdc.info_level = 1) is used, therefore only a message appears that the output complies to the rules. On the whole, there are no rule violations and the output of the results could be allowed in this case.
@@ -67,10 +77,7 @@ In this case the descriptive statistics for the variable 'val' are grouped, so w
 The statistics are initially grouped by sector and should be output for each. So the grouping argument must also be specified as by argument in the function. Checking the results leads to the following.
 
 ```{r}
-#library(sdcLog)
-devtools::load_all()
 sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val", by = sector)
-
 ```
 
 The grouped descriptive statistics by sector do not generate a warning and therefore comply with RDSC rules. Therefore, the results could be released in this from.
@@ -78,10 +85,7 @@ The grouped descriptive statistics by sector do not generate a warning and there
 In order to extend this case even further, it is now proposed to group the descriptive statistics of 'val' not only by sector, but also additionally by year. This can be checked as following.
 
 ```{r}
-#library(sdcLog)
-devtools::load_all()
 sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val", by = c("sector", "year"))
-
 ```
 
 Now several warnings appear, as both criteria are violated. For sector 1 (S1) there are not enough distinct ids in the year 2019, as there is a missing value in the data. The dominance criterion for the year 2020 is violated in both sectors. As can be seen in the table displayed, the value share of approx. 88 for S1 (and respectively 90 for S2) percent is above the 85 percent limit. Therefore, the descriptive statistics for val cannot be released in this from.
@@ -91,10 +95,7 @@ Now several warnings appear, as both criteria are violated. For sector 1 (S1) th
 In this case descriptive statistics grouped by sector and year were calculated for the variable 'val_1'. The compliance with the rules can be checked in a similar way as in the previous case. 
 
 ```{r}
-#library(sdcLog)
-devtools::load_all()
 sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-
 ```
 
 The function indicates that problems exist and the output does not comply to the rules. There are not enough distinct_ids and the output cannot be released this way.
@@ -103,10 +104,13 @@ An additional message is specified to indicate that the value '0' occurs frequen
 In case the researcher treated the value '0' **not** as missing value and it is accurate according to the data basis that this value is not to be seen as NA - then there is an argument to specify this. So if this is the case and '0' should not be recognized as a missing value by the function `sdc_descriptives()`, the researcher can specify this in the function as follows.
 
 ```{r}
-#library(sdcLog)
-devtools::load_all()
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"), zero_as_NA = FALSE)
-
+sdc_descriptives(
+  data = sdc_descriptives_DT, 
+  id_var = "id",
+  val_var = "val_1",
+  by = c("sector", "year"), 
+  zero_as_NA = FALSE
+)
 ```
 
 Now '0' is not recognized as NA value anymore. In this case the criterion of distinct_ids is not longer violated. Therefore the output could be released in this form.
@@ -136,9 +140,7 @@ For application, the extreme values are calculated for various variables and the
 ### Simple cases
 In this simple case, extreme values should be calculated for variable 'val_1'. This is done with the function `sdc_extreme()` by specifying data, the id-variable and the variable for which extreme values are to be calculated.
 ```{r}
-devtools::load_all()
 sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_1")
-
 ```
 Since no probelms occur, the function returns a list with the options, settings and extreme values. As shown in the output, the extreme values could be calculated and 5 observations were used for each value - thus no additional observations had to be used for the calculation.
 
@@ -149,51 +151,39 @@ In this section some advanced cases are presented to introduce more arguments an
 In this case extreme values are initially calculated for the variable 'val_2'. 
 
 ```{r}
-devtools::load_all()
 sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2")
-
 ```
 If we look at the output, we see that 5 observations were used to calculate the minimum and 7 observations to calculate the maximum. This is because the dominance criterion would be violated if only 5 observations were considered for the maximum. Thus 7 observations are automatically taken into account.
 If the researcher wishes to introduce an equal number of observations per extreme value, it is possible to specify this in the function using the arguments n_min and n_max. Thus it can be specified that 7 observations are also used for the calculation of the minimum value - so n_min = 7 has to be set.
 
 ```{r}
-devtools::load_all()
 sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2", n_min = 7)
-
 ```
 Now the same number of observations are used to calculate the extreme values.
 
 If also extreme values are to be calculated for variable 'val_3' and 10 observations are to be included in each value, then n_max = 10 and n_min = 10 must be set. 
 
 ```{r}
-devtools::load_all()
 sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_max = 10)
-
 ```
 Now an error occurs and it is pointed out that it is impossible to calculate extreme values in this case. This is because there is a missing value in 'val_3', so observations in the subset would overlap. Therefore fewer observations per extreme value would have to be used - for example 8 each.
 
 ```{r}
-devtools::load_all()
 sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
-
 ```
 
 #### by argument
 It is also possible to calculate extreme values by groups. In the following these are calculated by year and sector.
 ```{r}
-devtools::load_all()
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = sector)
-
 ```
 
 No problems occur, so extreme values are calculated and output for each group.
 
 This can also be done for several grouping variables. Therefore in the following extreme values for variable 'val_1' are to be calculated by year and sector.
 ```{r}
-devtools::load_all()
 res <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = .(sector, year))
-
 res
 ```
 Now an error occurs, since the rules of the research data center would not be followed anymore for the calculation of these values. By printing the assigned object the list with NA's is displayed. 
@@ -215,13 +205,11 @@ summary(sdc_model_DT)
 Various simple linear models are specified from this data set for illustration purposes.
 
 ```{r}
-
 model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
 model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
 model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
 model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
 model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
-
 ```
 
 ### Applying `sdc_model()`
@@ -233,11 +221,9 @@ A pre-selection of problematic and unproblematic models has been made to better 
 A check of the models 'model_1' and 'model_4' is shown below.
 
 ```{r}
-devtools::load_all()
 sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
 
 sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
-
 ```
 
 As we see, there are no problems and the models could be released as output.
@@ -246,22 +232,17 @@ As we see, there are no problems and the models could be released as output.
 The other models are now being tested. We start with tests for the models 'model_2' and 'model_3'.
 
 ```{r}
-devtools::load_all()
 sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 
 sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
-
 ```
 
 Now some difficulties occur with these models. The 'model_2' leads to problems with the number of distinct_ids - this problem arises with the inclusion of variable 'x_3' due to a high number of NA's. In 'model_3' there are problems with dominance for variable 'x_4'. Thus, according to the rules of the RDSC, these models cannot be released for output.
 
 Subsequently 'model_5' is checked. This time we set sdc.info_level = 2 to get more detailed information about each variable separately - although this is not absolutely necessary, since potential problems are always printed.
 ```{r}
-devtools::load_all()
-
 options(sdc.info_level = 2)
 sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
-
 ```
 
 This also causes problems with the model, because the dummy variable 'dummy_3' does not contain sufficient observations for the value 'FR'. Therefore this model cannot be released either.
