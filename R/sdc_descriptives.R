@@ -5,6 +5,7 @@
 #'   are computed.
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
+#' @importFrom data.table as.data.table set :=
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
 #' @importFrom data.table as.data.table set
 #' @export
@@ -44,6 +45,18 @@ sdc_descriptives <- function(
         )
     }
 
+    # best guess NA's
+    # possible_na_df <-
+    #     data[ , `:=`(count = .N) , by = val_var
+    #        ][which.max(count)
+    #        ][, list(possible_na = get(val_var),
+    #                 value_share = count/length(data[[val_var]]))
+    #        ][value_share >= getOption("sdc.share_possible_na", 0.20)]
+    #
+    # if (nrow(possible_na_df) > 0 && !is.na(possible_na_df[[1]])) {
+    #     message("The value '", possible_na_df[[1, 1]], "' occurs frequently in the data: Is it used as coding for NA?")}
+
+
     # check distinct_ids
     expr_distinct_ids <- eval(substitute(
         check_distinct_ids(data, id_var, val_var, by)
@@ -51,6 +64,7 @@ sdc_descriptives <- function(
     distinct_ids <- eval(expr_distinct_ids)
     class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
 
+    # print(distinct_ids)
     if (nrow(distinct_ids) > 0L) {
         warning(
             crayon::bold("Potential disclosure problem: "),
@@ -66,6 +80,7 @@ sdc_descriptives <- function(
     dominance <- eval(expr_dominance)
     class(dominance) <- c("sdc_dominance", class(dominance))
 
+    # print(dominance)
     if (nrow(dominance) > 0L) {
         warning(
             crayon::bold("Potential disclosure problem: "),
@@ -74,12 +89,10 @@ sdc_descriptives <- function(
         )
     }
 
-    res <- list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var, val_var, by, zero_as_NA),
-        distinct_ids = distinct_ids,
-        dominance = dominance
-    )
+    res <- list(message_options = message_options(),
+                message_arguments = message_arguments(id_var, val_var, by, zero_as_NA),
+                distinct_ids = distinct_ids,
+                dominance = dominance)
     class(res) <- c("sdc_descriptives", class(res))
     res
 }

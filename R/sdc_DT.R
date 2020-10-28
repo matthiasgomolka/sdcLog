@@ -1,4 +1,4 @@
-#' Test Dataset for Statistical Disclosure control
+#' Test Dataset for Statistical Disclosure Control
 #'
 #' Recreated after the example data from nobsdes.
 #'
@@ -15,3 +15,15 @@
 #'
 #' @keywords datasets
 "sdc_DT"
+
+#' Test Dataset for vignette
+#' @name sdc_descriptives_DT
+"sdc_descriptives_DT"
+
+#' Test Dataset for vignette
+#' @name sdc_extreme_DT
+"sdc_extreme_DT"
+
+#' Test Dataset for vignette
+#' @name sdc_model_DT
+"sdc_model_DT"

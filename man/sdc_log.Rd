@@ -4,7 +4,7 @@
 \alias{sdc_log}
 \title{Create Stata-like log files from R Scripts}
 \usage{
-sdc_log(r_scripts, log_files, replace = FALSE, silent = TRUE)
+sdc_log(r_scripts, log_files, replace = FALSE)
 }
 \arguments{
 \item{r_scripts}{character vector containing the path(s) of the R script(s)
@@ -14,9 +14,6 @@ which should be run with logging}
 where the log(s) should be stored}
 
 \item{replace}{logical. Indicates whether to replace existing log files.}
-
-\item{silent}{logical. Switch to TRUE in order to receive warnings and
-messages from running the 'r_scripts'.}
 }
 \value{
 Invisible \code{NULL}.

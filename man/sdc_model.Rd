@@ -10,7 +10,7 @@ sdc_model(data, model, id_var)
 \item{data}{\link{data.frame} The dataset from which the model is estimated.}
 
 \item{model}{The estimated model object. Can be a model type like lm, glm and
-various others (anything which can be handled by \code{\link[broom:augment]{broom::augment()}}).}
+various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 
 \item{id_var}{\link{character} The name of the id variable as a character.}
 }
