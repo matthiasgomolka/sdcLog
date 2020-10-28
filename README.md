@@ -4,7 +4,7 @@
 [![](https://www.r-pkg.org/badges/version/sdcLog?color=orange)](https://cran.r-project.org/package=sdcLog)
 [![R build
 status](https://github.com/Plebejer/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/Plebejer/sdcLog/actions)
-[![](https://codecov.io/gh/Plebejer/sdcLog/branch/master/graph/badge.svg)](https://codecov.io/gh/Plebejer/sdcLog)
+[![](https://codecov.io/gh/matthiasgomolka/sdcLog/branch/master/graph/badge.svg)](https://codecov.io/gh/matthiasgomolka/sdcLog)
 [![Dependencies](https://tinyverse.netlify.com/badge/sdcLog)](https://cran.r-project.org/package=sdcLog)
 
 sdcLog is work in progress and aims to provide tools which simplify

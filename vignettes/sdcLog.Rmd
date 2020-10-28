@@ -10,19 +10,34 @@ vignette: >
   %\VignetteIndexEntry{sdcLog}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+params:
+  - dev: yes
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  tidy = TRUE,
+  tidy.opts = list(
+    indent = 2L,
+    width.cutoff = 80L,
+    wrap = TRUE
+  )
 )
+if (isTRUE(params$dev)) {
+  devtools::load_all()
+} else {
+  library(sdcLog)
+}
+
+options("datatable.print")
+```
 options(knitr.kable.NA = "")
 options(sdc.info_level = 1L)
 options(datatable.print.keys = FALSE)
 options(datatable.print.class = FALSE)
 
-library(sdcLog)
 library(knitr)
 library(skimr)
 ```
@@ -202,7 +217,6 @@ sdc_extreme_DT
 
 ## Examples
 ### Simple cases
-<!-- For application, the extreme values are calculated for various variables and the special features of the function are demonstrated.  -->
 In this simple case, extreme values should be calculated for variable `val_1`. This can be done with `sdc_extreme()` by specifying the dataset (`data`), the id variable (`id_var`) and the variable for which extreme values are to be calculated (`val_var`).
 ```{r extreme_simple}
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
@@ -244,10 +258,10 @@ sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "secto
 ```
 No problems occur, so extreme values are calculated and output for each group.
 
-This can also be done for several grouping variables at once. Therefore, in the following extreme values for variable `val_1` are to be calculated by `year` and `sector`.
-```{r extreme_by2}
-extreme_vals <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", 
-                            by = c("sector", "year"))
+This can also be done for several grouping variables. Therefore in the following extreme values for variable 'val_1' are to be calculated by year and sector.
+```{r}
+res <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = .(sector, year))
+res
 ```
 Now an error occurs, since the RDC rules would be violated for the calculation of these values. For programming purposes, please note that the structure of the resulting `data.table` remains the same (but is filled with `NA`:
 ```{r extreme_by3}
@@ -274,6 +288,12 @@ This section explains the return value(s) of `sdc_functions` in more detail. `sd
 Each function returns a list, e.g. for `sdc_descriptives()`:
 ```{r return_descriptives1}
 typeof(sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"))
+```{r}
+model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
+model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
+model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 ```
 
 If the object is assigned, only warnings and messages are printed (if they occur at all):
@@ -291,10 +311,13 @@ If the object itself is printed, the user receives the same information that wou
 
 ```{r return_descriptives3}
 result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+```{r}
+sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
 
 result_sdc_descriptives
 
 sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
 ```
 
 There are additional information that vary depending on the function. The
@@ -305,8 +328,11 @@ the checked variable. The object is of class `sdc_descriptives` as well as `list
 ```{r return_descriptives4}
 result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
 
+```{r}
+sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 class(result_sdc_descriptives)
 
+sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
 result_sdc_descriptives
 
 str(result_sdc_descriptives)
@@ -314,16 +340,10 @@ str(result_sdc_descriptives)
 
 The function `sdc_model()` returns, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for every variable of the model. The object is of class `sdc_model` as well as `list`.
 
-```{r return_model}
-model <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-
-result_sdc_model <- sdc_model(data = sdc_model_DT, model = model, id_var = "id")
-
-class(result_sdc_model)
-
-result_sdc_model
-
-str(result_sdc_model)
+Subsequently 'model_5' is checked. This time we set sdc.info_level = 2 to get more detailed information about each variable separately - although this is not absolutely necessary, since potential problems are always printed.
+```{r}
+options(sdc.info_level = 2)
+sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
 ```
 
 The function `sdc_extreme()` returns, besides settings and options, a `data.table` with computed extreme values. The object is of class `sdc_extreme` as well as `list`.

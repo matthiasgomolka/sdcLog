@@ -6,46 +6,33 @@
 #' @param log_files character vector containing the path(s) of the text file(s)
 #'   where the log(s) should be stored
 #' @param replace logical. Indicates whether to replace existing log files.
-#' @param silent logical. Switch to TRUE in order to receive warnings and
-#'   messages from running the 'r_scripts'.
 #' @return Invisible \code{NULL}.
-#' @importFrom tools file_ext
+#' @importFrom checkmate assert_character assert_logical assert_file
+#'   test_file_exists
 #' @export
 
-sdc_log <- function(r_scripts, log_files, replace = FALSE, silent = TRUE) {
+sdc_log <- function(r_scripts, log_files, replace = FALSE) {
   # check inputs
-  # should be rewritten using checkmate
-  if (!is.character(r_scripts))
-    stop("Argument 'r_scripts' must be of type 'character'.")
-  if (!is.character(log_files))
-    stop("Argument 'log_files' must be of type 'character'.")
-  if (!is.logical((silent)))
-    stop("Argument 'silent' must be of type 'logical'.")
+  checkmate::assert_character(r_scripts, unique = TRUE)
+  checkmate::assert_character(log_files, unique = TRUE, len = length(r_scripts))
+  checkmate::assert_file(r_scripts, extension = "R")
 
-  if (length(r_scripts) != length(log_files))
-    stop("Arguments 'r_scripts' and 'log_files' must be of the same length.")
-
-  if (any(!file.exists(r_scripts)))
-    stop("At least one input file in 'r_scripts' does not exist.")
-  if (any(tools::file_ext(r_scripts) != "R"))
-    stop("At least one input file in 'r_scripts' is not an R script, e.g. does not end with '.R'.")
-
-  if (!replace) {
-    if (any(file.exists(log_files)))
-      stop("At least one log file in 'log_files' already exists. Please check 'log_files' argument or use 'replace = TRUE' in case you want to replace existing files.")
+  if (isFALSE(replace)) {
+    exist <- checkmate::test_file_exists(log_files)
+    if (any(exist))
+      existing_files <- paste0(log_files[exist], collapse = "\n")
+    stop("The following 'log_files' already exist:\n",
+         existing_files, "\n",
+         "Please check 'log_files' argument or use 'replace = TRUE' in case ",
+         "you want to replace existing files."
+    )
   }
 
   # write log
-  # wir könnten eine Option für parallel processing ergänzen
-  if (silent) {
-    suppressWarnings(
-      suppressMessages(
-        mapply(generate_log, r_scripts, log_files)
-      )
-    )
-  } else {
-    mapply(generate_log, r_scripts, log_files)
-  }
+  # TODO: Option for running scripts in parallel
+  invisible(mapply(generate_log, r_scripts, log_files, USE.NAMES = FALSE))
+
+  # message("Log(s) written to\n", paste0(log_files, collapse = "\n"))
 }
 
 
@@ -55,29 +42,34 @@ sdc_log <- function(r_scripts, log_files, replace = FALSE, silent = TRUE) {
 #' @return NULL
 
 generate_log <- function(r_script, log_file) {
-  sink(file = log_file)
-  tryCatch(
-    source(
-      r_script,
-      echo = TRUE,
-      continue.echo = "+ ",
-      skip.echo = 0,
-      max.deparse.length = Inf,
-      chdir = FALSE
-    ),
-    # without error handling, further output would also be written to the log
-    # file
-    error = function(x) {
-      sink(file = NULL)
-      stop(
-        "An error occurred while running the script '", r_script,
-        "'.\nLog will be incomplete!",
-        call. = FALSE
-      )
-    }
+  file.create(log_file)
+  conn <- file(log_file, open = "w", encoding = "UTF-8")
+  sink(file = conn, append = TRUE)
+  sink(file = conn, append = TRUE, type = "message")
+
+  # make sure that outputs is printed to console, even if this function stopped
+  on.exit({
+    suppressWarnings({
+      sink(type = "output")
+      sink(type = "message")
+    })
+    close(conn)
+  })
+
+  source(
+    r_script,
+    echo = TRUE,
+    continue.echo = "+ ",
+    skip.echo = 0,
+    max.deparse.length = Inf,
+    width.cutoff = 80,
+    chdir = FALSE
   )
-  if (log_file %in% showConnections()[, 1]) {
-    sink(file = NULL)
-    message("Log file for '", r_script, "' written to '", log_file, "'.\n\n")
-  }
+
+
+  sink(type = "output")
+  sink(type = "message")
+
+  message("Log file for '", r_script, "' written to '", log_file, "'.\n\n")
+  return(log_file)
 }

@@ -3,8 +3,12 @@
 \docType{data}
 \name{sdc_DT}
 \alias{sdc_DT}
+<<<<<<< HEAD
 \title{Example Datasets used in the vignette
 Recreated after the example data from nobsdes.}
+=======
+\title{Test Dataset for Statistical Disclosure Control}
+>>>>>>> master
 \format{
 A data.table with 100 rows and 8 columns.
 }
