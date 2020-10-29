@@ -5,10 +5,48 @@
 #'   are computed.
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
-#' @importFrom data.table as.data.table set :=
+#' @importFrom data.table as.data.table set
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
 #' @importFrom data.table as.data.table set
 #' @export
+#' @examples
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_1"
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_1",
+#'     by = sector
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_1",
+#'     by = c("sector", "year")
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_2",
+#'     by = c("sector", "year")
+#' )
+#'
+#' sdc_descriptives(
+#'     data = sdc_descriptives_DT,
+#'     id_var = "id",
+#'     val_var = "val_2",
+#'     by = c("sector", "year"),
+#'     zero_as_NA = FALSE
+#' )
+#'
+#' @return A list [list] with detailed information about options, settings,
+#'   compliance with the criteria distinct_ids and dominance.
 
 sdc_descriptives <- function(
     data, id_var, val_var, by = NULL, zero_as_NA = NULL
@@ -26,8 +64,9 @@ sdc_descriptives <- function(
         if (zero_as_NA_guess) {
             zero_as_NA <- TRUE
             message(
+                "A share of ",
                 signif(share_0, digits = 1L),
-                "% of 'val_var' are zero. These will be treated as 'NA'.\n",
+                " of 'val_var' are zero. These will be treated as 'NA'.\n",
                 "To prevent this behaviour and / or avoid this message, set ",
                 "'zero_as_NA' explicitly."
             )

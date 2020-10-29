@@ -1,5 +1,5 @@
-#' check if calculation of extreme values comply to RDSC rules.
-#'   If so, function returns average min and max values according to RDSC rules.
+#' check if calculation of extreme values comply to RDC rules.
+#'   If so, function returns average min and max values according to RDC rules.
 #' @param data [data.frame] The dataset from which the extreme values can be
 #'   calculated.
 #' @param id_var [character] The name of the id variable as a character.
@@ -14,6 +14,17 @@
 #' @importFrom data.table as.data.table data.table setorderv fintersect .N set
 #' @importFrom checkmate assert_int
 #' @export
+#' @examples
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_1")
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2")
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2", n_min = 7)
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_max = 10)
+#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+#'
+#' @return A list [list] with detailed information about options, settings and the calculated extreme values (if possible).
+
 
 sdc_extreme <- function(
   data,
@@ -61,7 +72,7 @@ sdc_extreme <- function(
 
   if (sd_overlap) {
     message("It is impossible to compute extreme values for variable '",
-            val_var, "' that comply to RDSC rules.")
+            val_var, "' that comply to RDC rules.")
 
     for (var in c("min", "max")) {
       data.table::set(res, j = var, value = NA_real_)

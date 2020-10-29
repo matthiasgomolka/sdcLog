@@ -68,7 +68,7 @@ extreme_expect_2 <- function(x) {
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id | val_var: val_2 ]\n",
       "It is impossible to compute extreme values for variable 'val_2' that ",
-      "comply to RDSC rules.",
+      "comply to RDC rules.",
       collapse = ""
     ),
     fixed = TRUE
@@ -98,7 +98,7 @@ extreme_expect_3 <- function(x) {
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id | val_var: val_3 ]\n",
       "It is impossible to compute extreme values for variable 'val_3' that ",
-      "comply to RDSC rules.",
+      "comply to RDC rules.",
       collapse = ""
     ),
     fixed = TRUE
@@ -193,7 +193,7 @@ extreme_expect_5 <- function(x) {
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id | val_var: val_2 | by: sector ]\n",
       "It is impossible to compute extreme values for variable 'val_2' ",
-      "that comply to RDSC rules.",
+      "that comply to RDC rules.",
       collapse = ""
     ),
     fixed = TRUE

@@ -394,13 +394,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Output complies to RDSC rules.</span></span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Output complies to RDC rules.</span></span></code></pre></div>
 </div>
 <div id="sdc.n_ids_dominance" class="section level3">
 <h3>sdc.n_ids_dominance</h3>
 <p>The default value for <code>sdc.n_ids_dominance</code> is <code>2</code>. In our example, this leads to a warning:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v2&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># 0.3% of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># A share of 0.3 of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co"># To prevent this behaviour and / or avoid this message, set &#39;zero_as_NA&#39; explicitly.</span></span>
 <span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co"># Warning: Potential disclosure problem: Dominant entities.</span></span>
@@ -416,7 +416,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">options</span>(<span class="dt">sdc.n_ids_dominance =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p>Then, there is no problem in the example:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v2&quot;</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># 0.3% of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># A share of 0.3 of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="co"># To prevent this behaviour and / or avoid this message, set &#39;zero_as_NA&#39; explicitly.</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></span>
 <span id="cb7-5"><a href="#cb7-5"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 1 | sdc.share_dominance: 0.85 ]</span></span>
@@ -459,14 +459,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb12-11"><a href="#cb12-11"></a><span class="co"># sdc.info_level:  1</span></span>
 <span id="cb12-12"><a href="#cb12-12"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
 <span id="cb12-13"><a href="#cb12-13"></a><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb12-14"><a href="#cb12-14"></a><span class="co"># Output complies to RDSC rules.</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co"># Output complies to RDC rules.</span></span>
 <span id="cb12-15"><a href="#cb12-15"></a><span class="co"># </span></span>
 <span id="cb12-16"><a href="#cb12-16"></a><span class="co"># sdc.info_level:  2</span></span>
 <span id="cb12-17"><a href="#cb12-17"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
 <span id="cb12-18"><a href="#cb12-18"></a><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></span>
 <span id="cb12-19"><a href="#cb12-19"></a><span class="co"># No problem with number of distinct entities.</span></span>
 <span id="cb12-20"><a href="#cb12-20"></a><span class="co"># No problem with dominance.</span></span>
-<span id="cb12-21"><a href="#cb12-21"></a><span class="co"># Output complies to RDSC rules.</span></span></code></pre></div>
+<span id="cb12-21"><a href="#cb12-21"></a><span class="co"># Output complies to RDC rules.</span></span></code></pre></div>
 <p>At level <code>0</code>, only options and settings are printed. Level <code>1</code> also prints a short message about the overall outcome of the checks. Level <code>2</code> additionally prints the results of the separate checks on distinct entities and dominance.</p>
 </div>
 <div id="general-remarks" class="section level3">
