@@ -5,8 +5,6 @@ vignette: >
   %\VignetteIndexEntry{sdcLog}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-params:
-  - dev: yes
 ---
 
 ```{r setup, include = FALSE}
@@ -20,13 +18,8 @@ knitr::opts_chunk$set(
     wrap = TRUE
   )
 )
-if (isTRUE(params$dev)) {
-  devtools::load_all()
-} else {
-  library(sdcLog)
-}
 
-options("datatable.print")
+library(sdcLog)
 ```
 
 ```{r, include=FALSE}
@@ -108,10 +101,10 @@ In case the researcher treated the value '0' **not** as missing value and it is 
 
 ```{r}
 sdc_descriptives(
-  data = sdc_descriptives_DT, 
+  data = sdc_descriptives_DT,
   id_var = "id",
   val_var = "val_1",
-  by = c("sector", "year"), 
+  by = c("sector", "year"),
   zero_as_NA = FALSE
 )
 ```
