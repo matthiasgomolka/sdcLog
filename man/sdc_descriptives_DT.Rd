@@ -18,7 +18,7 @@ data("sdc_descriptives_DT")
 
 data("sdc_model_DT")
 
-sdc_descriptives_DT
+data("sdc_DT")
 }
 \description{
 Example data

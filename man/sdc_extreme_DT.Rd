@@ -13,7 +13,7 @@ An object of class \code{data.table} (inherits from \code{data.frame}) with 20 r
 \usage{
 data("sdc_extreme_DT")
 
-sdc_extreme_DT
+data("sdc_DT")
 }
 \description{
 Example data

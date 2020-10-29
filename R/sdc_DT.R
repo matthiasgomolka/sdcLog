@@ -18,12 +18,18 @@
 
 #' Test Dataset for vignette
 #' @name sdc_descriptives_DT
+#' @docType data
+#' @usage data("sdc_DT")
 "sdc_descriptives_DT"
 
 #' Test Dataset for vignette
 #' @name sdc_extreme_DT
+#' @docType data
+#' @usage data("sdc_DT")
 "sdc_extreme_DT"
 
 #' Test Dataset for vignette
 #' @name sdc_model_DT
+#' @docType data
+#' @usage data("sdc_DT")
 "sdc_model_DT"

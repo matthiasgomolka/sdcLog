@@ -23,6 +23,7 @@ Suggests:
     here,
     knitr,
     rmarkdown,
+    skimr,
     testthat (>= 2.1.0),
 VignetteBuilder: 
     knitr
