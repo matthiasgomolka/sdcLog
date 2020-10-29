@@ -45,7 +45,8 @@
 #'     zero_as_NA = FALSE
 #' )
 #'
-#' @return A list [list] with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
+#' @return A list [list] with detailed information about options, settings,
+#'   compliance with the criteria distinct_ids and dominance.
 
 sdc_descriptives <- function(
     data, id_var, val_var, by = NULL, zero_as_NA = NULL

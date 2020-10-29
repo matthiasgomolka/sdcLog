@@ -24,7 +24,7 @@ Suggests:
     knitr,
     rmarkdown,
     skimr,
-    testthat (>= 2.1.0),
+    testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

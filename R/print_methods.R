@@ -1,4 +1,5 @@
 #' @importFrom crayon bold red
+#' @importFrom data.table as.data.table
 #' @export
 print.sdc_distinct_ids <- function(x, ...) {
     msg <- "Not enough distinct entities"
@@ -7,7 +8,7 @@ print.sdc_distinct_ids <- function(x, ...) {
     if (nrow(x) > 0L) {
         msg <- paste0(msg, ":\n")
         cat(crayon::red(msg))
-        print(as.data.table(x))
+        print(data.table::as.data.table(x))
 
     # no problems
     } else if (getOption("sdc.info_level", 1L) > 1L) {
@@ -24,7 +25,7 @@ print.sdc_dominance <- function(x, ...) {
     if (nrow(x) > 0L) {
         msg <- paste0(msg, ":\n")
         cat(crayon::red(msg))
-        print(as.data.table(x))
+        print(data.table::as.data.table(x))
 
     # no problems
     } else if (getOption("sdc.info_level", 1L) > 1L) {
