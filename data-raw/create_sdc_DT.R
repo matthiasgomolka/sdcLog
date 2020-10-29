@@ -55,7 +55,7 @@ usethis::use_data(sdc_descriptives_DT, overwrite = TRUE)
 # dt for extreme
 set.seed(1)
 n <- 20L
-sdc_extreme_DT <- data.table(
+sdc_extreme_DT <- data.table::data.table(
     id = as.factor(rep_len(LETTERS[1L:10L], n)),
     sector = as.factor(sort(rep_len(paste0("S", 1L:2L), n))),
     year = rep_len(2019L:2020L, n),
@@ -64,14 +64,14 @@ sdc_extreme_DT <- data.table(
     val_3 = c(NA_integer_, 19L:1L),
     key = "id"
 )
-setorder(sdc_extreme_DT, -val_1)
+data.table::setorder(sdc_extreme_DT, -val_1)
 usethis::use_data(sdc_extreme_DT, overwrite = TRUE)
 
 # dt for model
 set.seed(1)
 n <- 80
 y <- rnorm(n, mean = 120, sd = 8)
-sdc_model_DT <- data.table(
+sdc_model_DT <- data.table::data.table(
     id = as.factor(rep_len(LETTERS[1L:10L], n)),
     y = y,
     x_1 = jitter(y, factor = 10000),
