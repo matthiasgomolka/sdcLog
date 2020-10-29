@@ -15,8 +15,15 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  tidy = TRUE,
+  tidy.opts = list(
+    indent = 2L,
+    width.cutoff = 80L,
+    wrap = TRUE
+  )
 )
+
 options(knitr.kable.NA = "")
 options(sdc.info_level = 1L)
 options(datatable.print.keys = FALSE)
@@ -28,23 +35,44 @@ library(skimr)
 ```
 
 # Overview
-This vignette introduces the sdcLog package and its main functions, illustrated with various examples. The sdcLog package provides tools which simplify statistical disclosure control in the context of research data centres (RDC).
+This vignette introduces the sdcLog package and its main functions, illustrated
+with various examples. The sdcLog package provides tools which simplify
+statistical disclosure control in the context of research data centres (RDC).
 
 The package includes three main functions:
 
-* `sdc_descriptives()`: This function is used for statistical disclosure control of descriptive statistics. It checks the data used for the calculation of descriptive statistics for compliance with the rules and regulations set by the RDC. 
+- `sdc_descriptives()`: This function is used for statistical disclosure control
+of descriptive statistics. It checks the data used for the calculation of
+descriptive statistics for compliance with the rules and regulations set by the
+RDC.
 
-    The calculation of simple extreme values such as minimum and maximum is usually not allowed according to RDC rules, so `sdc_descriptives()` cannot be used to check them. Extreme values can only be used if they were calculated with `sdc_extreme()`. 
+    The calculation of simple extreme values such as minimum and maximum is
+    usually not allowed according to RDC rules, so `sdc_descriptives()` cannot
+    be used to check them. Extreme values can only be used if they were
+    calculated with `sdc_extreme()`.
 
-* `sdc_model()`: This function is used for statistical disclosure control for various types of models. It checks the calculated model and the underlying data for compliance with the rules and regulations of the RDC.
+- `sdc_model()`: This function is used for statistical disclosure control for
+various types of models. It checks the calculated model and the underlying data
+for compliance with the rules and regulations of the RDC.
 
-* `sdc_extreme()`: This function is used for the automatic calculation (if possible) of extreme values according to the rules of the research data centre. It uses the available data and calculates the values for desired variables and groupings in compliance with the rules. The values are calculated as averages of a sufficient number of observations. This helps the researcher to easily follow the rules and simplifies the output control.
+- `sdc_extreme()`: This function is used for the automatic calculation (if
+possible) of extreme values according to the rules of the research data centre.
+It uses the available data and calculates the values for desired variables and
+groupings in compliance with the rules. The values are calculated as averages of
+a sufficient number of observations. This helps the researcher to easily follow
+the rules and simplifies the output control.
 
 # sdc_descriptives()
-This function performs statistical disclosure control according to two main criteria: On the one hand, it checks for a sufficiently large number of different statistical entities. On the other hand, it checks for dominance, which means that two entities must not account for more than 85 percent of the observed values. How to use `sdc_descriptives()` is shown below.
+This function performs statistical disclosure control according to two main
+criteria: On the one hand, it checks for a sufficiently large number of
+different statistical entities. On the other hand, it checks for dominance,
+which means that two entities must not account for more than 85 percent of the
+observed values. How to use `sdc_descriptives()` is shown below.
 
 ## Data
-To introduce `sdc_descriptives()`, a simple toy dataset is used. There are 20 observations of 10 distinct entities from two different sectors and values in the years 2019 and 2020 for the variables `val_1` and `val_2`.
+To introduce `sdc_descriptives()`, a simple toy dataset is used. There are 20
+observations of 10 distinct entities from two different sectors and values in
+the years 2019 and 2020 for the variables `val_1` and `val_2`.
 
 ```{r test_data_descriptives}
 data("sdc_descriptives_DT")
@@ -56,11 +84,12 @@ sdc_descriptives_DT
 Consider the case that the mean for `val_1`
 <!-- and `val_2`  -->
 has been calculated and is now to be output as a result:^[Since sdcLog heavily relies on `data.table`, all examples will use `data.table` syntax as well.]
+
 ```{r descriptives_simple_case}
 sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE))]
 ```
 
-Before this result can be released, it must be checked whether all RDC rules for calculating these values have been followed. Thus, the underlying data is checked for compliance with the RDC rules. 
+Before this result can be released, it must be checked whether all RDC rules for calculating this value have been followed. Thus, the underlying data is checked for compliance with the RDC rules. 
 <!-- The following examples serve to illustrate the examination of these different cases. -->
 
 This is the simplest case, the descriptive statistic (mean) was calculated for the variable `val_1` without further specifications. Required arguments of `sdc_descriptives()` are the data set (`data`), the ID variable (`id_var`) and the variable for which the statistics were calculated (`val_var`):
@@ -99,8 +128,7 @@ sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE)), by = c("sector", "yea
 
 To check this result for compliance with RDC rules, use:
 ```{r descriptives_byby}
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1",
-                 by = c("sector", "year"))
+sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 ```
 
 Now several warnings appear, as both criteria are violated. For sector 1 (`S1`) there are not enough distinct ids in year 2019, as there is a missing value in the data. The dominance criterion for year 2020 is violated in both sectors. As can be seen in the table displayed, the value share of approx. 88 for `S1` (and respectively 91 for `S2`) percent is above the 85 percent limit. Therefore, the descriptive statistics for `val_1`, grouped by `sector` and `year` cannot be released.
@@ -168,7 +196,7 @@ sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
 As we see, there are no problems and the models could be released as output.
 
 ### Problematic cases
-Now we turn to the problematic cases. We start with checking `model_2` and `model_3`:
+Now we turn to the problematic cases. We are checking the models `model_2` and `model_3` as well as `model_5`:
 ```{r model_prob1}
 sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 
@@ -202,7 +230,6 @@ sdc_extreme_DT
 
 ## Examples
 ### Simple cases
-<!-- For application, the extreme values are calculated for various variables and the special features of the function are demonstrated.  -->
 In this simple case, extreme values should be calculated for variable `val_1`. This can be done with `sdc_extreme()` by specifying the dataset (`data`), the id variable (`id_var`) and the variable for which extreme values are to be calculated (`val_var`).
 ```{r extreme_simple}
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
@@ -244,27 +271,31 @@ sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "secto
 ```
 No problems occur, so extreme values are calculated and output for each group.
 
-This can also be done for several grouping variables at once. Therefore, in the following extreme values for variable `val_1` are to be calculated by `year` and `sector`.
-```{r extreme_by2}
-extreme_vals <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", 
-                            by = c("sector", "year"))
+This can also be done for several grouping variables. Therefore in the following extreme values for variable 'val_1' are to be calculated by year and sector.
+```{r}
+res <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = .(sector, year))
+res
 ```
 Now an error occurs, since the RDC rules would be violated for the calculation of these values. For programming purposes, please note that the structure of the resulting `data.table` remains the same (but is filled with `NA`:
 ```{r extreme_by3}
-extreme_vals
+# extreme_vals
 ```
 
 
-# `sdc_log()`
-This function serves to create Stata-like log files from R Scripts. The function is called after the other sdc-functions to get the corresponding code into the log file. It can handle single files or a list of files at once.
+# sdc_log()
+This function serves to create Stata-like log files from R Scripts. The function is called to wrap an R script containing your analysis to write the corresponding code and console output into a log file. It can handle single files or a list of files at once.
 
-A character vector containing the path(s) of the R script(s) which should be run must be specified in the function arguments As well as a character vector containing the path(s) of the text file(s) where the log(s) should be stored. Due to additional arguments it is also possible to specify whether to replace already existing log files and whether it is desired to receive warnings and messages from running the 'r_scripts'. 
+A character vector containing the path(s) of the R script(s) which should be run must be specified in the function arguments as well as a character vector containing the path(s) of the text file(s) where the log(s) should be stored. Due to additional arguments it is also possible to specify whether to replace already existing log files and whether it is desired to receive warnings and messages from running the `r_scripts`. 
 
-A simple call of this function could look as follows.
+A simple call of this function could look as follows:
 ```{r eval = FALSE}
-sdc_log(r_scripts = "C:/Beispielprojekt/r_scripts/sdc_log_example.R",
-        log_files = "C:/Beispielprojekt/sdc_log/log_file.txt")
+sdc_log(
+  r_scripts = "/home/my_project/R/my_script.R",
+  log_files = "/home/my_project/log/my_script.txt"
+)
 ```
+
+Even though this seems trivial, creating logs for your scripts is essential since it bundles all information needed by the RDC for output control.
 
 # Return values
 This section explains the return value(s) of `sdc_functions` in more detail. `sdc_descriptives()`, `sdc_extreme()` and `sdc_model()` each return a list containing options and settings as well as additional, function specific information.
@@ -272,6 +303,12 @@ This section explains the return value(s) of `sdc_functions` in more detail. `sd
 Each function returns a list, e.g. for `sdc_descriptives()`:
 ```{r return_descriptives1}
 typeof(sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"))
+
+model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
+model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
+model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 ```
 
 If the object is assigned, only warnings and messages are printed (if they occur at all):
@@ -289,10 +326,13 @@ If the object itself is printed, the user receives the same information that wou
 
 ```{r return_descriptives3}
 result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+```{r}
+sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
 
 result_sdc_descriptives
 
 sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
 ```
 
 There are additional information that vary depending on the function. The
@@ -303,8 +343,11 @@ the checked variable. The object is of class `sdc_descriptives` as well as `list
 ```{r return_descriptives4}
 result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
 
+```{r}
+sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 class(result_sdc_descriptives)
 
+sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
 result_sdc_descriptives
 
 str(result_sdc_descriptives)
@@ -312,16 +355,10 @@ str(result_sdc_descriptives)
 
 The function `sdc_model()` returns, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for every variable of the model. The object is of class `sdc_model` as well as `list`.
 
-```{r return_model}
-model <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-
-result_sdc_model <- sdc_model(data = sdc_model_DT, model = model, id_var = "id")
-
-class(result_sdc_model)
-
-result_sdc_model
-
-str(result_sdc_model)
+Subsequently 'model_5' is checked. This time we set sdc.info_level = 2 to get more detailed information about each variable separately - although this is not absolutely necessary, since potential problems are always printed.
+```{r}
+options(sdc.info_level = 2)
+sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
 ```
 
 The function `sdc_extreme()` returns, besides settings and options, a `data.table` with computed extreme values. The object is of class `sdc_extreme` as well as `list`.
@@ -335,258 +372,3 @@ result_sdc_extreme
 
 str(result_sdc_extreme)
 ```
-
-```{r, include=FALSE}
-#library(sdcLog)
-devtools::load_all()
-library(data.table)
-```
-
-This vignette introduces the sdcLog package and its main functions, illustrated with various examples. The sdcLog package provides tools which simplify statistical disclosure control in the context of research data centres (RDSC).
-
-The package includes three main functions:
-
-* `sdc_descriptives()`: This function is used for statistical disclosure control for descriptive statistics. It checks the data used for the calculation of descriptive statistics for compliance with the rules and regulations - set by the Research Data Centre. The calculation of simple extreme values (as conclusions can be drawn about individual statistical units) is not allowed according to the rules of the Research Data Center, so `sdc_descriptives()` cannot be used to check them. Extreme values can only be used if they were calculated with `sdc_extreme()`. 
-
-* `sdc_extreme()`: This function is used for the automatic calculation (if possible) of extreme values according to the rules of the research data centre. It uses the available data and calculates the values for desired variables and groupings in compliance with the rules. The values are calculated as averages of a sufficient number of observations. This helps the researcher to easily follow the rules and simplifies the control.
-
-* `sdc_model()`: This function is used for statistical disclosure control for various types of models. It checks the calculated model and the underlying data for compliance with the rules and regulations of the Research Data Center.
-
-
-## `sdc_descriptives()`
-
-This function performs statistical disclosure control according to two main criteria. It checks for a sufficient number of different statistical entities (IDs) - listed here as distinct_ids. On the other hand, it checks for dominance, so that two statistical entities (IDs) do not account for more than 85 percent of the observed values. Following some examples and explanations for using `sdc_descriptives()`.
-
-### Data
-To introduce the function `sdc_descriptives()`, a simple dataset is used. There are 20 observations of 10 distinct ID's with assignment to two different sectors and values in the years 2019 & 2020 for the variables 'val' and 'val_1'.
-
-```{r}
-data("sdc_descriptives_DT")
-sdc_descriptives_DT
-```
-
-### Applying `sdc_descriptives()`
-For instance, the standard deviation and the mean for 'val' and 'val_1' have been calculated for different cases and are now to be output as results. Before this can happen, it must be checked whether all RDSC-rules for calculating these values have been followed. Thus the data basis is checked with the function `sdc_descriptives()` for compliance with the rules. The following examples serve to illustrate the examination of these different cases.
-
-### Simple cases
-This is the simplest case, the descriptive statistics were calculated for the variable 'val' without further specifications. The data set, the ID variable and the variable for which the statistics were calculated are required as arguments.
-
-```{r}
-#library(sdcLog)
-devtools::load_all()
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val")
-
-```
-
-Since there are no problems at this point, the function runs without warnings and returns a list of information about options, settings and the checked criteria distinct_ids and dominance. Depending on the specification of option 'sdc.info_level' variously detailed information are printed to the console. Here the default value (sdc.info_level = 1) is used, therefore only a message appears that the output complies to the rules. On the whole, there are no rule violations and the output of the results could be allowed in this case.
-
-### Advanced cases
-In this section some advanced cases are presented to introduce more arguments and functionalities of the function `sdc_descriptives()`.
-
-#### by argument
-In this case the descriptive statistics for the variable 'val' are grouped, so we introduce a by argument in `sdc_descriptives()`.
-
-The statistics are initially grouped by sector and should be output for each. So the grouping argument must also be specified as by argument in the function. Checking the results leads to the following.
-
-```{r}
-#library(sdcLog)
-devtools::load_all()
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val", by = sector)
-
-```
-
-The grouped descriptive statistics by sector do not generate a warning and therefore comply with RDSC rules. Therefore, the results could be released in this from.
-
-In order to extend this case even further, it is now proposed to group the descriptive statistics of 'val' not only by sector, but also additionally by year. This can be checked as following.
-
-```{r}
-#library(sdcLog)
-devtools::load_all()
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val", by = c("sector", "year"))
-
-```
-
-Now several warnings appear, as both criteria are violated. For sector 1 (S1) there are not enough distinct ids in the year 2019, as there is a missing value in the data. The dominance criterion for the year 2020 is violated in both sectors. As can be seen in the table displayed, the value share of approx. 88 for S1 (and respectively 90 for S2) percent is above the 85 percent limit. Therefore, the descriptive statistics for val cannot be released in this from.
-
-
-#### zero_as_NA argument
-In this case descriptive statistics grouped by sector and year were calculated for the variable 'val_1'. The compliance with the rules can be checked in a similar way as in the previous case. 
-
-```{r}
-#library(sdcLog)
-devtools::load_all()
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-
-```
-
-The function indicates that problems exist and the output does not comply to the rules. There are not enough distinct_ids and the output cannot be released this way.
-An additional message is specified to indicate that the value '0' occurs frequently in the data. This is an indication that '0' is seen as a missing value here and will be recognized and treated as such in the function.
-
-In case the researcher treated the value '0' **not** as missing value and it is accurate according to the data basis that this value is not to be seen as NA - then there is an argument to specify this. So if this is the case and '0' should not be recognized as a missing value by the function `sdc_descriptives()`, the researcher can specify this in the function as follows.
-
-```{r}
-#library(sdcLog)
-devtools::load_all()
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"), zero_as_NA = FALSE)
-
-```
-
-Now '0' is not recognized as NA value anymore. In this case the criterion of distinct_ids is not longer violated. Therefore the output could be released in this form.
-
-
-#### Frequently errors & hints
-Evtl. noch typische Fehler Sektion?
-Hinweise zur Vorgehensweise bei Problemen?
-
-
-## `sdc_extreme()`
-This function automatically calculates extreme values that comply with the rules of the Research Data Center. Again, it mainly checks the criteria of distinct_ids and dominance. The values are calculated as averages of a sufficient number of observations. It is based on an iterative procedure that aggregates data until there are enough distinct_ids to calculate the extreme values and no problems with dominance occur. The function always starts the iteration process with the lowest possible number of observations for each extreme value (here 5, since at least 5 distinct statistical units must be included in the calculation according to the rules of the research data centre). Furthermore, the function checks that the subset of data for minimum and maximum do not overlap.
-
-If there are no problems with the calculation, the function returns a list with the extreme values - maximum and minimum are always output, no value of the two alone can be calculated separately. If it is not possible to calculate extreme values under these criteria, a corresponding message is printed and the list is returned with NA values. Following some examples and explanations for using `sdc_extreme()`.
-
-### Data
-To introduce the function `sdc_extreme()`, a simple dataset is used. We have 20 observations of 10 different IDs, for which the corresponding sector is given and values for the variables 'val_1', 'val_2', 'val_3' in the years 2019 and 2020 respectively.
-
-```{r}
-data("sdc_extreme_DT")
-sdc_extreme_DT
-```
-
-### Applying `sdc_extreme()`
-For application, the extreme values are calculated for various variables and the special features of the function are demonstrated. 
-
-### Simple cases
-In this simple case, extreme values should be calculated for variable 'val_1'. This is done with the function `sdc_extreme()` by specifying data, the id-variable and the variable for which extreme values are to be calculated.
-```{r}
-devtools::load_all()
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_1")
-
-```
-Since no probelms occur, the function returns a list with the options, settings and extreme values. As shown in the output, the extreme values could be calculated and 5 observations were used for each value - thus no additional observations had to be used for the calculation.
-
-### Advanced cases
-In this section some advanced cases are presented to introduce more arguments and functionalities of the function `sdc_extreme()`.
-
-#### n_min & n_max argument
-In this case extreme values are initially calculated for the variable 'val_2'. 
-
-```{r}
-devtools::load_all()
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2")
-
-```
-If we look at the output, we see that 5 observations were used to calculate the minimum and 7 observations to calculate the maximum. This is because the dominance criterion would be violated if only 5 observations were considered for the maximum. Thus 7 observations are automatically taken into account.
-If the researcher wishes to introduce an equal number of observations per extreme value, it is possible to specify this in the function using the arguments n_min and n_max. Thus it can be specified that 7 observations are also used for the calculation of the minimum value - so n_min = 7 has to be set.
-
-```{r}
-devtools::load_all()
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2", n_min = 7)
-
-```
-Now the same number of observations are used to calculate the extreme values.
-
-If also extreme values are to be calculated for variable 'val_3' and 10 observations are to be included in each value, then n_max = 10 and n_min = 10 must be set. 
-
-```{r}
-devtools::load_all()
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_max = 10)
-
-```
-Now an error occurs and it is pointed out that it is impossible to calculate extreme values in this case. This is because there is a missing value in 'val_3', so observations in the subset would overlap. Therefore fewer observations per extreme value would have to be used - for example 8 each.
-
-```{r}
-devtools::load_all()
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
-
-```
-
-#### by argument
-It is also possible to calculate extreme values by groups. In the following these are calculated by year and sector.
-```{r}
-devtools::load_all()
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = sector)
-
-```
-
-No problems occur, so extreme values are calculated and output for each group.
-
-This can also be done for several grouping variables. Therefore in the following extreme values for variable 'val_1' are to be calculated by year and sector.
-```{r}
-devtools::load_all()
-res <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = .(sector, year))
-
-res
-```
-Now an error occurs, since the rules of the research data center would not be followed anymore for the calculation of these values. By printing the assigned object the list with NA's is displayed. 
-
-
-## `sdc_model()`
-This function checks if your model complies to RDSC rules. The criteria distinct_ids and dominance are also checked here. In addition, when using dummy variables, it is checked whether there are enough different observations (according to the rules of the RDSC) for each attribute/value. The function can be used to check a broad range of models like lm, glm and various others (anything which can be handled by [broom::augment()]).
-
-### Data & models
-To introduce the function `sdc_model()`, a dataset with different variables is used, which include dummy-variables. 
-
-We have 80 observations of 10 different IDs for the variables 'y', 'x_1', 'x_2', 'x_3', 'x_4' and additional information on sector, year and country (dummy variables). A summary of the data set is given below. 
-
-```{r}
-data("sdc_model_DT")
-summary(sdc_model_DT)
-```
-
-Various simple linear models are specified from this data set for illustration purposes.
-
-```{r}
-
-model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
-model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
-model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
-model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
-
-```
-
-### Applying `sdc_model()`
-The previously specified models are now checked for compliance with the rules of the RDSC. It is checked, if there are enough distinct_ids in the whole model and each model variable is checked if there are problems with dominance. Also every dummy variable is checked for compliance with the rules.
-
-A pre-selection of problematic and unproblematic models has been made to better explain the differences. To check for compliance, the model object, the data used and the ID variable must be specified in `sdc_model()`.
-
-### Simple cases
-A check of the models 'model_1' and 'model_4' is shown below.
-
-```{r}
-devtools::load_all()
-sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
-
-sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
-
-```
-
-As we see, there are no problems and the models could be released as output.
-
-### Problematic cases
-The other models are now being tested. We start with tests for the models 'model_2' and 'model_3'.
-
-```{r}
-devtools::load_all()
-sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
-
-sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
-
-```
-
-Now some difficulties occur with these models. The 'model_2' leads to problems with the number of distinct_ids - this problem arises with the inclusion of variable 'x_3' due to a high number of NA's. In 'model_3' there are problems with dominance for variable 'x_4'. Thus, according to the rules of the RDSC, these models cannot be released for output.
-
-Subsequently 'model_5' is checked. This time we set sdc.info_level = 2 to get more detailed information about each variable separately - although this is not absolutely necessary, since potential problems are always printed.
-```{r}
-devtools::load_all()
-
-options(sdc.info_level = 2)
-sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
-
-```
-
-This also causes problems with the model, because the dummy variable 'dummy_3' does not contain sufficient observations for the value 'FR'. Therefore this model cannot be released either.
-
-
-

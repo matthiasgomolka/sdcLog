@@ -381,15 +381,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="sdc.n_ids" class="section level3">
 <h3>sdc.n_ids</h3>
 <p>By default, sdcLog expects at least five different entities behind each calculated number. The functions in sdcLog derive this number from <code>getOption(&quot;sdc.n_ids&quot;, default = 5)</code>. That is, if the option <code>sdc.n_ids</code> is not set, it defaults to <code>5</code> Consider the following example:</p>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># Not enough distinct entities:</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#    distinct_ids</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># 1:            3</span></a></code></pre></div>
-=======
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
@@ -397,42 +388,19 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-5"><a href="#cb2-5"></a><span class="co"># Not enough distinct entities:</span></span>
 <span id="cb2-6"><a href="#cb2-6"></a><span class="co">#    distinct_ids</span></span>
 <span id="cb2-7"><a href="#cb2-7"></a><span class="co"># 1:            3</span></span></code></pre></div>
->>>>>>> master
 <p>This can be adapted to the policy of your research data centre by setting the option <code>sdc.n_ids</code> to the desired value. For example, if your policy allows results to be released if there are at least three different entities behind each number, set</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">options</span>(<span class="dt">sdc.n_ids =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p>Now, <code>getOption(&quot;sdc.n_ids&quot;, default = 5)</code> evaluates to <code>3</code> and warnings are thrown only if there are less than three entities behind each result. Note that this is reflected in the first line of output from every function of sdcLog:</p>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co"># Output complies to RDC rules.</span></a></code></pre></div>
-=======
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Output complies to RDSC rules.</span></span></code></pre></div>
->>>>>>> master
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Output complies to RDC rules.</span></span></code></pre></div>
 </div>
 <div id="sdc.n_ids_dominance" class="section level3">
 <h3>sdc.n_ids_dominance</h3>
 <p>The default value for <code>sdc.n_ids_dominance</code> is <code>2</code>. In our example, this leads to a warning:</p>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v2&quot;</span>)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># A share of 0.3 of 'val_var' are zero. These will be treated as 'NA'.</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co"># To prevent this behaviour and / or avoid this message, set 'zero_as_NA' explicitly.</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># Warning: Potential disclosure problem: Dominant entities.</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># [ SETTINGS: id_var: id | val_var: v2 | zero_as_NA: TRUE ]</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co"># Not enough distinct entities:</span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#    distinct_ids</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co"># 1:            2</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co"># Dominant entities:</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#    value_share</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co"># 1:           1</span></a></code></pre></div>
-=======
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v2&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># 0.3% of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># A share of 0.3 of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co"># To prevent this behaviour and / or avoid this message, set &#39;zero_as_NA&#39; explicitly.</span></span>
 <span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co"># Warning: Potential disclosure problem: Dominant entities.</span></span>
@@ -444,23 +412,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb5-11"><a href="#cb5-11"></a><span class="co"># Dominant entities:</span></span>
 <span id="cb5-12"><a href="#cb5-12"></a><span class="co">#    value_share</span></span>
 <span id="cb5-13"><a href="#cb5-13"></a><span class="co"># 1:           1</span></span></code></pre></div>
->>>>>>> master
 <p>If your policy requires only the largest entity alone to attribute for a share of less than <code>0.85</code>, set</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">options</span>(<span class="dt">sdc.n_ids_dominance =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p>Then, there is no problem in the example:</p>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v2&quot;</span>)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co"># A share of 0.3 of 'val_var' are zero. These will be treated as 'NA'.</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co"># To prevent this behaviour and / or avoid this message, set 'zero_as_NA' explicitly.</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 1 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co"># [ SETTINGS: id_var: id | val_var: v2 | zero_as_NA: TRUE ]</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co"># Not enough distinct entities:</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#    distinct_ids</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co"># 1:            2</span></a></code></pre></div>
-=======
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v2&quot;</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># 0.3% of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># A share of 0.3 of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="co"># To prevent this behaviour and / or avoid this message, set &#39;zero_as_NA&#39; explicitly.</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a><span class="co"># Warning: Potential disclosure problem: Not enough distinct entities.</span></span>
 <span id="cb7-5"><a href="#cb7-5"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 1 | sdc.share_dominance: 0.85 ]</span></span>
@@ -468,7 +424,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-7"><a href="#cb7-7"></a><span class="co"># Not enough distinct entities:</span></span>
 <span id="cb7-8"><a href="#cb7-8"></a><span class="co">#    distinct_ids</span></span>
 <span id="cb7-9"><a href="#cb7-9"></a><span class="co"># 1:            2</span></span></code></pre></div>
->>>>>>> master
 </div>
 <div id="sdc.share_dominance" class="section level3">
 <h3>sdc.share_dominance</h3>
@@ -477,15 +432,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Let’s consider a policy which allows the largest two entities to attribute for a share of <code>0.8</code>. To reflect this, set</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">options</span>(<span class="dt">sdc.share_dominance =</span> <span class="fl">0.8</span>)</span></code></pre></div>
 <p>Now, the previous example from <code>sdc.n_ids</code> throws a warning:</p>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co"># Warning: Potential disclosure problem: Dominant entities.</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.8 ]</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co"># Dominant entities:</span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#    value_share</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co"># 1:   0.8333333</span></a></code></pre></div>
-=======
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>)</span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="co"># Warning: Potential disclosure problem: Dominant entities.</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.8 ]</span></span>
@@ -493,7 +439,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb10-5"><a href="#cb10-5"></a><span class="co"># Dominant entities:</span></span>
 <span id="cb10-6"><a href="#cb10-6"></a><span class="co">#    value_share</span></span>
 <span id="cb10-7"><a href="#cb10-7"></a><span class="co"># 1:   0.8333333</span></span></code></pre></div>
->>>>>>> master
 </div>
 <div id="sdc.info_level" class="section level3">
 <h3>sdc.info_level</h3>
@@ -501,29 +446,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Before demonstrating the effects of <code>sdc.info_level</code>, we reset <code>sdc.share_dominance</code> for the sake of the example:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">options</span>(<span class="dt">sdc.share_dominance =</span> <span class="fl">0.85</span>)</span></code></pre></div>
 <p>The example below shows the different levels of information printed to the console based on the different levels of <code>sdc.info_level</code>:</p>
-<<<<<<< HEAD
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">0</span><span class="op">:</span><span class="dv">2</span>) {</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">    <span class="kw">options</span>(<span class="dt">sdc.info_level =</span> i)</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">    <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">sdc.info_level: &quot;</span>, <span class="kw">getOption</span>(<span class="st">&quot;sdc.info_level&quot;</span>), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">    <span class="kw">print</span>(<span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> df, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;v1&quot;</span>))</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">}</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co"># sdc.info_level:  0</span></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co"># sdc.info_level:  1</span></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb12-14" data-line-number="14"><span class="co"># Output complies to RDC rules.</span></a>
-<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="co"># </span></a>
-<a class="sourceLine" id="cb12-16" data-line-number="16"><span class="co"># sdc.info_level:  2</span></a>
-<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></a>
-<a class="sourceLine" id="cb12-18" data-line-number="18"><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></a>
-<a class="sourceLine" id="cb12-19" data-line-number="19"><span class="co"># No problem with number of distinct entities.</span></a>
-<a class="sourceLine" id="cb12-20" data-line-number="20"><span class="co"># No problem with dominance.</span></a>
-<a class="sourceLine" id="cb12-21" data-line-number="21"><span class="co"># Output complies to RDC rules.</span></a></code></pre></div>
-=======
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">0</span><span class="op">:</span><span class="dv">2</span>) {</span>
 <span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw">options</span>(<span class="dt">sdc.info_level =</span> i)</span>
 <span id="cb12-3"><a href="#cb12-3"></a>    <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">sdc.info_level: &quot;</span>, <span class="kw">getOption</span>(<span class="st">&quot;sdc.info_level&quot;</span>), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
@@ -537,15 +459,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb12-11"><a href="#cb12-11"></a><span class="co"># sdc.info_level:  1</span></span>
 <span id="cb12-12"><a href="#cb12-12"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
 <span id="cb12-13"><a href="#cb12-13"></a><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb12-14"><a href="#cb12-14"></a><span class="co"># Output complies to RDSC rules.</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co"># Output complies to RDC rules.</span></span>
 <span id="cb12-15"><a href="#cb12-15"></a><span class="co"># </span></span>
 <span id="cb12-16"><a href="#cb12-16"></a><span class="co"># sdc.info_level:  2</span></span>
 <span id="cb12-17"><a href="#cb12-17"></a><span class="co"># [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
 <span id="cb12-18"><a href="#cb12-18"></a><span class="co"># [ SETTINGS: id_var: id | val_var: v1 | zero_as_NA: FALSE ]</span></span>
 <span id="cb12-19"><a href="#cb12-19"></a><span class="co"># No problem with number of distinct entities.</span></span>
 <span id="cb12-20"><a href="#cb12-20"></a><span class="co"># No problem with dominance.</span></span>
-<span id="cb12-21"><a href="#cb12-21"></a><span class="co"># Output complies to RDSC rules.</span></span></code></pre></div>
->>>>>>> master
+<span id="cb12-21"><a href="#cb12-21"></a><span class="co"># Output complies to RDC rules.</span></span></code></pre></div>
 <p>At level <code>0</code>, only options and settings are printed. Level <code>1</code> also prints a short message about the overall outcome of the checks. Level <code>2</code> additionally prints the results of the separate checks on distinct entities and dominance.</p>
 </div>
 <div id="general-remarks" class="section level3">

@@ -13,7 +13,7 @@
 "sdc_DT"
 
 #' Example data
-#' Utilitzed in the vignette
+#' Utilized in the vignette
 #' @name sdc_descriptives_DT
 #' @docType data
 #' @usage data("sdc_descriptives_DT")
@@ -27,7 +27,7 @@
 "sdc_descriptives_DT"
 
 #' Example data
-#' Utilitzed in the vignette
+#' Utilized in the vignette
 #' @name sdc_descriptives_DT
 #' @docType data
 #' @usage data("sdc_model_DT")
@@ -40,7 +40,7 @@
 "sdc_model_DT"
 
 #' Example data
-#' Utilitzed in the vignette
+#' Utilized in the vignette
 #' @name sdc_extreme_DT
 #' @docType data
 #' @usage data("sdc_extreme_DT")
