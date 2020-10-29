@@ -3,8 +3,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#"
 )
-options(datatable.print.class      = FALSE)
-options(datatable.print.keys       = FALSE)
+options(datatable.print.class = FALSE)
+options(datatable.print.keys = FALSE)
 options(datatable.print.trunc.cols = FALSE)
 
 options(sdc.n_ids = 5L)
@@ -48,8 +48,8 @@ options(sdc.share_dominance = 0.85)
 
 ## ----example_sdc.info_level---------------------------------------------------
 for (i in 0:2) {
-    options(sdc.info_level = i)
-    cat("\nsdc.info_level: ", getOption("sdc.info_level"), "\n")
-    print(sdc_descriptives(data = df, id_var = "id", val_var = "v1"))
+  options(sdc.info_level = i)
+  cat("\nsdc.info_level: ", getOption("sdc.info_level"), "\n")
+  print(sdc_descriptives(data = df, id_var = "id", val_var = "v1"))
 }
 

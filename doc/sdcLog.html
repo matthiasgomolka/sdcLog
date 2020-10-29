@@ -1,876 +1,921 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+<title>Overview</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-
-
-<title>Introduction to sdcLog</title>
-
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
   }
-});
+};
 </script>
+
+<!-- Styles for R syntax highlighter -->
 <style type="text/css">
-a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
-a.anchor-section::before {content: '#';}
-.hasAnchor:hover a.anchor-section {visibility: visible;}
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
 </style>
-<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
-document.addEventListener('DOMContentLoaded', function() {
-  // Do nothing if AnchorJS is used
-  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
-    return;
-  }
 
-  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-
-  // Do nothing if sections are already anchored
-  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
-    return null;
-  }
-
-  // Use section id when pandoc runs with --section-divs
-  const section_id = function(x) {
-    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
-            ? x.id : '');
-  };
-
-  // Add anchors
-  h.forEach(function(x) {
-    const id = x.id || section_id(x.parentElement);
-    if (id === '') {
-      return null;
-    }
-    let anchor = document.createElement('a');
-    anchor.href = '#' + id;
-    anchor.classList = ['anchor-section'];
-    x.classList.add('hasAnchor');
-    x.appendChild(anchor);
-  });
-});
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
 </script>
+
+
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
 
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
 }
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
+h1 {
+   font-size:2.2em;
+}
 
+h2 {
+   font-size:1.8em;
+}
 
+h3 {
+   font-size:1.4em;
+}
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
+h4 {
+   font-size:1.0em;
 }
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
+
+h5 {
+   font-size:0.9em;
 }
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
+
+h6 {
+   font-size:0.8em;
 }
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
 }
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
+
+pre, img {
+  max-width: 100%;
 }
 pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
+  overflow-x: auto;
 }
-pre:not([class]) {
-background-color: #f7f7f7;
+pre code {
+   display: block; padding: 0.5em;
 }
+
 code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
+  font-size: 92%;
+  border: 1px solid #ccc;
 }
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
 </style>
-
 
 
 
 </head>
 
 <body>
-
-
-
-
-<h1 class="title toc-ignore">Introduction to sdcLog</h1>
-
-
-<div id="TOC">
-<ul>
-<li><a href="#overview">Overview</a></li>
-<li><a href="#sdc_descriptives">sdc_descriptives()</a><ul>
-<li><a href="#data">Data</a></li>
-<li><a href="#examples">Examples</a><ul>
-<li><a href="#simple-cases">Simple cases</a></li>
-<li><a href="#grouped-descriptive-statistics-using-by">Grouped descriptive statistics using by</a></li>
-<li><a href="#handling-zeros-using-zero_as_na">Handling zeros using zero_as_NA</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#sdc_model">sdc_model()</a><ul>
-<li><a href="#data-models">Data &amp; models</a></li>
-<li><a href="#examples-1">Examples</a><ul>
-<li><a href="#simple-cases-1">Simple cases</a></li>
-<li><a href="#problematic-cases">Problematic cases</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#sdc_extreme">sdc_extreme()</a><ul>
-<li><a href="#data-1">Data</a></li>
-<li><a href="#examples-2">Examples</a><ul>
-<li><a href="#simple-cases-2">Simple cases</a></li>
-<li><a href="#specifying-the-number-of-values-included-in-minimum-and-maximum-using-n_min-and-n_max">Specifying the number of values included in minimum and maximum using n_min and n_max</a></li>
-<li><a href="#extreme-values-by-groups">Extreme values by groups</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#sdc_log">sdc_log()</a></li>
-<li><a href="#return-values">Return values</a></li>
-</ul>
-</div>
-
-<div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>This vignette introduces the sdcLog package and its main functions, illustrated with various examples. The sdcLog package provides tools which simplify statistical disclosure control in the context of research data centres (RDC).</p>
+
+<p>This vignette introduces the sdcLog package and its main functions, illustrated
+with various examples. The sdcLog package provides tools which simplify
+statistical disclosure control in the context of research data centres (RDC).</p>
+
 <p>The package includes three main functions:</p>
+
 <ul>
-<li><p><code>sdc_descriptives()</code>: This function is used for statistical disclosure control of descriptive statistics. It checks the data used for the calculation of descriptive statistics for compliance with the rules and regulations set by the RDC.</p>
-<p>The calculation of simple extreme values such as minimum and maximum is usually not allowed according to RDC rules, so <code>sdc_descriptives()</code> cannot be used to check them. Extreme values can only be used if they were calculated with <code>sdc_extreme()</code>.</p></li>
-<li><p><code>sdc_model()</code>: This function is used for statistical disclosure control for various types of models. It checks the calculated model and the underlying data for compliance with the rules and regulations of the RDC.</p></li>
-<li><p><code>sdc_extreme()</code>: This function is used for the automatic calculation (if possible) of extreme values according to the rules of the research data centre. It uses the available data and calculates the values for desired variables and groupings in compliance with the rules. The values are calculated as averages of a sufficient number of observations. This helps the researcher to easily follow the rules and simplifies the output control.</p></li>
+<li><p><code>sdc_descriptives()</code>: This function is used for statistical disclosure
+control of descriptive statistics. It checks the data used for the
+calculation of descriptive statistics for compliance with the rules and
+regulations set by the RDC.</p>
+
+<p>The calculation of simple extreme values such as minimum and maximum is
+usually not allowed according to RDC rules, so <code>sdc_descriptives()</code> cannot
+be used to check them. Extreme values can only be used if they were
+calculated with <code>sdc_extreme()</code>.</p></li>
+<li><p><code>sdc_model()</code>: This function is used for statistical disclosure control for
+various types of models. It checks the calculated model and the underlying
+data for compliance with the rules and regulations of the RDC.</p></li>
+<li><p><code>sdc_extreme()</code>: This function is used for the automatic calculation (if
+possible) of extreme values according to the rules of the research data
+centre. It uses the available data and calculates the values for desired
+variables and groupings in compliance with the rules. The values are
+calculated as averages of a sufficient number of observations. This helps
+the researcher to easily follow the rules and simplifies the output control.</p></li>
 </ul>
-</div>
-<div id="sdc_descriptives" class="section level1">
+
 <h1>sdc_descriptives()</h1>
-<p>This function performs statistical disclosure control according to two main criteria: On the one hand, it checks for a sufficiently large number of different statistical entities. On the other hand, it checks for dominance, which means that two entities must not account for more than 85 percent of the observed values. How to use <code>sdc_descriptives()</code> is shown below.</p>
-<div id="data" class="section level2">
+
+<p>This function performs statistical disclosure control according to two main
+criteria: On the one hand, it checks for a sufficiently large number of
+different statistical entities. On the other hand, it checks for dominance,
+which means that two entities must not account for more than 85 percent of the
+observed values. How to use <code>sdc_descriptives()</code> is shown below.</p>
+
 <h2>Data</h2>
-<p>To introduce <code>sdc_descriptives()</code>, a simple toy dataset is used. There are 20 observations of 10 distinct entities from two different sectors and values in the years 2019 and 2020 for the variables <code>val_1</code> and <code>val_2</code>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">data</span>(<span class="st">&quot;sdc_descriptives_DT&quot;</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>sdc_descriptives_DT</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt;     id sector year      val_1    val_2</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt;  1:  A     S1 2019         NA 9.477642</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt;  2:  A     S1 2020  94.174449 5.856641</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt;  3:  B     S1 2019   4.349115 3.697140</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt;  4:  B     S1 2020   2.589011 6.796527</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt;  5:  C     S1 2019   6.155680 7.213390</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt;  6:  C     S1 2020   7.183206 5.948330</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt;  7:  D     S1 2019   9.173870 3.004441</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt;  8:  D     S1 2020   4.456933 0.000000</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt;  9:  E     S1 2019   2.815137 4.137765</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt; 10:  E     S1 2020   7.928573 0.000000</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; 11:  F     S2 2019   9.085507 5.088913</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; 12:  F     S2 2020 180.816675 0.000000</span></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt; 13:  G     S2 2019   9.502077 2.107123</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; 14:  G     S2 2020   7.458567 0.000000</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; 15:  H     S2 2019   6.947180 5.059104</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">#&gt; 16:  H     S2 2020   9.927155 3.489741</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="co">#&gt; 17:  I     S2 2019   6.662026 8.957527</span></span>
-<span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt; 18:  I     S2 2020   4.420317 8.618987</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; 19:  J     S2 2019   1.556076 4.722792</span></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; 20:  J     S2 2020   7.997007 7.347734</span></span></code></pre></div>
-</div>
-<div id="examples" class="section level2">
+
+<p>To introduce <code>sdc_descriptives()</code>, a simple toy dataset is used. There are 20
+observations of 10 distinct entities from two different sectors and values in
+the years 2019 and 2020 for the variables <code>val_1</code> and <code>val_2</code>.</p>
+
+<pre><code class="r">data(&quot;sdc_descriptives_DT&quot;)
+sdc_descriptives_DT
+#&gt;     id sector year      val_1    val_2
+#&gt;  1:  A     S1 2019         NA 9.477642
+#&gt;  2:  A     S1 2020  94.174449 5.856641
+#&gt;  3:  B     S1 2019   4.349115 3.697140
+#&gt;  4:  B     S1 2020   2.589011 6.796527
+#&gt;  5:  C     S1 2019   6.155680 7.213390
+#&gt;  6:  C     S1 2020   7.183206 5.948330
+#&gt;  7:  D     S1 2019   9.173870 3.004441
+#&gt;  8:  D     S1 2020   4.456933 0.000000
+#&gt;  9:  E     S1 2019   2.815137 4.137765
+#&gt; 10:  E     S1 2020   7.928573 0.000000
+#&gt; 11:  F     S2 2019   9.085507 5.088913
+#&gt; 12:  F     S2 2020 180.816675 0.000000
+#&gt; 13:  G     S2 2019   9.502077 2.107123
+#&gt; 14:  G     S2 2020   7.458567 0.000000
+#&gt; 15:  H     S2 2019   6.947180 5.059104
+#&gt; 16:  H     S2 2020   9.927155 3.489741
+#&gt; 17:  I     S2 2019   6.662026 8.957527
+#&gt; 18:  I     S2 2020   4.420317 8.618987
+#&gt; 19:  J     S2 2019   1.556076 4.722792
+#&gt; 20:  J     S2 2020   7.997007 7.347734
+</code></pre>
+
 <h2>Examples</h2>
-<div id="simple-cases" class="section level3">
+
 <h3>Simple cases</h3>
-<p>Consider the case that the mean for <code>val_1</code> <!-- and `val_2`  --> has been calculated and is now to be output as a result:<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>sdc_descriptives_DT[, .(<span class="dt">mean =</span> <span class="kw">mean</span>(val_<span class="dv">1</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))]</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt;        mean</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; 1: 20.16835</span></span></code></pre></div>
-<p>Before this result can be released, it must be checked whether all RDC rules for calculating this value have been followed. Thus, the underlying data is checked for compliance with the RDC rules. <!-- The following examples serve to illustrate the examination of these different cases. --></p>
-<p>This is the simplest case, the descriptive statistic (mean) was calculated for the variable <code>val_1</code> without further specifications. Required arguments of <code>sdc_descriptives()</code> are the data set (<code>data</code>), the ID variable (<code>id_var</code>) and the variable for which the statistics were calculated (<code>val_var</code>):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
-<p>Since there are no problems at this point, the function runs without warnings and returns (invisibly) a list of information containing options, settings and the checked criteria <code>distinct_ids</code> and <code>dominance</code>.</p>
-<p>Options and settings are always printed to show that all specifications are set according to RDC rules. From the output above follows that there are at least 5 distinct entities required (<code>sdc.n_ids: 5</code>) and that dominance is defined as 2 entities (<code>sdc.n_ids_dominance: 2</code>) with a value share of more than 85 percent (<code>sdc.share_dominance: 0.85</code>). This reflects the standard values for the options. For details on setting options see the <a href="options.html">separate vignette on options</a>.</p>
-<p>The settings show again which arguments were specified in the function call and vary depending on the <code>sdc_function</code>. This is important if the result from <code>sdc_descriptives()</code> is not printed right away.</p>
+
+<p>Consider the case that the mean for <code>val_1</code> &lt;!&ndash; and <code>val_2</code>  &ndash;&gt; has been
+calculated and is now to be output as a result:[<sup>1]</sup></p>
+
+<p>[<sup>1]:</sup> Since sdcLog heavily relies on <code>data.table</code>, all examples will use
+    <code>data.table</code> syntax as well.</p>
+
+<pre><code class="r">sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE))]
+#&gt;        mean
+#&gt; 1: 20.16835
+</code></pre>
+
+<p>Before this result can be released, it must be checked whether all RDC rules for
+calculating this value have been followed. Thus, the underlying data is checked
+for compliance with the RDC rules.</p>
+
+<!-- The following examples serve to illustrate the examination of these different cases. -->
+
+<p>This is the simplest case, the descriptive statistic (mean) was calculated for
+the variable <code>val_1</code> without further specifications. Required arguments of
+<code>sdc_descriptives()</code> are the data set (<code>data</code>), the ID variable (<code>id_var</code>) and
+the variable for which the statistics were calculated (<code>val_var</code>):</p>
+
+<pre><code class="r">sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
+<p>Since there are no problems at this point, the function runs without warnings
+and returns (invisibly) a list of information containing options, settings and
+the checked criteria <code>distinct_ids</code> and <code>dominance</code>.</p>
+
+<p>Options and settings are always printed to show that all specifications are set
+according to RDC rules. From the output above follows that there are at least 5
+distinct entities required (<code>sdc.n_ids: 5</code>) and that dominance is defined as 2
+entities (<code>sdc.n_ids_dominance: 2</code>) with a value share of more than 85 percent
+(<code>sdc.share_dominance: 0.85</code>). This reflects the standard values for the
+options. For details on setting options see the <a href="options.html">separate vignette on
+options</a>.</p>
+
+<p>The settings show again which arguments were specified in the function call and
+vary depending on the <code>sdc_function</code>. This is important if the result from
+<code>sdc_descriptives()</code> is not printed right away.</p>
+
 <!-- Depending on the specification of option `sdc.info_level` variously detailed information are printed to the console. Here the default value (sdc.info_level = 1) is used, therefore only a message appears that the output complies to the rules. On the whole, there are no rule violations and the output of the results could be allowed in this case. -->
-</div>
-<div id="grouped-descriptive-statistics-using-by" class="section level3">
+
 <h3>Grouped descriptive statistics using by</h3>
-<p>In this and the following section some advanced cases are presented to introduce more arguments and functionalities of <code>sdc_descriptives()</code>.</p>
-<p>In this case the descriptive statistics for the variable <code>val_1</code> are grouped by <code>sector</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>sdc_descriptives_DT[, .(<span class="dt">mean =</span> <span class="kw">mean</span>(val_<span class="dv">1</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)), by =<span class="st"> &quot;sector&quot;</span>]</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt;    sector     mean</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; 1:     S1 15.42511</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; 2:     S2 24.43726</span></span></code></pre></div>
+
+<p>In this and the following section some advanced cases are presented to introduce
+more arguments and functionalities of <code>sdc_descriptives()</code>.</p>
+
+<p>In this case the descriptive statistics for the variable <code>val_1</code> are grouped by
+<code>sector</code>:</p>
+
+<pre><code class="r">sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE)), by = &quot;sector&quot;]
+#&gt;    sector     mean
+#&gt; 1:     S1 15.42511
+#&gt; 2:     S2 24.43726
+</code></pre>
+
 <!-- To check this type of result we introduce the `by` argument in `sdc_descriptives()`.  -->
-<p>The mean is computed grouped by sector, so the grouping variable must be specified in <code>by</code>. Checking the results leads to the following:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="st">&quot;sector&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE ]</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
-<p>The grouped descriptive statistics by sector do not generate a warning and therefore comply with RDC rules. Therefore, the results could be released in this case.</p>
-<p>In order to extend this case even further, it is now proposed to group the mean of <code>val_1</code> not only by <code>sector</code>, but also additionally by <code>year</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>sdc_descriptives_DT[, .(<span class="dt">mean =</span> <span class="kw">mean</span>(val_<span class="dv">1</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)), by =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, <span class="st">&quot;year&quot;</span>)]</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt;    sector year      mean</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; 1:     S1 2019  5.623451</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; 2:     S1 2020 23.266434</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; 3:     S2 2019  6.750574</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 4:     S2 2020 42.123944</span></span></code></pre></div>
+
+<p>The mean is computed grouped by sector, so the grouping variable must be
+specified in <code>by</code>. Checking the results leads to the following:</p>
+
+<pre><code class="r">sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;, by = &quot;sector&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
+<p>The grouped descriptive statistics by sector do not generate a warning and
+therefore comply with RDC rules. Therefore, the results could be released in
+this case.</p>
+
+<p>In order to extend this case even further, it is now proposed to group the mean
+of <code>val_1</code> not only by <code>sector</code>, but also additionally by <code>year</code>:</p>
+
+<pre><code class="r">sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE)), by = c(&quot;sector&quot;, &quot;year&quot;)]
+#&gt;    sector year      mean
+#&gt; 1:     S1 2019  5.623451
+#&gt; 2:     S1 2020 23.266434
+#&gt; 3:     S2 2019  6.750574
+#&gt; 4:     S2 2020 42.123944
+</code></pre>
+
 <p>To check this result for compliance with RDC rules, use:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, </span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="st">&quot;year&quot;</span>))</span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; Warning: Potential disclosure problem: Dominant entities.</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector, year | zero_as_NA: FALSE ]</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; Dominant entities:</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt;    sector year value_share</span></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; 1:     S1 2020   0.8776852</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; 2:     S2 2020   0.9056314</span></span></code></pre></div>
-<p>Now several warnings appear, as both criteria are violated. For sector 1 (<code>S1</code>) there are not enough distinct ids in year 2019, as there is a missing value in the data. The dominance criterion for year 2020 is violated in both sectors. As can be seen in the table displayed, the value share of approx. 88 for <code>S1</code> (and respectively 91 for <code>S2</code>) percent is above the 85 percent limit. Therefore, the descriptive statistics for <code>val_1</code>, grouped by <code>sector</code> and <code>year</code> cannot be released.</p>
-</div>
-<div id="handling-zeros-using-zero_as_na" class="section level3">
+
+<pre><code class="r">sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;, by = c(&quot;sector&quot;, 
+  &quot;year&quot;))
+#&gt; Warning: Potential disclosure problem: Dominant entities.
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector, year | zero_as_NA: FALSE ]
+#&gt; Dominant entities:
+#&gt;    sector year value_share
+#&gt; 1:     S1 2020   0.8776852
+#&gt; 2:     S2 2020   0.9056314
+</code></pre>
+
+<p>Now several warnings appear, as both criteria are violated. For sector 1 (<code>S1</code>)
+there are not enough distinct ids in year 2019, as there is a missing value in
+the data. The dominance criterion for year 2020 is violated in both sectors. As
+can be seen in the table displayed, the value share of approx. 88 for <code>S1</code> (and
+respectively 91 for <code>S2</code>) percent is above the 85 percent limit. Therefore, the
+descriptive statistics for <code>val_1</code>, grouped by <code>sector</code> and <code>year</code> cannot be
+released.</p>
+
 <h3>Handling zeros using zero_as_NA</h3>
-<p>In this case descriptive statistics grouped by sector and year were calculated for variable <code>val_2</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>sdc_descriptives_DT[, .(<span class="dt">mean =</span> <span class="kw">mean</span>(val_<span class="dv">2</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)), by =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, <span class="st">&quot;year&quot;</span>)]</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt;    sector year     mean</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt; 1:     S1 2019 5.506076</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; 2:     S1 2020 3.720300</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; 3:     S2 2019 5.187092</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; 4:     S2 2020 3.891292</span></span></code></pre></div>
-<p>The compliance with the rules can be checked just as in the previous case (only replacing <code>val_1</code> by <code>val_2</code>):</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_2&quot;</span>, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, </span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="st">&quot;year&quot;</span>))</span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; A share of 0.2 of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt; To prevent this behaviour and / or avoid this message, set &#39;zero_as_NA&#39; explicitly.</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_2 | by: sector, year | zero_as_NA: TRUE ]</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
-<p>The result indicates that problems exist and the output does not comply to the rules. There are not enough distinct entities and the output cannot be released like this.</p>
-<p>An additional message indicates that the value <code>0</code> occurs frequently in the data. This is an indication that <code>0</code> is seen as a missing value here and will be recognized and treated as such.</p>
-<p>It might be the case that it is accurate according to the data basis to treat values of <code>0</code> as <code>0</code> (instead of <code>NA</code>). Then, specifying the argument <code>zero_as_NA = FALSE</code> circumvents the default behaviour and treats <code>0</code> like other numeric values:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_2&quot;</span>, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, </span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="st">&quot;year&quot;</span>), <span class="dt">zero_as_NA =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_2 | by: sector, year | zero_as_NA: FALSE ]</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
-<p>Now <code>0</code> is not recognized as <code>NA</code> anymore. In this case the criterion of distinct entities is not longer violated. Therefore, the output could be released (assuming it is actually correct to treat <code>0</code>s as usual numeric values).</p>
-</div>
-</div>
-</div>
-<div id="sdc_model" class="section level1">
+
+<p>In this case descriptive statistics grouped by sector and year were calculated
+for variable <code>val_2</code>:</p>
+
+<pre><code class="r">sdc_descriptives_DT[, .(mean = mean(val_2, na.rm = TRUE)), by = c(&quot;sector&quot;, &quot;year&quot;)]
+#&gt;    sector year     mean
+#&gt; 1:     S1 2019 5.506076
+#&gt; 2:     S1 2020 3.720300
+#&gt; 3:     S2 2019 5.187092
+#&gt; 4:     S2 2020 3.891292
+</code></pre>
+
+<p>The compliance with the rules can be checked just as in the previous case (only
+replacing <code>val_1</code> by <code>val_2</code>):</p>
+
+<pre><code class="r">sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_2&quot;, by = c(&quot;sector&quot;, 
+  &quot;year&quot;))
+#&gt; A share of 0.2 of &#39;val_var&#39; are zero. These will be treated as &#39;NA&#39;.
+#&gt; To prevent this behaviour and / or avoid this message, set &#39;zero_as_NA&#39; explicitly.
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_2 | by: sector, year | zero_as_NA: TRUE ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
+<p>The result indicates that problems exist and the output does not comply to the
+rules. There are not enough distinct entities and the output cannot be released
+like this.</p>
+
+<p>An additional message indicates that the value <code>0</code> occurs frequently in the
+data. This is an indication that <code>0</code> is seen as a missing value here and will be
+recognized and treated as such.</p>
+
+<p>It might be the case that it is accurate according to the data basis to treat
+values of <code>0</code> as <code>0</code> (instead of <code>NA</code>). Then, specifying the argument
+<code>zero_as_NA = FALSE</code> circumvents the default behaviour and treats <code>0</code> like other
+numeric values:</p>
+
+<pre><code class="r">sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_2&quot;, by = c(&quot;sector&quot;, 
+  &quot;year&quot;), zero_as_NA = FALSE)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_2 | by: sector, year | zero_as_NA: FALSE ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
+<p>Now <code>0</code> is not recognized as <code>NA</code> anymore. In this case the criterion of
+distinct entities is not longer violated. Therefore, the output could be
+released (assuming it is actually correct to treat <code>0</code>s as usual numeric
+values).</p>
+
 <h1>sdc_model()</h1>
-<p>This function checks if your model complies to RDC rules. The criteria of distinct entities and dominance are also checked here. In addition, when using dummy variables, it is checked whether there are enough different entities for each attribute/value level. The function can be used to check a broad range of models like <code>lm</code>, <code>glm</code> and various others (anything which can be handled by <code>broom::augment()</code>; for a list of supported models see <code>?generics::augment</code>).</p>
-<div id="data-models" class="section level2">
+
+<p>This function checks if your model complies to RDC rules. The criteria of
+distinct entities and dominance are also checked here. In addition, when using
+dummy variables, it is checked whether there are enough different entities for
+each attribute/value level. The function can be used to check a broad range of
+models like <code>lm</code>, <code>glm</code> and various others (anything which can be handled by
+<code>broom::augment()</code>; for a list of supported models see <code>?generics::augment</code>).</p>
+
 <h2>Data &amp; models</h2>
-<p>To introduce <code>sdc_model()</code>, another dataset with different variables is used, which include dummy-variables.</p>
-<p>We have 80 observations of 10 different entities for the variables <code>y</code>, <code>x_1</code>, <code>x_2</code>, <code>x_3</code>, <code>x_4</code> and additional information on sector, year and country (dummy variables). A summary of the data set is given below.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">data</span>(<span class="st">&quot;sdc_model_DT&quot;</span>)</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="kw">print</span>(<span class="kw">skim</span>(sdc_model_DT))</span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="co">#&gt; ── Data Summary ────────────────────────</span></span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="co">#&gt;                            Values      </span></span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="co">#&gt; Name                       sdc_model_DT</span></span>
-<span id="cb11-6"><a href="#cb11-6"></a><span class="co">#&gt; Number of rows             80          </span></span>
-<span id="cb11-7"><a href="#cb11-7"></a><span class="co">#&gt; Number of columns          9           </span></span>
-<span id="cb11-8"><a href="#cb11-8"></a><span class="co">#&gt; _______________________                </span></span>
-<span id="cb11-9"><a href="#cb11-9"></a><span class="co">#&gt; Column type frequency:                 </span></span>
-<span id="cb11-10"><a href="#cb11-10"></a><span class="co">#&gt;   factor                   4           </span></span>
-<span id="cb11-11"><a href="#cb11-11"></a><span class="co">#&gt;   numeric                  5           </span></span>
-<span id="cb11-12"><a href="#cb11-12"></a><span class="co">#&gt; ________________________               </span></span>
-<span id="cb11-13"><a href="#cb11-13"></a><span class="co">#&gt; Group variables            None        </span></span>
-<span id="cb11-14"><a href="#cb11-14"></a><span class="co">#&gt; </span></span>
-<span id="cb11-15"><a href="#cb11-15"></a><span class="co">#&gt; ── Variable type: factor ───────────────────────────────────────────────────────</span></span>
-<span id="cb11-16"><a href="#cb11-16"></a><span class="co">#&gt;   skim_variable n_missing complete_rate ordered n_unique</span></span>
-<span id="cb11-17"><a href="#cb11-17"></a><span class="co">#&gt; 1 id                    0             1 FALSE         10</span></span>
-<span id="cb11-18"><a href="#cb11-18"></a><span class="co">#&gt; 2 dummy_1               0             1 FALSE          2</span></span>
-<span id="cb11-19"><a href="#cb11-19"></a><span class="co">#&gt; 3 dummy_2               0             1 FALSE          8</span></span>
-<span id="cb11-20"><a href="#cb11-20"></a><span class="co">#&gt; 4 dummy_3               0             1 FALSE          4</span></span>
-<span id="cb11-21"><a href="#cb11-21"></a><span class="co">#&gt;   top_counts                    </span></span>
-<span id="cb11-22"><a href="#cb11-22"></a><span class="co">#&gt; 1 A: 8, B: 8, C: 8, D: 8        </span></span>
-<span id="cb11-23"><a href="#cb11-23"></a><span class="co">#&gt; 2 S1: 40, S2: 40                </span></span>
-<span id="cb11-24"><a href="#cb11-24"></a><span class="co">#&gt; 3 Y1: 10, Y2: 10, Y3: 10, Y4: 10</span></span>
-<span id="cb11-25"><a href="#cb11-25"></a><span class="co">#&gt; 4 ES: 36, BE: 20, DE: 20, FR: 4 </span></span>
-<span id="cb11-26"><a href="#cb11-26"></a><span class="co">#&gt; </span></span>
-<span id="cb11-27"><a href="#cb11-27"></a><span class="co">#&gt; ── Variable type: numeric ──────────────────────────────────────────────────────</span></span>
-<span id="cb11-28"><a href="#cb11-28"></a><span class="co">#&gt;   skim_variable n_missing complete_rate  mean      sd     p0   p25   p50   p75</span></span>
-<span id="cb11-29"><a href="#cb11-29"></a><span class="co">#&gt; 1 y                     0           1    121.    7.21 102.   116.   121.  125.</span></span>
-<span id="cb11-30"><a href="#cb11-30"></a><span class="co">#&gt; 2 x_1                   0           1    122.   13.3   95.9  111.   122.  133.</span></span>
-<span id="cb11-31"><a href="#cb11-31"></a><span class="co">#&gt; 3 x_2                   0           1    116.   19.4   86.1   99.1  113.  128.</span></span>
-<span id="cb11-32"><a href="#cb11-32"></a><span class="co">#&gt; 4 x_3                  48           0.4  126.   59.0   36.0   81.3  120.  173.</span></span>
-<span id="cb11-33"><a href="#cb11-33"></a><span class="co">#&gt; 5 x_4                   0           1   2544. 5944.     5.98  91.4  164.  227.</span></span>
-<span id="cb11-34"><a href="#cb11-34"></a><span class="co">#&gt;     p100 hist </span></span>
-<span id="cb11-35"><a href="#cb11-35"></a><span class="co">#&gt; 1   139. ▁▅▇▆▁</span></span>
-<span id="cb11-36"><a href="#cb11-36"></a><span class="co">#&gt; 2   152. ▅▇▇▇▂</span></span>
-<span id="cb11-37"><a href="#cb11-37"></a><span class="co">#&gt; 3   152. ▇▇▆▃▆</span></span>
-<span id="cb11-38"><a href="#cb11-38"></a><span class="co">#&gt; 4   230. ▆▆▅▇▃</span></span>
-<span id="cb11-39"><a href="#cb11-39"></a><span class="co">#&gt; 5 25059. ▇▁▁▁▁</span></span></code></pre></div>
-<p>Various simple linear models are specified from this dataset for illustration purposes.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>model_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb12-2"><a href="#cb12-2"></a>model_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">3</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb12-3"><a href="#cb12-3"></a>model_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">4</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb12-4"><a href="#cb12-4"></a>model_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">2</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb12-5"><a href="#cb12-5"></a>model_<span class="dv">5</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">3</span>, <span class="dt">data =</span> sdc_model_DT)</span></code></pre></div>
-</div>
-<div id="examples-1" class="section level2">
+
+<p>To introduce <code>sdc_model()</code>, another dataset with different variables is used,
+which include dummy-variables.</p>
+
+<p>We have 80 observations of 10 different entities for the variables <code>y</code>, <code>x_1</code>,
+<code>x_2</code>, <code>x_3</code>, <code>x_4</code> and additional information on sector, year and country
+(dummy variables). A summary of the data set is given below.</p>
+
+<pre><code class="r">data(&quot;sdc_model_DT&quot;)
+print(skim(sdc_model_DT))
+#&gt; ── Data Summary ────────────────────────
+#&gt;                            Values      
+#&gt; Name                       sdc_model_DT
+#&gt; Number of rows             80          
+#&gt; Number of columns          9           
+#&gt; _______________________                
+#&gt; Column type frequency:                 
+#&gt;   factor                   4           
+#&gt;   numeric                  5           
+#&gt; ________________________               
+#&gt; Group variables            None        
+#&gt; 
+#&gt; ── Variable type: factor ───────────────────────────────────────────────────────
+#&gt;   skim_variable n_missing complete_rate ordered n_unique
+#&gt; 1 id                    0             1 FALSE         10
+#&gt; 2 dummy_1               0             1 FALSE          2
+#&gt; 3 dummy_2               0             1 FALSE          8
+#&gt; 4 dummy_3               0             1 FALSE          4
+#&gt;   top_counts                    
+#&gt; 1 A: 8, B: 8, C: 8, D: 8        
+#&gt; 2 S1: 40, S2: 40                
+#&gt; 3 Y1: 10, Y2: 10, Y3: 10, Y4: 10
+#&gt; 4 ES: 36, BE: 20, DE: 20, FR: 4 
+#&gt; 
+#&gt; ── Variable type: numeric ──────────────────────────────────────────────────────
+#&gt;   skim_variable n_missing complete_rate  mean      sd     p0   p25   p50   p75
+#&gt; 1 y                     0           1    121.    7.21 102.   116.   121.  125.
+#&gt; 2 x_1                   0           1    122.   13.3   95.9  111.   122.  133.
+#&gt; 3 x_2                   0           1    116.   19.4   86.1   99.1  113.  128.
+#&gt; 4 x_3                  48           0.4  126.   59.0   36.0   81.3  120.  173.
+#&gt; 5 x_4                   0           1   2544. 5944.     5.98  91.4  164.  227.
+#&gt;     p100 hist 
+#&gt; 1   139. ▁▅▇▆▁
+#&gt; 2   152. ▅▇▇▇▂
+#&gt; 3   152. ▇▇▆▃▆
+#&gt; 4   230. ▆▆▅▇▃
+#&gt; 5 25059. ▇▁▁▁▁
+</code></pre>
+
+<p>Various simple linear models are specified from this dataset for illustration
+purposes.</p>
+
+<pre><code class="r">model_1 &lt;- lm(y ~ x_1 + x_2, data = sdc_model_DT)
+model_2 &lt;- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
+model_3 &lt;- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+model_4 &lt;- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+model_5 &lt;- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
+</code></pre>
+
 <h2>Examples</h2>
+
 <!-- The previously specified models are now checked for compliance with the rules of the RDC. It is checked, if there are enough distinct entities in the whole model and each model variable is checked if there are problems with dominance. Also every dummy variable is checked for compliance with the rules. -->
-<p>A pre-selection of problematic and unproblematic models has been made to better explain the differences. To check for compliance, the model object (<code>model</code>), the data used (<code>data</code>) and the ID variable (<code>id_var</code>) must be specified in <code>sdc_model()</code>.</p>
-<div id="simple-cases-1" class="section level3">
+
+<p>A pre-selection of problematic and unproblematic models has been made to better
+explain the differences. To check for compliance, the model object (<code>model</code>),
+the data used (<code>data</code>) and the ID variable (<code>id_var</code>) must be specified in
+<code>sdc_model()</code>.</p>
+
 <h3>Simple cases</h3>
+
 <p>A check of <code>model_1</code> and <code>model_4</code> is shown below.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">1</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb13-5"><a href="#cb13-5"></a></span>
-<span id="cb13-6"><a href="#cb13-6"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">4</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb13-7"><a href="#cb13-7"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb13-9"><a href="#cb13-9"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
+
+<pre><code class="r">sdc_model(data = sdc_model_DT, model = model_1, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+
+sdc_model(data = sdc_model_DT, model = model_4, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
 <p>As we see, there are no problems and the models could be released as output.</p>
-</div>
-<div id="problematic-cases" class="section level3">
+
 <h3>Problematic cases</h3>
-<p>Now we turn to the problematic cases. We are checking the models <code>model_2</code> and <code>model_3</code> as well as <code>model_5</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">2</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a></span>
-<span id="cb14-6"><a href="#cb14-6"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">3</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb14-7"><a href="#cb14-7"></a><span class="co">#&gt; Warning: Potential disclosure problem: Dominant entities.</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt; $x_4</span></span>
-<span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt; Dominant entities:</span></span>
-<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;    value_share</span></span>
-<span id="cb14-13"><a href="#cb14-13"></a><span class="co">#&gt; 1:   0.9605059</span></span>
-<span id="cb14-14"><a href="#cb14-14"></a></span>
-<span id="cb14-15"><a href="#cb14-15"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">5</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb14-16"><a href="#cb14-16"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb14-18"><a href="#cb14-18"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
+
+<p>Now we turn to the problematic cases. We are checking the models <code>model_2</code> and
+<code>model_3</code> as well as <code>model_5</code>:</p>
+
+<pre><code class="r">sdc_model(data = sdc_model_DT, model = model_2, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+
+sdc_model(data = sdc_model_DT, model = model_3, id_var = &quot;id&quot;)
+#&gt; Warning: Potential disclosure problem: Dominant entities.
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; $x_4
+#&gt; Dominant entities:
+#&gt;    value_share
+#&gt; 1:   0.9605059
+
+sdc_model(data = sdc_model_DT, model = model_5, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
 <p>Some difficulties occur with these models, but which?</p>
-<p><code>model_2</code> leads to problems with the number of distinct entities. This problem arises with the inclusion of variable <code>x_3</code> due to a high number of <code>NA</code>s.</p>
-<p>In <code>model_3</code> there are problems with dominance for variable <code>x_4</code>. Thus, according to the RDC rules, these models cannot be released.</p>
-<p>For <code>model_5</code> the problem stems from a small number of distinct entities for the value level <code>FR</code> of <code>dummy_3</code>. Therefore this model cannot be released either. Please note that this last case is probably the most common problem to occur when checking models.</p>
-</div>
-</div>
-</div>
-<div id="sdc_extreme" class="section level1">
+
+<p><code>model_2</code> leads to problems with the number of distinct entities. This problem
+arises with the inclusion of variable <code>x_3</code> due to a high number of <code>NA</code>s.</p>
+
+<p>In <code>model_3</code> there are problems with dominance for variable <code>x_4</code>. Thus,
+according to the RDC rules, these models cannot be released.</p>
+
+<p>For <code>model_5</code> the problem stems from a small number of distinct entities for the
+value level <code>FR</code> of <code>dummy_3</code>. Therefore this model cannot be released either.
+Please note that this last case is probably the most common problem to occur
+when checking models.</p>
+
 <h1>sdc_extreme()</h1>
-<p>This function automatically calculates extreme values that comply with the rules of the RDC. Again, it mainly checks the criteria of distinct entities and dominance. The values are calculated as averages of a sufficiently large number of observations. It is based on an iterative procedure that aggregates data until there are enough distinct entities to calculate the extreme values and no problems with dominance occur.</p>
-<p>The function always starts the iteration process with the lowest possible number of observations for each extreme value (here <code>5</code>, since at least five distinct statistical units must be included in the calculation according to the rules of the RDC). Furthermore, the function checks that the subsets of data for minimum and maximum do not overlap.</p>
-<p>If there are no problems with the calculation, the function returns a list with the extreme values. Maximum and minimum are always output together, none of the two can be calculated separately. If it is not possible to calculate extreme values under these criteria, a corresponding message is printed and the result is filled with <code>NA</code>.</p>
-<div id="data-1" class="section level2">
+
+<p>This function automatically calculates extreme values that comply with the rules
+of the RDC. Again, it mainly checks the criteria of distinct entities and
+dominance. The values are calculated as averages of a sufficiently large number
+of observations. It is based on an iterative procedure that aggregates data
+until there are enough distinct entities to calculate the extreme values and no
+problems with dominance occur.</p>
+
+<p>The function always starts the iteration process with the lowest possible number
+of observations for each extreme value (here <code>5</code>, since at least five distinct
+statistical units must be included in the calculation according to the rules of
+the RDC). Furthermore, the function checks that the subsets of data for minimum
+and maximum do not overlap.</p>
+
+<p>If there are no problems with the calculation, the function returns a list with
+the extreme values. Maximum and minimum are always output together, none of the
+two can be calculated separately. If it is not possible to calculate extreme
+values under these criteria, a corresponding message is printed and the result
+is filled with <code>NA</code>.</p>
+
 <h2>Data</h2>
-<p>To introduce <code>sdc_extreme()</code>, another simple dataset is used. We have 20 observations of 10 different entities, for which the corresponding sector is given and values for the variables <code>val_1</code>, <code>val_2</code>, <code>val_3</code> in the years 2019 and 2020, respectively.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">data</span>(<span class="st">&quot;sdc_extreme_DT&quot;</span>)</span>
-<span id="cb15-2"><a href="#cb15-2"></a>sdc_extreme_DT</span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="co">#&gt;     id sector year val_1 val_2 val_3</span></span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="co">#&gt;  1:  A     S1 2019    20   200    NA</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a><span class="co">#&gt;  2:  B     S1 2020    19   190    19</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a><span class="co">#&gt;  3:  C     S1 2019    18    18    18</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a><span class="co">#&gt;  4:  D     S1 2020    17    17    17</span></span>
-<span id="cb15-8"><a href="#cb15-8"></a><span class="co">#&gt;  5:  E     S1 2019    16    16    16</span></span>
-<span id="cb15-9"><a href="#cb15-9"></a><span class="co">#&gt;  6:  F     S1 2020    15    15    15</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a><span class="co">#&gt;  7:  G     S1 2019    14    14    14</span></span>
-<span id="cb15-11"><a href="#cb15-11"></a><span class="co">#&gt;  8:  H     S1 2020    13    13    13</span></span>
-<span id="cb15-12"><a href="#cb15-12"></a><span class="co">#&gt;  9:  I     S1 2019    12    12    12</span></span>
-<span id="cb15-13"><a href="#cb15-13"></a><span class="co">#&gt; 10:  J     S1 2020    11    11    11</span></span>
-<span id="cb15-14"><a href="#cb15-14"></a><span class="co">#&gt; 11:  A     S2 2019    10    10    10</span></span>
-<span id="cb15-15"><a href="#cb15-15"></a><span class="co">#&gt; 12:  B     S2 2020     9     9     9</span></span>
-<span id="cb15-16"><a href="#cb15-16"></a><span class="co">#&gt; 13:  C     S2 2019     8     8     8</span></span>
-<span id="cb15-17"><a href="#cb15-17"></a><span class="co">#&gt; 14:  D     S2 2020     7     7     7</span></span>
-<span id="cb15-18"><a href="#cb15-18"></a><span class="co">#&gt; 15:  E     S2 2019     6     6     6</span></span>
-<span id="cb15-19"><a href="#cb15-19"></a><span class="co">#&gt; 16:  F     S2 2020     5     5     5</span></span>
-<span id="cb15-20"><a href="#cb15-20"></a><span class="co">#&gt; 17:  G     S2 2019     4     4     4</span></span>
-<span id="cb15-21"><a href="#cb15-21"></a><span class="co">#&gt; 18:  H     S2 2020     3     3     3</span></span>
-<span id="cb15-22"><a href="#cb15-22"></a><span class="co">#&gt; 19:  I     S2 2019     2     2     2</span></span>
-<span id="cb15-23"><a href="#cb15-23"></a><span class="co">#&gt; 20:  J     S2 2020     1     1     1</span></span></code></pre></div>
-</div>
-<div id="examples-2" class="section level2">
+
+<p>To introduce <code>sdc_extreme()</code>, another simple dataset is used. We have 20
+observations of 10 different entities, for which the corresponding sector is
+given and values for the variables <code>val_1</code>, <code>val_2</code>, <code>val_3</code> in the years 2019
+and 2020, respectively.</p>
+
+<pre><code class="r">data(&quot;sdc_extreme_DT&quot;)
+sdc_extreme_DT
+#&gt;     id sector year val_1 val_2 val_3
+#&gt;  1:  A     S1 2019    20   200    NA
+#&gt;  2:  B     S1 2020    19   190    19
+#&gt;  3:  C     S1 2019    18    18    18
+#&gt;  4:  D     S1 2020    17    17    17
+#&gt;  5:  E     S1 2019    16    16    16
+#&gt;  6:  F     S1 2020    15    15    15
+#&gt;  7:  G     S1 2019    14    14    14
+#&gt;  8:  H     S1 2020    13    13    13
+#&gt;  9:  I     S1 2019    12    12    12
+#&gt; 10:  J     S1 2020    11    11    11
+#&gt; 11:  A     S2 2019    10    10    10
+#&gt; 12:  B     S2 2020     9     9     9
+#&gt; 13:  C     S2 2019     8     8     8
+#&gt; 14:  D     S2 2020     7     7     7
+#&gt; 15:  E     S2 2019     6     6     6
+#&gt; 16:  F     S2 2020     5     5     5
+#&gt; 17:  G     S2 2019     4     4     4
+#&gt; 18:  H     S2 2020     3     3     3
+#&gt; 19:  I     S2 2019     2     2     2
+#&gt; 20:  J     S2 2020     1     1     1
+</code></pre>
+
 <h2>Examples</h2>
-<div id="simple-cases-2" class="section level3">
+
 <h3>Simple cases</h3>
-<p>In this simple case, extreme values should be calculated for variable <code>val_1</code>. This can be done with <code>sdc_extreme()</code> by specifying the dataset (<code>data</code>), the id variable (<code>id_var</code>) and the variable for which extreme values are to be calculated (<code>val_var</code>).</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 ]</span></span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="co">#&gt;    val_var min n_obs_min max n_obs_max</span></span>
-<span id="cb16-5"><a href="#cb16-5"></a><span class="co">#&gt; 1:   val_1   3         5  18         5</span></span></code></pre></div>
-<p>Since no problems occur, the function (invisibly) returns a list with the options, settings and extreme values and prints the calculated extreme values. As shown in the output, the extreme values could be calculated and 5 observations were used for each value. Thus, no additional observations had to be included in the calculation.</p>
+
+<p>In this simple case, extreme values should be calculated for variable <code>val_1</code>.
+This can be done with <code>sdc_extreme()</code> by specifying the dataset (<code>data</code>), the id
+variable (<code>id_var</code>) and the variable for which extreme values are to be
+calculated (<code>val_var</code>).</p>
+
+<pre><code class="r">sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 ]
+#&gt;    val_var min n_obs_min max n_obs_max
+#&gt; 1:   val_1   3         5  18         5
+</code></pre>
+
+<p>Since no problems occur, the function (invisibly) returns a list with the
+options, settings and extreme values and prints the calculated extreme values.
+As shown in the output, the extreme values could be calculated and 5
+observations were used for each value. Thus, no additional observations had to
+be included in the calculation.</p>
+
 <!-- ### Advanced cases -->
+
 <!-- In this section some advanced cases are presented to introduce more arguments and functionalities of the function `sdc_extreme()`. -->
-</div>
-<div id="specifying-the-number-of-values-included-in-minimum-and-maximum-using-n_min-and-n_max" class="section level3">
+
 <h3>Specifying the number of values included in minimum and maximum using n_min and n_max</h3>
+
 <p>In this case extreme values are to be calculated for variable <code>val_2</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_2&quot;</span>)</span>
-<span id="cb17-2"><a href="#cb17-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_2 ]</span></span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="co">#&gt;    val_var min n_obs_min      max n_obs_max</span></span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="co">#&gt; 1:   val_2   3         5 67.14286         7</span></span></code></pre></div>
-<p>If we look at the output, we see that 5 observations were used to calculate the minimum and 7 observations to calculate the maximum. This is because the dominance criterion would be violated if only 5 observations were considered for the maximum. Thus 7 observations are automatically taken into account.</p>
-<p>If you prefer to include an equal number of observations per extreme value, it is possible to specify this using the arguments <code>n_min</code> and <code>n_max</code>. To specify that 7 observations are used for the calculation of the minimum value as well, set <code>n_min = 7</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_2&quot;</span>, <span class="dt">n_min =</span> <span class="dv">7</span>)</span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_2 ]</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a><span class="co">#&gt;    val_var min n_obs_min      max n_obs_max</span></span>
-<span id="cb18-5"><a href="#cb18-5"></a><span class="co">#&gt; 1:   val_2   4         7 67.14286         7</span></span></code></pre></div>
+
+<pre><code class="r">sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_2&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_2 ]
+#&gt;    val_var min n_obs_min      max n_obs_max
+#&gt; 1:   val_2   3         5 67.14286         7
+</code></pre>
+
+<p>If we look at the output, we see that 5 observations were used to calculate the
+minimum and 7 observations to calculate the maximum. This is because the
+dominance criterion would be violated if only 5 observations were considered for
+the maximum. Thus 7 observations are automatically taken into account.</p>
+
+<p>If you prefer to include an equal number of observations per extreme value, it
+is possible to specify this using the arguments <code>n_min</code> and <code>n_max</code>. To specify
+that 7 observations are used for the calculation of the minimum value as well,
+set <code>n_min = 7</code>.</p>
+
+<pre><code class="r">sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_2&quot;, n_min = 7)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_2 ]
+#&gt;    val_var min n_obs_min      max n_obs_max
+#&gt; 1:   val_2   4         7 67.14286         7
+</code></pre>
+
 <p>Now the same number of observations are used to calculate the extreme values.</p>
-<p>Consider the case in which extreme values are to be calculated for variable <code>val_3</code> and exactly 10 observations are to be included in each value. To do so, <code>n_max = 10</code> and <code>n_min = 10</code> would need to be specified:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_3&quot;</span>, <span class="dt">n_min =</span> <span class="dv">10</span>, </span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="dt">n_max =</span> <span class="dv">10</span>)</span>
-<span id="cb19-3"><a href="#cb19-3"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb19-4"><a href="#cb19-4"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_3 ]</span></span>
-<span id="cb19-5"><a href="#cb19-5"></a><span class="co">#&gt; It is impossible to compute extreme values for variable &#39;val_3&#39; that comply to RDC rules.</span></span></code></pre></div>
-<p>But now an error occurs and it is pointed out that it is impossible to calculate extreme values in this case. This is because there is a missing value in <code>val_3</code>, so the subsets for the calculation of minimum and maximum values would overlap. Therefore, fewer observations per extreme value would have to be used - for example 8 each.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_3&quot;</span>, <span class="dt">n_min =</span> <span class="dv">8</span>, <span class="dt">n_max =</span> <span class="dv">8</span>)</span>
-<span id="cb20-2"><a href="#cb20-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb20-3"><a href="#cb20-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_3 ]</span></span>
-<span id="cb20-4"><a href="#cb20-4"></a><span class="co">#&gt;    val_var min n_obs_min  max n_obs_max</span></span>
-<span id="cb20-5"><a href="#cb20-5"></a><span class="co">#&gt; 1:   val_3 4.5         8 15.5         8</span></span></code></pre></div>
-</div>
-<div id="extreme-values-by-groups" class="section level3">
+
+<p>Consider the case in which extreme values are to be calculated for variable
+<code>val_3</code> and exactly 10 observations are to be included in each value. To do so,
+<code>n_max = 10</code> and <code>n_min = 10</code> would need to be specified:</p>
+
+<pre><code class="r">sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_3&quot;, n_min = 10, 
+  n_max = 10)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_3 ]
+#&gt; It is impossible to compute extreme values for variable &#39;val_3&#39; that comply to RDC rules.
+</code></pre>
+
+<p>But now an error occurs and it is pointed out that it is impossible to calculate
+extreme values in this case. This is because there is a missing value in
+<code>val_3</code>, so the subsets for the calculation of minimum and maximum values would
+overlap. Therefore, fewer observations per extreme value would have to be used -
+for example 8 each.</p>
+
+<pre><code class="r">sdc_extreme(data = sdc_extreme_DT, id = &quot;id&quot;, val_var = &quot;val_3&quot;, n_min = 8, n_max = 8)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_3 ]
+#&gt;    val_var min n_obs_min  max n_obs_max
+#&gt; 1:   val_3 4.5         8 15.5         8
+</code></pre>
+
 <h3>Extreme values by groups</h3>
-<p>It is also possible to calculate extreme values by groups. In the following, these are calculated by <code>year</code> and <code>sector</code>, separately.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="st">&quot;year&quot;</span>)</span>
-<span id="cb21-2"><a href="#cb21-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb21-3"><a href="#cb21-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: year ]</span></span>
-<span id="cb21-4"><a href="#cb21-4"></a><span class="co">#&gt;    val_var year min n_obs_min max n_obs_max</span></span>
-<span id="cb21-5"><a href="#cb21-5"></a><span class="co">#&gt; 1:   val_1 2019   6         5  16         5</span></span>
-<span id="cb21-6"><a href="#cb21-6"></a><span class="co">#&gt; 2:   val_1 2020   5         5  15         5</span></span>
-<span id="cb21-7"><a href="#cb21-7"></a></span>
-<span id="cb21-8"><a href="#cb21-8"></a><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="st">&quot;sector&quot;</span>)</span>
-<span id="cb21-9"><a href="#cb21-9"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb21-10"><a href="#cb21-10"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector ]</span></span>
-<span id="cb21-11"><a href="#cb21-11"></a><span class="co">#&gt;    val_var sector min n_obs_min max n_obs_max</span></span>
-<span id="cb21-12"><a href="#cb21-12"></a><span class="co">#&gt; 1:   val_1     S1  13         5  18         5</span></span>
-<span id="cb21-13"><a href="#cb21-13"></a><span class="co">#&gt; 2:   val_1     S2   3         5   8         5</span></span></code></pre></div>
+
+<p>It is also possible to calculate extreme values by groups. In the following,
+these are calculated by <code>year</code> and <code>sector</code>, separately.</p>
+
+<pre><code class="r">sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;, by = &quot;year&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: year ]
+#&gt;    val_var year min n_obs_min max n_obs_max
+#&gt; 1:   val_1 2019   6         5  16         5
+#&gt; 2:   val_1 2020   5         5  15         5
+
+sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;, by = &quot;sector&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector ]
+#&gt;    val_var sector min n_obs_min max n_obs_max
+#&gt; 1:   val_1     S1  13         5  18         5
+#&gt; 2:   val_1     S2   3         5   8         5
+</code></pre>
+
 <p>No problems occur, so extreme values are calculated and output for each group.</p>
-<p>This can also be done for several grouping variables. Therefore in the following extreme values for variable ‘val_1’ are to be calculated by year and sector.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>res &lt;-<span class="st"> </span><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> .(sector, </span>
-<span id="cb22-2"><a href="#cb22-2"></a>  year))</span>
-<span id="cb22-3"><a href="#cb22-3"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb22-4"><a href="#cb22-4"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector, year ]</span></span>
-<span id="cb22-5"><a href="#cb22-5"></a><span class="co">#&gt; It is impossible to compute extreme values for variable &#39;val_1&#39; that comply to RDC rules.</span></span>
-<span id="cb22-6"><a href="#cb22-6"></a>res</span>
-<span id="cb22-7"><a href="#cb22-7"></a><span class="co">#&gt;    val_var sector year min n_obs_min max n_obs_max</span></span>
-<span id="cb22-8"><a href="#cb22-8"></a><span class="co">#&gt; 1:   val_1     S1 2019  NA        NA  NA        NA</span></span>
-<span id="cb22-9"><a href="#cb22-9"></a><span class="co">#&gt; 2:   val_1     S1 2020  NA        NA  NA        NA</span></span>
-<span id="cb22-10"><a href="#cb22-10"></a><span class="co">#&gt; 3:   val_1     S2 2019  NA        NA  NA        NA</span></span>
-<span id="cb22-11"><a href="#cb22-11"></a><span class="co">#&gt; 4:   val_1     S2 2020  NA        NA  NA        NA</span></span></code></pre></div>
-<p>Now an error occurs, since the RDC rules would be violated for the calculation of these values. For programming purposes, please note that the structure of the resulting <code>data.table</code> remains the same (but is filled with <code>NA</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="co"># extreme_vals</span></span></code></pre></div>
-</div>
-</div>
-</div>
-<div id="sdc_log" class="section level1">
+
+<p>This can also be done for several grouping variables. Therefore in the following
+extreme values for variable &#39;val_1&#39; are to be calculated by year and sector.</p>
+
+<pre><code class="r">res &lt;- sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;, by = .(sector, 
+  year))
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector, year ]
+#&gt; It is impossible to compute extreme values for variable &#39;val_1&#39; that comply to RDC rules.
+res
+#&gt;    val_var sector year min n_obs_min max n_obs_max
+#&gt; 1:   val_1     S1 2019  NA        NA  NA        NA
+#&gt; 2:   val_1     S1 2020  NA        NA  NA        NA
+#&gt; 3:   val_1     S2 2019  NA        NA  NA        NA
+#&gt; 4:   val_1     S2 2020  NA        NA  NA        NA
+</code></pre>
+
+<p>Now an error occurs, since the RDC rules would be violated for the calculation
+of these values. For programming purposes, please note that the structure of the
+resulting <code>data.table</code> remains the same (but is filled with <code>NA</code>:</p>
+
+<pre><code class="r"># extreme_vals
+</code></pre>
+
 <h1>sdc_log()</h1>
-<p>This function serves to create Stata-like log files from R Scripts. The function is called to wrap an R script containing your analysis to write the corresponding code and console output into a log file. It can handle single files or a list of files at once.</p>
-<p>A character vector containing the path(s) of the R script(s) which should be run must be specified in the function arguments as well as a character vector containing the path(s) of the text file(s) where the log(s) should be stored. Due to additional arguments it is also possible to specify whether to replace already existing log files and whether it is desired to receive warnings and messages from running the <code>r_scripts</code>.</p>
+
+<p>This function serves to create Stata-like log files from R Scripts. The function
+is called to wrap an R script containing your analysis to write the
+corresponding code and console output into a log file. It can handle single
+files or a list of files at once.</p>
+
+<p>A character vector containing the path(s) of the R script(s) which should be run
+must be specified in the function arguments as well as a character vector
+containing the path(s) of the text file(s) where the log(s) should be stored.
+Due to additional arguments it is also possible to specify whether to replace
+already existing log files and whether it is desired to receive warnings and
+messages from running the <code>r_scripts</code>.</p>
+
 <p>A simple call of this function could look as follows:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">sdc_log</span>(<span class="dt">r_scripts =</span> <span class="st">&quot;/home/my_project/R/my_script.R&quot;</span>, <span class="dt">log_files =</span> <span class="st">&quot;/home/my_project/log/my_script.txt&quot;</span>)</span></code></pre></div>
-<p>Even though this seems trivial, creating logs for your scripts is essential since it bundles all information needed by the RDC for output control.</p>
-</div>
-<div id="return-values" class="section level1">
+
+<pre><code class="r">sdc_log(r_scripts = &quot;/home/my_project/R/my_script.R&quot;, log_files = &quot;/home/my_project/log/my_script.txt&quot;)
+</code></pre>
+
+<p>Even though this seems trivial, creating logs for your scripts is essential
+since it bundles all information needed by the RDC for output control.</p>
+
 <h1>Return values</h1>
-<p>This section explains the return value(s) of <code>sdc_functions</code> in more detail. <code>sdc_descriptives()</code>, <code>sdc_extreme()</code> and <code>sdc_model()</code> each return a list containing options and settings as well as additional, function specific information.</p>
-<p>Each function returns a list, e.g. for <code>sdc_descriptives()</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">typeof</span>(<span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>))</span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="co">#&gt; [1] &quot;list&quot;</span></span>
-<span id="cb25-3"><a href="#cb25-3"></a></span>
-<span id="cb25-4"><a href="#cb25-4"></a>model_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb25-5"><a href="#cb25-5"></a>model_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">3</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb25-6"><a href="#cb25-6"></a>model_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">4</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb25-7"><a href="#cb25-7"></a>model_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">2</span>, <span class="dt">data =</span> sdc_model_DT)</span>
-<span id="cb25-8"><a href="#cb25-8"></a>model_<span class="dv">5</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>x_<span class="dv">2</span> <span class="op">+</span><span class="st"> </span>dummy_<span class="dv">3</span>, <span class="dt">data =</span> sdc_model_DT)</span></code></pre></div>
-<p>If the object is assigned, only warnings and messages are printed (if they occur at all):</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, </span>
-<span id="cb26-2"><a href="#cb26-2"></a>  <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span>
-<span id="cb26-3"><a href="#cb26-3"></a></span>
-<span id="cb26-4"><a href="#cb26-4"></a>result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, </span>
-<span id="cb26-5"><a href="#cb26-5"></a>  <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;sector&quot;</span>, <span class="st">&quot;year&quot;</span>))</span>
-<span id="cb26-6"><a href="#cb26-6"></a><span class="co">#&gt; Warning: Potential disclosure problem: Dominant entities.</span></span></code></pre></div>
-<p>If the object itself is printed, the user receives the same information that would have been printed directly without assignment.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, </span>
-<span id="cb27-2"><a href="#cb27-2"></a>  <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">1</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb28-2"><a href="#cb28-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb28-3"><a href="#cb28-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb28-4"><a href="#cb28-4"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb28-5"><a href="#cb28-5"></a></span>
-<span id="cb28-6"><a href="#cb28-6"></a>result_sdc_descriptives</span>
-<span id="cb28-7"><a href="#cb28-7"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb28-8"><a href="#cb28-8"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb28-9"><a href="#cb28-9"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb28-10"><a href="#cb28-10"></a></span>
-<span id="cb28-11"><a href="#cb28-11"></a><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span>
-<span id="cb28-12"><a href="#cb28-12"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb28-13"><a href="#cb28-13"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb28-14"><a href="#cb28-14"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb28-15"><a href="#cb28-15"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">4</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb28-16"><a href="#cb28-16"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb28-17"><a href="#cb28-17"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb28-18"><a href="#cb28-18"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
-<p>There are additional information that vary depending on the function. The function <code>sdc_descriptives()</code> gives, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for the checked variable. The object is of class <code>sdc_descriptives</code> as well as <code>list</code>.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>result_sdc_descriptives &lt;-<span class="st"> </span><span class="kw">sdc_descriptives</span>(<span class="dt">data =</span> sdc_descriptives_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, </span>
-<span id="cb29-2"><a href="#cb29-2"></a>  <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">2</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb30-2"><a href="#cb30-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb30-3"><a href="#cb30-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb30-4"><a href="#cb30-4"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb30-5"><a href="#cb30-5"></a><span class="kw">class</span>(result_sdc_descriptives)</span>
-<span id="cb30-6"><a href="#cb30-6"></a><span class="co">#&gt; [1] &quot;sdc_descriptives&quot; &quot;list&quot;</span></span>
-<span id="cb30-7"><a href="#cb30-7"></a></span>
-<span id="cb30-8"><a href="#cb30-8"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">3</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb30-9"><a href="#cb30-9"></a><span class="co">#&gt; Warning: Potential disclosure problem: Dominant entities.</span></span>
-<span id="cb30-10"><a href="#cb30-10"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb30-11"><a href="#cb30-11"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb30-12"><a href="#cb30-12"></a><span class="co">#&gt; $x_4</span></span>
-<span id="cb30-13"><a href="#cb30-13"></a><span class="co">#&gt; Dominant entities:</span></span>
-<span id="cb30-14"><a href="#cb30-14"></a><span class="co">#&gt;    value_share</span></span>
-<span id="cb30-15"><a href="#cb30-15"></a><span class="co">#&gt; 1:   0.9605059</span></span>
-<span id="cb30-16"><a href="#cb30-16"></a>result_sdc_descriptives</span>
-<span id="cb30-17"><a href="#cb30-17"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb30-18"><a href="#cb30-18"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]</span></span>
-<span id="cb30-19"><a href="#cb30-19"></a><span class="co">#&gt; Output complies to RDC rules.</span></span>
-<span id="cb30-20"><a href="#cb30-20"></a></span>
-<span id="cb30-21"><a href="#cb30-21"></a><span class="kw">str</span>(result_sdc_descriptives)</span>
-<span id="cb30-22"><a href="#cb30-22"></a><span class="co">#&gt; List of 4</span></span>
-<span id="cb30-23"><a href="#cb30-23"></a><span class="co">#&gt;  $ message_options  : chr [1:8] &quot;[ OPTIONS:  &quot; &quot;sdc.n_ids: &quot; &quot;3&quot; &quot; | sdc.n_ids_dominance: &quot; ...</span></span>
-<span id="cb30-24"><a href="#cb30-24"></a><span class="co">#&gt;  $ message_arguments: chr [1:6] &quot;[ SETTINGS: &quot; &quot;id_var: id&quot; &quot; | val_var: val_1&quot; &quot;&quot; ...</span></span>
-<span id="cb30-25"><a href="#cb30-25"></a><span class="co">#&gt;  $ distinct_ids     :Classes &#39;sdc_distinct_ids&#39;, &#39;data.table&#39; and &#39;data.frame&#39;:  0 obs. of  1 variable:</span></span>
-<span id="cb30-26"><a href="#cb30-26"></a><span class="co">#&gt;   ..$ distinct_ids: int(0) </span></span>
-<span id="cb30-27"><a href="#cb30-27"></a><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></span>
-<span id="cb30-28"><a href="#cb30-28"></a><span class="co">#&gt;  $ dominance        :Classes &#39;sdc_dominance&#39;, &#39;data.table&#39; and &#39;data.frame&#39;: 0 obs. of  1 variable:</span></span>
-<span id="cb30-29"><a href="#cb30-29"></a><span class="co">#&gt;   ..$ value_share: num(0) </span></span>
-<span id="cb30-30"><a href="#cb30-30"></a><span class="co">#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </span></span>
-<span id="cb30-31"><a href="#cb30-31"></a><span class="co">#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;sdc_descriptives&quot; &quot;list&quot;</span></span></code></pre></div>
-<p>The function <code>sdc_model()</code> returns, besides settings and options, information about compliance with RDC rules regarding distinct entities and dominance for every variable of the model. The object is of class <code>sdc_model</code> as well as <code>list</code>.</p>
-<p>Subsequently ‘model_5’ is checked. This time we set sdc.info_level = 2 to get more detailed information about each variable separately - although this is not absolutely necessary, since potential problems are always printed.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">options</span>(<span class="dt">sdc.info_level =</span> <span class="dv">2</span>)</span>
-<span id="cb31-2"><a href="#cb31-2"></a><span class="kw">sdc_model</span>(<span class="dt">data =</span> sdc_model_DT, <span class="dt">model =</span> model_<span class="dv">5</span>, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb31-3"><a href="#cb31-3"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb31-4"><a href="#cb31-4"></a><span class="co">#&gt; [ SETTINGS: id_var: id ]</span></span>
-<span id="cb31-5"><a href="#cb31-5"></a><span class="co">#&gt; No problem with number of distinct entities.</span></span>
-<span id="cb31-6"><a href="#cb31-6"></a><span class="co">#&gt; $y</span></span>
-<span id="cb31-7"><a href="#cb31-7"></a><span class="co">#&gt; No problem with dominance.</span></span>
-<span id="cb31-8"><a href="#cb31-8"></a><span class="co">#&gt; </span></span>
-<span id="cb31-9"><a href="#cb31-9"></a><span class="co">#&gt; $x_1</span></span>
-<span id="cb31-10"><a href="#cb31-10"></a><span class="co">#&gt; No problem with dominance.</span></span>
-<span id="cb31-11"><a href="#cb31-11"></a><span class="co">#&gt; </span></span>
-<span id="cb31-12"><a href="#cb31-12"></a><span class="co">#&gt; $x_2</span></span>
-<span id="cb31-13"><a href="#cb31-13"></a><span class="co">#&gt; No problem with dominance.</span></span>
-<span id="cb31-14"><a href="#cb31-14"></a><span class="co">#&gt; </span></span>
-<span id="cb31-15"><a href="#cb31-15"></a><span class="co">#&gt; $dummy_3</span></span>
-<span id="cb31-16"><a href="#cb31-16"></a><span class="co">#&gt; No problem with number of distinct entities.</span></span>
-<span id="cb31-17"><a href="#cb31-17"></a><span class="co">#&gt; Output complies to RDC rules.</span></span></code></pre></div>
-<p>The function <code>sdc_extreme()</code> returns, besides settings and options, a <code>data.table</code> with computed extreme values. The object is of class <code>sdc_extreme</code> as well as <code>list</code>.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>result_sdc_extreme &lt;-<span class="st"> </span><span class="kw">sdc_extreme</span>(<span class="dt">data =</span> sdc_extreme_DT, <span class="dt">id_var =</span> <span class="st">&quot;id&quot;</span>, <span class="dt">val_var =</span> <span class="st">&quot;val_1&quot;</span>)</span>
-<span id="cb32-2"><a href="#cb32-2"></a><span class="co">#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]</span></span>
-<span id="cb32-3"><a href="#cb32-3"></a><span class="co">#&gt; [ SETTINGS: id_var: id | val_var: val_1 ]</span></span>
-<span id="cb32-4"><a href="#cb32-4"></a></span>
-<span id="cb32-5"><a href="#cb32-5"></a><span class="kw">class</span>(result_sdc_extreme)</span>
-<span id="cb32-6"><a href="#cb32-6"></a><span class="co">#&gt; [1] &quot;data.table&quot; &quot;data.frame&quot;</span></span>
-<span id="cb32-7"><a href="#cb32-7"></a></span>
-<span id="cb32-8"><a href="#cb32-8"></a>result_sdc_extreme</span>
-<span id="cb32-9"><a href="#cb32-9"></a><span class="co">#&gt;    val_var min n_obs_min max n_obs_max</span></span>
-<span id="cb32-10"><a href="#cb32-10"></a><span class="co">#&gt; 1:   val_1   3         5  18         5</span></span>
-<span id="cb32-11"><a href="#cb32-11"></a></span>
-<span id="cb32-12"><a href="#cb32-12"></a><span class="kw">str</span>(result_sdc_extreme)</span>
-<span id="cb32-13"><a href="#cb32-13"></a><span class="co">#&gt; Classes &#39;data.table&#39; and &#39;data.frame&#39;:   1 obs. of  5 variables:</span></span>
-<span id="cb32-14"><a href="#cb32-14"></a><span class="co">#&gt;  $ val_var  : chr &quot;val_1&quot;</span></span>
-<span id="cb32-15"><a href="#cb32-15"></a><span class="co">#&gt;  $ min      : num 3</span></span>
-<span id="cb32-16"><a href="#cb32-16"></a><span class="co">#&gt;  $ n_obs_min: int 5</span></span>
-<span id="cb32-17"><a href="#cb32-17"></a><span class="co">#&gt;  $ max      : num 18</span></span>
-<span id="cb32-18"><a href="#cb32-18"></a><span class="co">#&gt;  $ n_obs_max: int 5</span></span>
-<span id="cb32-19"><a href="#cb32-19"></a><span class="co">#&gt;  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</span></span></code></pre></div>
-</div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>Since sdcLog heavily relies on <code>data.table</code>, all examples will use <code>data.table</code> syntax as well.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
-</div>
 
+<p>This section explains the return value(s) of <code>sdc_functions</code> in more detail.
+<code>sdc_descriptives()</code>, <code>sdc_extreme()</code> and <code>sdc_model()</code> each return a list
+containing options and settings as well as additional, function specific
+information.</p>
 
+<p>Each function returns a list, e.g. for <code>sdc_descriptives()</code>:</p>
 
-<!-- code folding -->
+<pre><code class="r">typeof(sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;))
+#&gt; [1] &quot;list&quot;
 
+model_1 &lt;- lm(y ~ x_1 + x_2, data = sdc_model_DT)
+model_2 &lt;- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
+model_3 &lt;- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+model_4 &lt;- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+model_5 &lt;- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
+</code></pre>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
+<p>If the object is assigned, only warnings and messages are printed (if they occur
+at all):</p>
+
+<pre><code class="r">result_sdc_descriptives &lt;- sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, 
+  val_var = &quot;val_1&quot;)
+
+result_sdc_descriptives &lt;- sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, 
+  val_var = &quot;val_1&quot;, by = c(&quot;sector&quot;, &quot;year&quot;))
+#&gt; Warning: Potential disclosure problem: Dominant entities.
+</code></pre>
+
+<p>If the object itself is printed, the user receives the same information that
+would have been printed directly without assignment.</p>
+
+<pre><code class="r">result_sdc_descriptives &lt;- sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, 
+  val_var = &quot;val_1&quot;)
+</code></pre>
+
+<pre><code class="r">sdc_model(data = sdc_model_DT, model = model_1, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+
+result_sdc_descriptives
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]
+#&gt; Output complies to RDC rules.
+
+sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]
+#&gt; Output complies to RDC rules.
+sdc_model(data = sdc_model_DT, model = model_4, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+</code></pre>
+
+<p>There are additional information that vary depending on the function. The
+function <code>sdc_descriptives()</code> gives, besides settings and options, information
+about compliance with RDC rules regarding distinct entities and dominance for
+the checked variable. The object is of class <code>sdc_descriptives</code> as well as
+<code>list</code>.</p>
+
+<pre><code class="r">result_sdc_descriptives &lt;- sdc_descriptives(data = sdc_descriptives_DT, id_var = &quot;id&quot;, 
+  val_var = &quot;val_1&quot;)
+</code></pre>
+
+<pre><code class="r">sdc_model(data = sdc_model_DT, model = model_2, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; Output complies to RDC rules.
+class(result_sdc_descriptives)
+#&gt; [1] &quot;sdc_descriptives&quot; &quot;list&quot;
+
+sdc_model(data = sdc_model_DT, model = model_3, id_var = &quot;id&quot;)
+#&gt; Warning: Potential disclosure problem: Dominant entities.
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; $x_4
+#&gt; Dominant entities:
+#&gt;    value_share
+#&gt; 1:   0.9605059
+result_sdc_descriptives
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]
+#&gt; Output complies to RDC rules.
+
+str(result_sdc_descriptives)
+#&gt; List of 4
+#&gt;  $ message_options  : chr [1:8] &quot;[ OPTIONS:  &quot; &quot;sdc.n_ids: &quot; &quot;3&quot; &quot; | sdc.n_ids_dominance: &quot; ...
+#&gt;  $ message_arguments: chr [1:6] &quot;[ SETTINGS: &quot; &quot;id_var: id&quot; &quot; | val_var: val_1&quot; &quot;&quot; ...
+#&gt;  $ distinct_ids     :Classes &#39;sdc_distinct_ids&#39;, &#39;data.table&#39; and &#39;data.frame&#39;:  0 obs. of  1 variable:
+#&gt;   ..$ distinct_ids: int(0) 
+#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; 
+#&gt;  $ dominance        :Classes &#39;sdc_dominance&#39;, &#39;data.table&#39; and &#39;data.frame&#39;: 0 obs. of  1 variable:
+#&gt;   ..$ value_share: num(0) 
+#&gt;   ..- attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; 
+#&gt;  - attr(*, &quot;class&quot;)= chr [1:2] &quot;sdc_descriptives&quot; &quot;list&quot;
+</code></pre>
+
+<p>The function <code>sdc_model()</code> returns, besides settings and options, information
+about compliance with RDC rules regarding distinct entities and dominance for
+every variable of the model. The object is of class <code>sdc_model</code> as well as
+<code>list</code>.</p>
+
+<p>Subsequently &#39;model_5&#39; is checked. This time we set sdc.info_level = 2 to get
+more detailed information about each variable separately - although this is not
+absolutely necessary, since potential problems are always printed.</p>
+
+<pre><code class="r">options(sdc.info_level = 2)
+sdc_model(data = sdc_model_DT, model = model_5, id_var = &quot;id&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id ]
+#&gt; No problem with number of distinct entities.
+#&gt; $y
+#&gt; No problem with dominance.
+#&gt; 
+#&gt; $x_1
+#&gt; No problem with dominance.
+#&gt; 
+#&gt; $x_2
+#&gt; No problem with dominance.
+#&gt; 
+#&gt; $dummy_3
+#&gt; No problem with number of distinct entities.
+#&gt; Output complies to RDC rules.
+</code></pre>
+
+<p>The function <code>sdc_extreme()</code> returns, besides settings and options, a
+<code>data.table</code> with computed extreme values. The object is of class <code>sdc_extreme</code>
+as well as <code>list</code>.</p>
+
+<pre><code class="r">result_sdc_extreme &lt;- sdc_extreme(data = sdc_extreme_DT, id_var = &quot;id&quot;, val_var = &quot;val_1&quot;)
+#&gt; [ OPTIONS:  sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
+#&gt; [ SETTINGS: id_var: id | val_var: val_1 ]
+
+class(result_sdc_extreme)
+#&gt; [1] &quot;data.table&quot; &quot;data.frame&quot;
+
+result_sdc_extreme
+#&gt;    val_var min n_obs_min max n_obs_max
+#&gt; 1:   val_1   3         5  18         5
+
+str(result_sdc_extreme)
+#&gt; Classes &#39;data.table&#39; and &#39;data.frame&#39;:   1 obs. of  5 variables:
+#&gt;  $ val_var  : chr &quot;val_1&quot;
+#&gt;  $ min      : num 3
+#&gt;  $ n_obs_min: int 5
+#&gt;  $ max      : num 18
+#&gt;  $ n_obs_max: int 5
+#&gt;  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;
+</code></pre>
 
 </body>
+
 </html>
