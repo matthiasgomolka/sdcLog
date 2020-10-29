@@ -20,7 +20,8 @@ are computed.}
 \item{zero_as_NA}{\link{logical} If TRUE, zeros in 'val_var' are treated as NA.}
 }
 \value{
-A list \link{list} with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
+A list \link{list} with detailed information about options, settings,
+compliance with the criteria distinct_ids and dominance.
 }
 \description{
 Check if your descriptive statistics comply to statistical disclosure control
