@@ -10,7 +10,7 @@ print.sdc_distinct_ids <- function(x, ...) {
         cat(crayon::red(msg))
         print(data.table::as.data.table(x))
 
-    # no problems
+        # no problems
     } else if (getOption("sdc.info_level", 1L) > 1L) {
         message("No problem with number of distinct entities.")
     }
@@ -27,7 +27,7 @@ print.sdc_dominance <- function(x, ...) {
         cat(crayon::red(msg))
         print(data.table::as.data.table(x))
 
-    # no problems
+        # no problems
     } else if (getOption("sdc.info_level", 1L) > 1L) {
         message("No problem with dominance.")
     }
