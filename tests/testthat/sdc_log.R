@@ -1,5 +1,5 @@
 data("sdc_descriptives_DT")
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val")
+sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
 
 data("sdc_extreme_DT")
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")

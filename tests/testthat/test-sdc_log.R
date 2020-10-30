@@ -9,9 +9,19 @@ if (interactive()) {
 
 tf <- tempfile(fileext = ".txt")
 
-# test_that("sdc_log() works correctly", {
-#     expect_identical(readLines(tf), readLines(log))
-# })
+invisible(
+    callr::r(
+        function(...) {
+            library(sdcLog)
+            sdc_log(...)
+        },
+        args = list(r_scripts = script, log_files = tf)
+    )
+)
+
+test_that("sdc_log() works correctly", {
+    expect_identical(readLines(tf), readLines(log))
+})
 
 
 test_that("sdc_log() returns appropriate error", {

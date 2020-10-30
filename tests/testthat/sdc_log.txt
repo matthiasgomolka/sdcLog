@@ -1,10 +1,10 @@
 
 > data("sdc_descriptives_DT")
 
-> sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val")
+> sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
 [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-[ SETTINGS: id_var: id | val_var: val | zero_as_NA: FALSE ]
-Output complies to RDSC rules.
+[ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]
+Output complies to RDC rules.
 
 > data("sdc_extreme_DT")
 
@@ -21,4 +21,4 @@ Output complies to RDSC rules.
 > sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
 [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
 [ SETTINGS: id_var: id ]
-Output complies to RDSC rules.
+Output complies to RDC rules.

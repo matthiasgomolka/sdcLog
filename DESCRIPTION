@@ -18,6 +18,7 @@ Imports:
     data.table (>= 1.12.8),
     methods
 Suggests: 
+    callr,
     covr (>= 3.5.0),
     devtools,
     here,

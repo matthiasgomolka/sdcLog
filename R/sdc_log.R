@@ -19,13 +19,14 @@ sdc_log <- function(r_scripts, log_files, replace = FALSE) {
 
   if (isFALSE(replace)) {
     exist <- checkmate::test_file_exists(log_files)
-    if (any(exist))
+    if (any(exist)) {
       existing_files <- paste0(log_files[exist], collapse = "\n")
-    stop("The following 'log_files' already exist:\n",
-         existing_files, "\n",
-         "Please check 'log_files' argument or use 'replace = TRUE' in case ",
-         "you want to replace existing files."
-    )
+      stop("The following 'log_files' already exist:\n",
+           existing_files, "\n",
+           "Please check 'log_files' argument or use 'replace = TRUE' in case ",
+           "you want to replace existing files."
+      )
+    }
   }
 
   # write log
