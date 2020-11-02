@@ -15,7 +15,6 @@ test_dt[id %chin% c("A", "F") & year == 2020L, val := val * 50]
 setcolorder(test_dt, c("id", "sector", "year"))
 
 # test check_distinct_ids ----
-context("check_distinct_ids")
 test_that("check_distinct_ids() returns a call", {
     expect_true(is.call(sdcLog:::check_distinct_ids(test_dt, "id", "val")))
     expect_type(sdcLog:::check_distinct_ids(test_dt, "id", "val"), "language")
@@ -44,7 +43,6 @@ test_that("check_distinct_ids() distinct_ids correctly", {
 })
 
 # test check_dominance ----
-context("check_dominance")
 ## pure technical tests
 test_that("check_dominance() returns a call", {
     expect_true(is.call(sdcLog:::check_dominance(test_dt, "id", "val")))
@@ -79,7 +77,6 @@ test_that("check_dominance() calculates correctly", {
 
 
 # test sdc_descriptives ####
-context("sdc_descriptives")
 # descriptives setup 1 ####
 class(distinct_ids_ref_1) <- c("sdc_distinct_ids", class(distinct_ids_ref_1))
 class(dominance_ref_1) <- c("sdc_dominance", class(dominance_ref_1))
@@ -105,8 +102,9 @@ class(descriptives_ref_1) <- c("sdc_descriptives", class(descriptives_ref_1))
 
 # descriptives tests 1 ####
 test_that("sdc_descriptives works in simple cases", {
-    expect_equivalent(
-        sdc_descriptives(test_dt, "id", "val"), descriptives_ref_1
+    expect_equal(
+        sdc_descriptives(test_dt, "id", "val"), descriptives_ref_1,
+        ignore_attr = TRUE
     )
 })
 
@@ -131,7 +129,7 @@ class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
 
 descriptives_expect_2 <- function(x) {
     expect_warning(
-        expect_equivalent(x, descriptives_ref_2),
+        expect_equal(x, descriptives_ref_2, ignore_attr = TRUE),
         ifelse(getOption("sdc.info_level", 1L) > 1L,
                paste0(bold("Potential disclosure problem: "),"Dominant entities."), ""),
         fixed = TRUE
@@ -178,9 +176,10 @@ class(descriptives_ref_3) <- c("sdc_descriptives", class(descriptives_ref_3))
 
 ## expect identical??
 descriptives_expect_3 <- function(x) {
-    warnings <- capture_warnings(expect_equivalent(
+    warnings <- capture_warnings(expect_equal(
         sdc_descriptives(test_dt, "id", "val", by = .(sector, year)),
-        descriptives_ref_3
+        descriptives_ref_3,
+        ignore_attr = TRUE
     ))
     warnings <- gsub("\\\033\\[[1-2]{1,2}m", "", warnings)
     expect_match(

@@ -2,7 +2,6 @@ library(data.table)
 
 
 # test print.sdc_distinct_ids ----
-context("print.sdc_distinct_ids")
 distinct_ids_1 <- data.table(distinct_ids = integer(0L))
 
 test_that("print.sdc_distinct_ids works for most simple case", {
@@ -62,8 +61,6 @@ test_that("print.sdc_distinct_ids works for problematic by case", {
 
 
 # test print.sdc_dominance ----
-context("print.sdc_dominance")
-
 dominance_1 <- data.table(value_share = numeric(0))
 
 test_that("print.sdc_dominance works for most simple case", {
@@ -123,7 +120,6 @@ test_that("print.sdc_dominance works for problematic by case", {
 
 
 # test print.sdc_descriptives ----
-context("print.sdc_descriptives")
 descriptives_1 <- list(
     message_options = message_options(),
     message_arguments = message_arguments(id_var = "id", val_var = "val"),
@@ -297,8 +293,6 @@ test_that("print.sdc_descriptives works for problematic by case", {
 
 
 # test print.sdc_model ----
-context("print.sdc_model")
-
 ### create model ref.
 
 ## simple cases
