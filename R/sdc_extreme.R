@@ -22,18 +22,16 @@
 #' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
 #' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
 #' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-#'
 #' @return A list [list] with detailed information about options, settings and the calculated extreme values (if possible).
 
 
 sdc_extreme <- function(
-  data,
-  id_var,
-  val_var,
-  by = NULL,
-  n_min = 5L,
-  n_max = n_min
-) {
+                        data,
+                        id_var,
+                        val_var,
+                        by = NULL,
+                        n_min = 5L,
+                        n_max = n_min) {
   # input checks
   check_args(data, id_var, val_var, by)
   checkmate::assert_int(n_max)
@@ -61,8 +59,7 @@ sdc_extreme <- function(
       results_min[, .(min = mean(get(val_var)), n_obs_min = .N), keyby = by]
     )),
     eval(substitute(
-      results_max[, .(max = mean(get(val_var)), n_obs_max = .N), keyby = by
-                  ][, c("max", "n_obs_max"), with = FALSE]
+      results_max[, .(max = mean(get(val_var)), n_obs_max = .N), keyby = by][, c("max", "n_obs_max"), with = FALSE]
     ))
   )
   res <- cbind(data.table::data.table(val_var = val_var), res)
@@ -71,8 +68,10 @@ sdc_extreme <- function(
   sd_overlap <- nrow(data.table::fintersect(results_min, results_max)) > 0
 
   if (sd_overlap) {
-    message("It is impossible to compute extreme values for variable '",
-            val_var, "' that comply to RDC rules.")
+    message(
+      "It is impossible to compute extreme values for variable '",
+      val_var, "' that comply to RDC rules."
+    )
 
     for (var in c("min", "max")) {
       data.table::set(res, j = var, value = NA_real_)
@@ -89,8 +88,8 @@ sdc_extreme <- function(
 #' @importFrom utils tail head
 find_SD <- function(data, type, n, id_var, val_var, by) {
   SD_fun <- switch(type,
-                   min = utils::tail,
-                   max = utils::head
+    min = utils::tail,
+    max = utils::head
   )
 
   SD_results <- find_SD_problems(data, SD_fun, n, id_var, val_var, by)
