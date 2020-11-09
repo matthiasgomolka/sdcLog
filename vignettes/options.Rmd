@@ -1,5 +1,5 @@
 ---
-title: "sdcLog1 options"
+title: "sdcLog options"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{sdcLog options}

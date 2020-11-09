@@ -17,15 +17,16 @@ editor_options:
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  tidy = TRUE,
-  tidy.opts = list(
-    indent = 2L,
-    width.cutoff = 80L,
-    wrap = TRUE
-  )
+  comment = "#>"#,
+  # tidy = TRUE,
+  # tidy.opts = list(
+  #   indent = 2L,
+  #   width.cutoff = 95L,
+  #   wrap = TRUE
+  # )
 )
 
+options(width = 95)
 options(knitr.kable.NA = "")
 options(sdc.info_level = 1L)
 options(datatable.print.keys = FALSE)
@@ -39,31 +40,37 @@ library(skimr)
 # Overview
 
 This vignette introduces the sdcLog package and its main functions, illustrated
-with various examples. The sdcLog package provides tools which simplify
-statistical disclosure control in the context of research data centres (RDC).
+with various examples. sdcLog provides tools which simplify statistical
+disclosure control in the context of research data centres (RDC).
 
-The package includes three main functions:
+The package includes four main functions:
 
--   `sdc_descriptives()`: This function is used for statistical disclosure
-    control of descriptive statistics. It checks the data used for the
-    calculation of descriptive statistics for compliance with the rules and
-    regulations set by the RDC.
+- `sdc_descriptives()`: This function is used for statistical disclosure control
+  of descriptive statistics. It checks the data used for the calculation of
+  descriptive statistics for compliance with the rules and regulations set by
+  the RDC.
 
     The calculation of simple extreme values such as minimum and maximum is
     usually not allowed according to RDC rules, so `sdc_descriptives()` cannot
     be used to check them. Extreme values can only be used if they were
     calculated with `sdc_extreme()`.
 
--   `sdc_model()`: This function is used for statistical disclosure control for
-    various types of models. It checks the calculated model and the underlying
-    data for compliance with the rules and regulations of the RDC.
+- `sdc_model()`: This function is used for statistical disclosure control for
+  various types of models such as `lm()` or `glm()`. It checks the calculated
+  model and the underlying data for compliance with the rules and regulations of
+  the RDC.
 
--   `sdc_extreme()`: This function is used for the automatic calculation (if
-    possible) of extreme values according to the rules of the research data
-    centre. It uses the available data and calculates the values for desired
-    variables and groupings in compliance with the rules. The values are
-    calculated as averages of a sufficient number of observations. This helps
-    the researcher to easily follow the rules and simplifies the output control.
+- `sdc_extreme()`: This function is used for the automatic calculation of
+  extreme values according to the rules of the RDC (if possible). It uses the
+  available data and calculates the values for desired variables and groupings
+  in compliance with the rules. The values are calculated as averages of a
+  sufficient number of observations. This helps the researcher to easily follow
+  the rules and simplifies the output control.
+
+- `sdc_log()`: This function is a simple wrapper around `source()` which makes
+  it easy to run scripts and capture all output (especially output from the
+  other `sdc_*` functions) in a log file. Usually, this should be used to source
+  R scripts containing one or more of the functions above.
 
 # sdc_descriptives()
 
@@ -156,7 +163,7 @@ therefore comply with RDC rules. Therefore, the results could be released in
 this case.
 
 In order to extend this case even further, it is now proposed to group the mean
-of `val_1` not only by `sector`, but also additionally by `year`:
+of `val_1` not only by `sector`, but also by `year`:
 
 ```{r descriptives_byby_case}
 sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE)), by = c("sector", "year")]
@@ -165,21 +172,26 @@ sdc_descriptives_DT[, .(mean = mean(val_1, na.rm = TRUE)), by = c("sector", "yea
 To check this result for compliance with RDC rules, use:
 
 ```{r descriptives_byby}
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+sdc_descriptives(
+  data = sdc_descriptives_DT, 
+  id_var = "id", 
+  val_var = "val_1", 
+  by = c("sector", "year")
+)
 ```
 
-Now several warnings appear, as both criteria are violated. For sector 1 (`S1`)
+Now several warnings appear, as both criteria are violated. For sector `S1`
 there are not enough distinct ids in year 2019, as there is a missing value in
 the data. The dominance criterion for year 2020 is violated in both sectors. As
-can be seen in the table displayed, the value share of approx. 88 for `S1` (and
-respectively 91 for `S2`) percent is above the 85 percent limit. Therefore, the
+can be seen in the table displayed, the value share of approx. 88 percent for
+`S1` and 91 percent for `S2` are above the 85 percent limit. Therefore, the
 descriptive statistics for `val_1`, grouped by `sector` and `year` cannot be
 released.
 
 ### Handling zeros using zero_as_NA
 
-In this case descriptive statistics grouped by sector and year were calculated
-for variable `val_2`:
+Now, descriptive statistics are calculated for variable `val_2` and grouped by
+sector and year:
 
 ```{r descriptives_zero_case}
 sdc_descriptives_DT[, .(mean = mean(val_2, na.rm = TRUE)), by = c("sector", "year")]
@@ -189,26 +201,41 @@ The compliance with the rules can be checked just as in the previous case (only
 replacing `val_1` by `val_2`):
 
 ```{r descriptives_zero}
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_2", 
-                 by = c("sector", "year"))
+sdc_descriptives(
+  data = sdc_descriptives_DT, 
+  id_var = "id", 
+  val_var = "val_2", 
+  by = c("sector", "year")
+)
 ```
 
 The result indicates that problems exist and the output does not comply to the
 rules. There are not enough distinct entities and the output cannot be released
 like this.
 
-An additional message indicates that the value `0` occurs frequently in the
-data. This is an indication that `0` is seen as a missing value here and will be
-recognized and treated as such.
+An additional message indicates that the value `0` occurs rather frequently in
+the data (20 percent of all cases). The message indicates that `0` is assumed to
+represent missing values and will be treated as such. Please note that even if
+`0`s are actual `0`s in the data, this assumption might be correct in the
+context of statistical disclosure control. For example, if most of the cases are
+`0`, it might be known publicly which entities do not have a value of `0` for
+this specific variable. So treating those `0` as `NA` is correct in this
+context. Since this is the more defensive interpretation of `0`s, it's the
+default.
 
-It might be the case that it is accurate according to the data basis to treat
-values of `0` as `0` (instead of `NA`). Then, specifying the argument
+However, it might be the case that it is accurate according to the data basis to
+treat values of `0` as zero (instead of `NA`). Then, specifying the argument
 `zero_as_NA = FALSE` circumvents the default behaviour and treats `0` like other
 numeric values:
 
 ```{r descriptives_zerozero}
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_2", 
-                 by = c("sector", "year"), zero_as_NA = FALSE)
+sdc_descriptives(
+  data = sdc_descriptives_DT, 
+  id_var = "id", 
+  val_var = "val_2", 
+  by = c("sector", "year"),
+   zero_as_NA = FALSE
+)
 ```
 
 Now `0` is not recognized as `NA` anymore. In this case the criterion of
