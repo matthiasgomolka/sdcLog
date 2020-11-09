@@ -28,38 +28,37 @@ Check if your descriptive statistics comply to statistical disclosure control
 }
 \examples{
 sdc_descriptives(
-    data = sdc_descriptives_DT,
-    id_var = "id",
-    val_var = "val_1"
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_1"
 )
 
 sdc_descriptives(
-    data = sdc_descriptives_DT,
-    id_var = "id",
-    val_var = "val_1",
-    by = sector
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_1",
+  by = sector
 )
 
 sdc_descriptives(
-    data = sdc_descriptives_DT,
-    id_var = "id",
-    val_var = "val_1",
-    by = c("sector", "year")
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_1",
+  by = c("sector", "year")
 )
 
 sdc_descriptives(
-    data = sdc_descriptives_DT,
-    id_var = "id",
-    val_var = "val_2",
-    by = c("sector", "year")
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_2",
+  by = c("sector", "year")
 )
 
 sdc_descriptives(
-    data = sdc_descriptives_DT,
-    id_var = "id",
-    val_var = "val_2",
-    by = c("sector", "year"),
-    zero_as_NA = FALSE
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_2",
+  by = c("sector", "year"),
+  zero_as_NA = FALSE
 )
-
 }

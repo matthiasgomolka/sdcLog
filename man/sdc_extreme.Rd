@@ -40,5 +40,4 @@ sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_m
 sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-
 }

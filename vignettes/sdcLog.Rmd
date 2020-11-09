@@ -1,17 +1,17 @@
 ---
 title: "Introduction to sdcLog"
 output:
-    rmarkdown::html_vignette:
-        toc: true
-        toc_depth: 5
-        number_sections: false
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 5
+    number_sections: false
 vignette: >
   %\VignetteIndexEntry{Introduction to sdcLog}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  markdown: 
-    wrap: 80
+# editor_options: 
+#   markdown: 
+#     wrap: 80
 ---
 
 ```{r setup, include = FALSE}
@@ -45,32 +45,32 @@ disclosure control in the context of research data centres (RDC).
 
 The package includes four main functions:
 
-- `sdc_descriptives()`: This function is used for statistical disclosure control
-  of descriptive statistics. It checks the data used for the calculation of
-  descriptive statistics for compliance with the rules and regulations set by
-  the RDC.
+-   `sdc_descriptives()`: This function is used for statistical disclosure
+    control of descriptive statistics. It checks the data used for the
+    calculation of descriptive statistics for compliance with the rules and
+    regulations set by the RDC.
 
     The calculation of simple extreme values such as minimum and maximum is
     usually not allowed according to RDC rules, so `sdc_descriptives()` cannot
     be used to check them. Extreme values can only be used if they were
     calculated with `sdc_extreme()`.
 
-- `sdc_model()`: This function is used for statistical disclosure control for
-  various types of models such as `lm()` or `glm()`. It checks the calculated
-  model and the underlying data for compliance with the rules and regulations of
-  the RDC.
+-   `sdc_model()`: This function is used for statistical disclosure control for
+    various types of models such as `lm()` or `glm()`. It checks the calculated
+    model and the underlying data for compliance with the rules and regulations
+    of the RDC.
 
-- `sdc_extreme()`: This function is used for the automatic calculation of
-  extreme values according to the rules of the RDC (if possible). It uses the
-  available data and calculates the values for desired variables and groupings
-  in compliance with the rules. The values are calculated as averages of a
-  sufficient number of observations. This helps the researcher to easily follow
-  the rules and simplifies the output control.
+-   `sdc_extreme()`: This function is used for the automatic calculation of
+    extreme values according to the rules of the RDC (if possible). It uses the
+    available data and calculates the values for desired variables and groupings
+    in compliance with the rules. The values are calculated as averages of a
+    sufficient number of observations. This helps the researcher to easily
+    follow the rules and simplifies the output control.
 
-- `sdc_log()`: This function is a simple wrapper around `source()` which makes
-  it easy to run scripts and capture all output (especially output from the
-  other `sdc_*` functions) in a log file. Usually, this should be used to source
-  R scripts containing one or more of the functions above.
+-   `sdc_log()`: This function is a simple wrapper around `source()` which makes
+    it easy to run scripts and capture all output (especially output from the
+    other `sdc_*` functions) in a log file. Usually, this should be used to
+    source R scripts containing one or more of the functions above.
 
 # sdc_descriptives()
 
@@ -476,5 +476,5 @@ sdc_log(
 )
 ```
 
-Even though this seems trivial, creating logs for your scripts is essential
-since it bundles all information needed by the RDC for output control.
+Even though this seems trivial, creating logs for scripts is essential because a
+log file bundles all information needed by the RDC for output control.

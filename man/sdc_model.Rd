@@ -36,5 +36,4 @@ sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
 
 model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
-
 }
