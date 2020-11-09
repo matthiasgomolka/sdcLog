@@ -76,24 +76,6 @@ sdc_model <- function(data, model, id_var) {
   dummy_vars <- vapply(var_df, is_dummy, FUN.VALUE = logical(1L))
   dummy_vars <- names(dummy_vars)[dummy_vars == TRUE]
 
-
-  # select df for warning dominance
-  model_var_no_dummy <- setdiff(model_vars, dummy_vars)
-  model_df_no_dummy <- model_df[, c(id_var, model_var_no_dummy), with = FALSE]
-
-
-  # warning dominance with print method
-  dominance_list <- lapply(model_var_no_dummy, function(x) {
-    dominance <- eval(
-      check_dominance(model_df_no_dummy, id_var, x)
-    )
-    class(dominance) <- c("sdc_dominance", class(dominance))
-    dominance
-  })
-
-  names(dominance_list) <- model_var_no_dummy
-  dominance_warning(dominance_list)
-
   dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
 
   # warnings for dummy variables
@@ -114,7 +96,6 @@ sdc_model <- function(data, model, id_var) {
     message_options = message_options(),
     message_arguments = message_arguments(id_var = id_var),
     distinct_ids = distinct_ids,
-    dominance_list = dominance_list,
     dummy_list = dummy_list
   )
   class(res) <- c("sdc_model", class(res))
