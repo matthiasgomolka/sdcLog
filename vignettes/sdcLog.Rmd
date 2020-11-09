@@ -17,7 +17,7 @@ editor_options:
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"#,
+  comment = "#>" # ,
   # tidy = TRUE,
   # tidy.opts = list(
   #   indent = 2L,
@@ -173,9 +173,9 @@ To check this result for compliance with RDC rules, use:
 
 ```{r descriptives_byby}
 sdc_descriptives(
-  data = sdc_descriptives_DT, 
-  id_var = "id", 
-  val_var = "val_1", 
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_1",
   by = c("sector", "year")
 )
 ```
@@ -202,9 +202,9 @@ replacing `val_1` by `val_2`):
 
 ```{r descriptives_zero}
 sdc_descriptives(
-  data = sdc_descriptives_DT, 
-  id_var = "id", 
-  val_var = "val_2", 
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_2",
   by = c("sector", "year")
 )
 ```
@@ -230,11 +230,11 @@ numeric values:
 
 ```{r descriptives_zerozero}
 sdc_descriptives(
-  data = sdc_descriptives_DT, 
-  id_var = "id", 
-  val_var = "val_2", 
+  data = sdc_descriptives_DT,
+  id_var = "id",
+  val_var = "val_2",
   by = c("sector", "year"),
-   zero_as_NA = FALSE
+  zero_as_NA = FALSE
 )
 ```
 
@@ -246,16 +246,17 @@ values).
 # sdc_model()
 
 This function checks if your model complies to RDC rules. The criteria of
-distinct entities and dominance are also checked here. In addition, when using
-dummy variables, it is checked whether there are enough different entities for
-each attribute/value level. The function can be used to check a broad range of
-models like `lm`, `glm` and various others (anything which can be handled by
-`broom::augment()`; for a list of supported models see `?generics::augment`).
+distinct entities is also checked here. In addition, when using dummy variables,
+it is checked whether there are enough different entities for each attribute or
+value level. The function can be used to check a broad range of models like
+`lm`, `glm` and various others. In fact, anything which can be handled by
+`broom::augment()` can also be handled by `sdc_model()`. For a list of supported
+models see `?generics::augment`.
 
 ## Data & models
 
 To introduce `sdc_model()`, another dataset with different variables is used,
-which include dummy-variables.
+which includes dummy-variables.
 
 We have 80 observations of 10 different entities for the variables `y`, `x_1`,
 `x_2`, `x_3`, `x_4` and additional information on sector, year and country
@@ -272,14 +273,15 @@ purposes.
 ```{r model_models}
 model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
 model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
-model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
-model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
+model_3 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+model_4 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 ```
 
 ## Examples
 
-<!-- The previously specified models are now checked for compliance with the rules of the RDC. It is checked, if there are enough distinct entities in the whole model and each model variable is checked if there are problems with dominance. Also every dummy variable is checked for compliance with the rules. -->
+These models are now checked for compliance with the rules of the RDC. It is
+checked if there are enough distinct entities in the whole model and if every
+level of each dummy variable is checked for compliance with the rules.
 
 A pre-selection of problematic and unproblematic models has been made to better
 explain the differences. To check for compliance, the model object (`model`),
@@ -288,12 +290,12 @@ the data used (`data`) and the ID variable (`id_var`) must be specified in
 
 ### Simple cases
 
-A check of `model_1` and `model_4` is shown below.
+A check of `model_1` and `model_3` is shown below.
 
 ```{r model_simple}
 sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
 
-sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
+sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
 ```
 
 As we see, there are no problems and the models could be released as output.
@@ -301,14 +303,12 @@ As we see, there are no problems and the models could be released as output.
 ### Problematic cases
 
 Now we turn to the problematic cases. We are checking the models `model_2` and
-`model_3` as well as `model_5`:
+`model_4`:
 
 ```{r model_prob1}
 sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 
-sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
-
-sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
+sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
 ```
 
 Some difficulties occur with these models, but which?
@@ -316,10 +316,7 @@ Some difficulties occur with these models, but which?
 `model_2` leads to problems with the number of distinct entities. This problem
 arises with the inclusion of variable `x_3` due to a high number of `NA`s.
 
-In `model_3` there are problems with dominance for variable `x_4`. Thus,
-according to the RDC rules, these models cannot be released.
-
-For `model_5` the problem stems from a small number of distinct entities for the
+For `model_4` the problem stems from a small number of distinct entities for the
 value level `FR` of `dummy_3`. Therefore this model cannot be released either.
 Please note that this last case is probably the most common problem to occur
 when checking models.
@@ -327,10 +324,10 @@ when checking models.
 # sdc_extreme()
 
 This function automatically calculates extreme values that comply with the rules
-of the RDC. Again, it mainly checks the criteria of distinct entities and
-dominance. The values are calculated as averages of a sufficiently large number
-of observations. It is based on an iterative procedure that aggregates data
-until there are enough distinct entities to calculate the extreme values and no
+of the RDC. It mainly checks the criteria of distinct entities and dominance.
+The values are calculated as averages of a sufficiently large number of
+observations. It is based on an iterative procedure that aggregates data until
+there are enough distinct entities to calculate the extreme values and no
 problems with dominance occur.
 
 The function always starts the iteration process with the lowest possible number
@@ -402,7 +399,8 @@ set `n_min = 7`.
 sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2", n_min = 7)
 ```
 
-Now the same number of observations are used to calculate the extreme values.
+Now the same number of observations are used to calculate the extreme values. Of
+course, if you would specify `n_max = 5`, there would be no feasible solution.
 
 Consider the case in which extreme values are to be calculated for variable
 `val_3` and exactly 10 observations are to be included in each value. To do so,
@@ -435,20 +433,26 @@ sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "secto
 
 No problems occur, so extreme values are calculated and output for each group.
 
-This can also be done for several grouping variables. Therefore in the following
-extreme values for variable 'val_1' are to be calculated by year and sector.
+This can also be done for several grouping variables. In the following, extreme
+values for variable `val_1` are to be calculated by `year` and `sector`.
 
 ```{r}
-res <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = .(sector, year))
-res
+res <- sdc_extreme(
+  data = sdc_extreme_DT,
+  id_var = "id",
+  val_var = "val_1",
+  by = c("sector", "year")
+)
 ```
 
-Now an error occurs, since the RDC rules would be violated for the calculation
-of these values. For programming purposes, please note that the structure of the
-resulting `data.table` remains the same (but is filled with `NA`:
+Now an message occurs, explaining that RDC rules would be violated for the
+calculation of these values. For programming purposes, please note that the
+structure of the resulting `data.table` remains the same (but is filled with
+`NA`:
 
 ```{r extreme_by3}
 # extreme_vals
+res
 ```
 
 # sdc_log()
@@ -459,11 +463,9 @@ corresponding code and console output into a log file. It can handle single
 files or a list of files at once.
 
 A character vector containing the path(s) of the R script(s) which should be run
-must be specified in the function arguments as well as a character vector
-containing the path(s) of the text file(s) where the log(s) should be stored.
-Due to additional arguments it is also possible to specify whether to replace
-already existing log files and whether it is desired to receive warnings and
-messages from running the `r_scripts`.
+must be specified as well as a character vector containing the path(s) of the
+text file(s) where the log(s) should be stored. To replace exsting log files,
+one can specify the argument `replace = TRUE`.
 
 A simple call of this function could look as follows:
 
@@ -476,96 +478,3 @@ sdc_log(
 
 Even though this seems trivial, creating logs for your scripts is essential
 since it bundles all information needed by the RDC for output control.
-
-# Return values
-
-This section explains the return value(s) of `sdc_functions` in more detail.
-`sdc_descriptives()`, `sdc_extreme()` and `sdc_model()` each return a list
-containing options and settings as well as additional, function specific
-information.
-
-Each function returns a list, e.g. for `sdc_descriptives()`:
-
-```{r return_descriptives1}
-typeof(sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"))
-
-model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
-model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
-model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
-model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
-```
-
-If the object is assigned, only warnings and messages are printed (if they occur
-at all):
-
-```{r return_descriptives2}
-result_sdc_descriptives <- sdc_descriptives(
-  data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"
-)
-
-result_sdc_descriptives <- sdc_descriptives(
-  data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
-)
-```
-
-If the object itself is printed, the user receives the same information that
-would have been printed directly without assignment.
-
-```{r return_descriptives3}
-result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
-```{r}
-sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
-
-result_sdc_descriptives
-
-sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
-sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
-```
-
-There are additional information that vary depending on the function. The
-function `sdc_descriptives()` gives, besides settings and options, information
-about compliance with RDC rules regarding distinct entities and dominance for
-the checked variable. The object is of class `sdc_descriptives` as well as
-`list`.
-
-```{r return_descriptives4}
-result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
-
-```{r}
-sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
-class(result_sdc_descriptives)
-
-sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
-result_sdc_descriptives
-
-str(result_sdc_descriptives)
-```
-
-The function `sdc_model()` returns, besides settings and options, information
-about compliance with RDC rules regarding distinct entities and dominance for
-every variable of the model. The object is of class `sdc_model` as well as
-`list`.
-
-Subsequently 'model_5' is checked. This time we set sdc.info_level = 2 to get
-more detailed information about each variable separately - although this is not
-absolutely necessary, since potential problems are always printed.
-
-```{r}
-options(sdc.info_level = 2)
-sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
-```
-
-The function `sdc_extreme()` returns, besides settings and options, a
-`data.table` with computed extreme values. The object is of class `sdc_extreme`
-as well as `list`.
-
-```{r return_extreme1}
-result_sdc_extreme <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
-
-class(result_sdc_extreme)
-
-result_sdc_extreme
-
-str(result_sdc_extreme)
-```
