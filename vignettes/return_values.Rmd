@@ -1,0 +1,112 @@
+---
+title: "return_values"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{return_values}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(sdcLog)
+```
+
+# Return values
+
+This section explains the return value(s) of `sdc_functions` in more detail.
+`sdc_descriptives()`, `sdc_extreme()` and `sdc_model()` each return a list
+containing options and settings as well as additional, function specific
+information.
+
+Each function returns a list, e.g. for `sdc_descriptives()`:
+
+```{r return_descriptives1}
+typeof(sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"))
+
+model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
+model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
+model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+model_3 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
+model_4 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
+```
+
+If the object is assigned, only warnings and messages are printed (if they occur
+at all):
+
+```{r return_descriptives2}
+result_sdc_descriptives <- sdc_descriptives(
+  data = sdc_descriptives_DT, id_var = "id", val_var = "val_1"
+)
+
+result_sdc_descriptives <- sdc_descriptives(
+  data = sdc_descriptives_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
+)
+```
+
+If the object itself is printed, the user receives the same information that
+would have been printed directly without assignment.
+
+```{r return_descriptives3}
+result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+```{r}
+sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
+
+result_sdc_descriptives
+
+sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
+```
+
+There are additional information that vary depending on the function. The
+function `sdc_descriptives()` gives, besides settings and options, information
+about compliance with RDC rules regarding distinct entities and dominance for
+the checked variable. The object is of class `sdc_descriptives` as well as
+`list`.
+
+```{r return_descriptives4}
+result_sdc_descriptives <- sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
+
+```{r}
+sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
+class(result_sdc_descriptives)
+
+sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
+result_sdc_descriptives
+
+str(result_sdc_descriptives)
+```
+
+The function `sdc_model()` returns, besides settings and options, information
+about compliance with RDC rules regarding distinct entities and dominance for
+every variable of the model. The object is of class `sdc_model` as well as
+`list`.
+
+Subsequently 'model_4' is checked. This time we set sdc.info_level = 2 to get
+more detailed information about each variable separately - although this is not
+absolutely necessary, since potential problems are always printed.
+
+```{r}
+options(sdc.info_level = 2)
+sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
+```
+
+The function `sdc_extreme()` returns, besides settings and options, a
+`data.table` with computed extreme values. The object is of class `sdc_extreme`
+as well as `list`.
+
+```{r return_extreme1}
+result_sdc_extreme <- sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
+
+class(result_sdc_extreme)
+
+result_sdc_extreme
+
+str(result_sdc_extreme)
+```
