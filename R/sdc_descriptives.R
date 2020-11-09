@@ -101,7 +101,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
   class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
 
   # print(distinct_ids)
-  if (nrow(distinct_ids) > 0L) {
+  if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),
       "Not enough distinct entities", ".",
