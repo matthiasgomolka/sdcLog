@@ -9,9 +9,6 @@ vignette: >
   %\VignetteIndexEntry{Introduction to sdcLog}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-# editor_options: 
-#   markdown: 
-#     wrap: 80
 ---
 
 ```{r setup, include = FALSE}
