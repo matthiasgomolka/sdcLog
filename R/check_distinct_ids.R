@@ -8,11 +8,11 @@
 #' @importFrom data.table uniqueN
 
 check_distinct_ids <- function(DT, id_var, val_var, by = NULL) {
-    substitute(
-        DT[!is.na(get(val_var)),
-           .(distinct_ids = data.table::uniqueN(.SD)),
-           .SDcols = id_var,
-           keyby = by
-         ][distinct_ids < getOption("sdc.n_ids", 5L)]
-    )
+  substitute(
+    DT[!is.na(get(val_var)),
+      .(distinct_ids = data.table::uniqueN(.SD)),
+      .SDcols = id_var,
+      keyby = by
+    ][distinct_ids < getOption("sdc.n_ids", 5L)]
+  )
 }

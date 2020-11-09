@@ -12,8 +12,6 @@ extreme_test_dt <- data.table(
 
 
 # test sdc_extreme ----
-context("sdc_extreme")
-
 # simple case ----
 # calculate extreme values for val_var = val_1
 extreme_ref_1 <- data.table(
@@ -217,8 +215,6 @@ test_that("sdc_extreme() gives no result in by cases", {
 # tests for internal functions ----
 
 # find_SD_problems:
-context("find_SD_problems")
-
 # test that find_SD_problems returns a list
 test_that("find_SD_problems() returns a list", {
   expect_type(
@@ -307,8 +303,6 @@ test_that("find_SD_problems() detects problems correctly", {
 
 
 # find SD problems ----
-context("find_SD")
-
 # test that find_SD returns correct subset
 row_order <- c("sector", "id", "val_1", "val_2", "val_3", "val_4")
 
@@ -354,7 +348,9 @@ test_that("find_SD() returns correct subset", {
 # test that sdc_extreme retruns appropriate error
 test_that("sdc_extreme() returns appropriate error", {
 
-    # error für nichtexistierende Elemente
+  # error für nichtexistierende Elemente
+  suppressMessages({
+    # messages sind hier nicht wichtig, deshalb suppressed
     expect_error(sdc_extreme(extreme_test_dt, "wrong_id", "val_1"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
     expect_error(sdc_extreme(extreme_test_dt, "id", "wrong_val"), "argument specifying columns specify non existing column(s): cols[1]='wrong_val'", fixed = TRUE)
     expect_error(sdc_extreme(wrong_test_dt, "id", "val_1"), "object 'wrong_test_dt' not found")
@@ -371,11 +367,5 @@ test_that("sdc_extreme() returns appropriate error", {
     expect_error(sdc_extreme(extreme_test_dt, "id"), "argument \"val_var\" is missing, with no default")
     expect_error(sdc_extreme(extreme_test_dt, val_var = "val_1"), "argument \"id_var\" is missing, with no default")
     expect_error(sdc_extreme(id = "id", val_var = "val_1"), "argument \"data\" is missing, with no default")
-
+  })
 })
-
-
-
-
-
-

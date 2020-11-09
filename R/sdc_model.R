@@ -24,133 +24,132 @@
 #'
 #' model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 #' sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
-#'
-
 #' @return A list with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
 
 sdc_model <- function(data, model, id_var) {
 
-    # check inputs
-    check_args(data, id_var)
+  # check inputs
+  check_args(data, id_var)
 
-    data <- data.table::as.data.table(data)
+  data <- data.table::as.data.table(data)
 
-    #model df
-    data_model <- tryCatch(
-        broom::augment(model),
-        error = function(error) {
-            paste0(
-                "Models of class '", class(model), "' are not yet supported."
-                )
-            }
-        )
-
-    model_vars <- setdiff(
-        names(data_model),
-        c(".fitted", ".se.fit", ".resid", ".hat", ".sigma", ".cooksd",
-          ".std.resid", ".rownames", ".cluster")
-    )
-
-    model_df <- data[, c(id_var, model_vars), with = FALSE]
-    model_df <- stats::na.omit(model_df)
-
-    # general check for number of distinct ID's
-    # no call of check_distinct_ids() because we have no single val_var here
-    distinct_ids <-
-        model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))
-               ][distinct_ids < getOption("sdc.n_ids", 5L)]
-
-    # warning via print method for distinct ID's
-    class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
-    if (nrow(distinct_ids) > 0L) {
-        warning(
-            crayon::bold("Potential disclosure problem: "),
-            "Not enough distinct entities", ".",
-            call. = FALSE
-        )
+  # model df
+  data_model <- tryCatch(
+    broom::augment(model),
+    error = function(error) {
+      paste0(
+        "Models of class '", class(model), "' are not yet supported."
+      )
     }
+  )
 
-
-    # extract dummy cols
-    var_df <- model_df[, model_vars, with = FALSE]
-
-    dummy_vars <- vapply(var_df, is_dummy, FUN.VALUE = logical(1L))
-    dummy_vars <- names(dummy_vars)[dummy_vars == TRUE]
-
-
-    #select df for warning dominance
-    model_var_no_dummy <- setdiff(model_vars, dummy_vars)
-    model_df_no_dummy <- model_df[, c(id_var, model_var_no_dummy), with = FALSE]
-
-
-    #warning dominance with print method
-    dominance_list <- lapply(model_var_no_dummy, function(x) {
-        dominance <- eval(
-            check_dominance(model_df_no_dummy, id_var, x)
-        )
-        class(dominance) <- c("sdc_dominance", class(dominance))
-        dominance
-    })
-
-    names(dominance_list) <- model_var_no_dummy
-    dominance_warning(dominance_list)
-
-    dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
-
-    # warnings for dummy variables
-    dummy_list <- lapply(dummy_vars, function(x) {
-        distinct_ids_per_value <- eval(
-            check_distinct_ids(dummy_data, id_var, val_var = x, by = x)
-        )
-        class(distinct_ids_per_value) <-
-            c("sdc_distinct_ids", class(distinct_ids_per_value))
-        distinct_ids_per_value
-    })
-
-    names(dummy_list) <- dummy_vars
-    dummy_warning(dummy_list)
-
-       # return list with all problem df's &| messages
-    res <- list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var = id_var),
-        distinct_ids = distinct_ids,
-        dominance_list = dominance_list,
-        dummy_list = dummy_list
+  model_vars <- setdiff(
+    names(data_model),
+    c(
+      ".fitted", ".se.fit", ".resid", ".hat", ".sigma", ".cooksd",
+      ".std.resid", ".rownames", ".cluster"
     )
-    class(res) <- c("sdc_model", class(res))
-    res
+  )
+
+  model_df <- data[, c(id_var, model_vars), with = FALSE]
+  model_df <- stats::na.omit(model_df)
+
+  # general check for number of distinct ID's
+  # no call of check_distinct_ids() because we have no single val_var here
+  distinct_ids <-
+    model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))][distinct_ids < getOption("sdc.n_ids", 5L)]
+
+  # warning via print method for distinct ID's
+  class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
+  if (nrow(distinct_ids) > 0L) {
+    warning(
+      crayon::bold("Potential disclosure problem: "),
+      "Not enough distinct entities", ".",
+      call. = FALSE
+    )
+  }
+
+
+  # extract dummy cols
+  var_df <- model_df[, model_vars, with = FALSE]
+
+  dummy_vars <- vapply(var_df, is_dummy, FUN.VALUE = logical(1L))
+  dummy_vars <- names(dummy_vars)[dummy_vars == TRUE]
+
+
+  # select df for warning dominance
+  model_var_no_dummy <- setdiff(model_vars, dummy_vars)
+  model_df_no_dummy <- model_df[, c(id_var, model_var_no_dummy), with = FALSE]
+
+
+  # warning dominance with print method
+  dominance_list <- lapply(model_var_no_dummy, function(x) {
+    dominance <- eval(
+      check_dominance(model_df_no_dummy, id_var, x)
+    )
+    class(dominance) <- c("sdc_dominance", class(dominance))
+    dominance
+  })
+
+  names(dominance_list) <- model_var_no_dummy
+  dominance_warning(dominance_list)
+
+  dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
+
+  # warnings for dummy variables
+  dummy_list <- lapply(dummy_vars, function(x) {
+    distinct_ids_per_value <- eval(
+      check_distinct_ids(dummy_data, id_var, val_var = x, by = x)
+    )
+    class(distinct_ids_per_value) <-
+      c("sdc_distinct_ids", class(distinct_ids_per_value))
+    distinct_ids_per_value
+  })
+
+  names(dummy_list) <- dummy_vars
+  dummy_warning(dummy_list)
+
+  # return list with all problem df's &| messages
+  res <- list(
+    message_options = message_options(),
+    message_arguments = message_arguments(id_var = id_var),
+    distinct_ids = distinct_ids,
+    dominance_list = dominance_list,
+    dummy_list = dummy_list
+  )
+  class(res) <- c("sdc_model", class(res))
+  res
 }
 
 
 conditional_print <- function(list) {
-    problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
-    for (i in seq_along(problems)) {
-        if (problems[[i]] | getOption("sdc.info_level", 1L) > 1L) {
-            print(list[i])
-        }
+  problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+  for (i in seq_along(problems)) {
+    if (problems[[i]] | getOption("sdc.info_level", 1L) > 1L) {
+      print(list[i])
     }
+  }
 }
 
 
 dummy_warning <- function(list) {
-    problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
-    if (sum(problems) > 0L) {
-        warning(
-            crayon::bold("Potential disclosure problem: "),
-            "Not enough distinct entities", ".",
-            call. = FALSE
-        )
-    }
+  problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+  if (sum(problems) > 0L) {
+    warning(
+      crayon::bold("Potential disclosure problem: "),
+      "Not enough distinct entities", ".",
+      call. = FALSE
+    )
+  }
 }
 
 dominance_warning <- function(list) {
-    problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
-    if (sum(problems) > 0L) {
-        warning(
-            crayon::bold("Potential disclosure problem: "),
-            "Dominant entities", ".",
-            call. = FALSE
-        )
-    }
+  problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+  if (sum(problems) > 0L) {
+    warning(
+      crayon::bold("Potential disclosure problem: "),
+      "Dominant entities", ".",
+      call. = FALSE
+    )
+  }
 }
