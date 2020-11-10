@@ -40,7 +40,7 @@ library(skimr)
 
 This vignette introduces the sdcLog package and its main functions, illustrated
 with various examples. The sdcLog package provides tools which simplify
-statistical disclosure control in the context of research data centres (RDC).
+statistical disclosure control in the context of research data centers (RDC).
 
 The package includes three main functions:
 
@@ -60,7 +60,7 @@ The package includes three main functions:
 
 -   `sdc_extreme()`: This function is used for the automatic calculation (if
     possible) of extreme values according to the rules of the research data
-    centre. It uses the available data and calculates the values for desired
+    center. It uses the available data and calculates the values for desired
     variables and groupings in compliance with the rules. The values are
     calculated as averages of a sufficient number of observations. This helps
     the researcher to easily follow the rules and simplifies the output control.
@@ -203,7 +203,7 @@ recognized and treated as such.
 
 It might be the case that it is accurate according to the data basis to treat
 values of `0` as `0` (instead of `NA`). Then, specifying the argument
-`zero_as_NA = FALSE` circumvents the default behaviour and treats `0` like other
+`zero_as_NA = FALSE` circumvents the default behavior and treats `0` like other
 numeric values:
 
 ```{r descriptives_zerozero}

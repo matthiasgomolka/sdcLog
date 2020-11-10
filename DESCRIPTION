@@ -1,6 +1,6 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data
-    Centres
+    Centers
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Matthias",
@@ -12,7 +12,9 @@ Authors@R:
              role = "aut"))
 Description: Tools for researchers to explicitly show that their
     results comply to rules for statistical disclosure control imposed by
-    research data centres.
+    research data centers. These tools help in checking descriptive
+    statistics and models and in calculating extreme values that are not
+    individual data. Also included is simple function to create log files.
 License: GPL-3
 URL: https://github.com/matthiasgomolka/sdcLog
 BugReports: https://github.com/matthiasgomolka/sdcLog/issues
@@ -32,11 +34,13 @@ Suggests:
     knitr,
     rmarkdown,
     skimr,
+    spelling,
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
+Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

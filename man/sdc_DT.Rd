@@ -3,7 +3,7 @@
 \docType{data}
 \name{sdc_DT}
 \alias{sdc_DT}
-\title{Example Datasets used in the vignette}
+\title{Example datasets used in the vignette}
 \format{
 A data.table with 100 rows and 8 columns.
 }
@@ -11,7 +11,8 @@ A data.table with 100 rows and 8 columns.
 data("sdc_DT")
 }
 \description{
-Recreated after the example data from nobsdes.
+Recreated after the example data from corresponding Stata
+function.
 }
 \details{
 The data.table contains the following columns:

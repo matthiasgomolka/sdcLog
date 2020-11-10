@@ -1,5 +1,6 @@
-#' Example Datasets used in the vignette
-#' @description Recreated after the example data from nobsdes.
+#' Example datasets used in the vignette
+#' @description Recreated after the example data from corresponding Stata
+#'   function.
 #' @name sdc_DT
 #' @docType data
 #' @usage data("sdc_DT")

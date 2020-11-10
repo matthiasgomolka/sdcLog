@@ -1,14 +1,8 @@
 #' Internal function which creates cross-tables with number of distinct id's
-#' @param DT [data.table] from which the descriptives are calculated.
-#' @param id_var [character] The name of the id variable.
-#' @param val_var [character] vector of value variables on which descriptives
-#'   are computed.
-#' @param by Grouping variables (or expression). Can be provided as in
-#'   [data.table::data.table()].
-
-check_dominance <- function(DT, id_var, val_var, by = NULL) {
+#' @inheritParams common_arguments
+check_dominance <- function(data, id_var, val_var, by = NULL) {
   substitute(
-    DT[!is.na(get(val_var)),
+    data[!is.na(get(val_var)),
       # base::sum needed to avoid error with gsum
       .SD[,
         .(agg_val_var = base::sum(.SD)),

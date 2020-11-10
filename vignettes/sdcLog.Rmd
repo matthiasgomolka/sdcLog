@@ -38,7 +38,7 @@ library(skimr)
 
 This vignette introduces the sdcLog package and its main functions, illustrated
 with various examples. sdcLog provides tools which simplify statistical
-disclosure control in the context of research data centres (RDC).
+disclosure control in the context of research data centers (RDC).
 
 The package includes four main functions:
 
@@ -222,7 +222,7 @@ default.
 
 However, it might be the case that it is accurate according to the data basis to
 treat values of `0` as zero (instead of `NA`). Then, specifying the argument
-`zero_as_NA = FALSE` circumvents the default behaviour and treats `0` like other
+`zero_as_NA = FALSE` circumvents the default behavior and treats `0` like other
 numeric values:
 
 ```{r descriptives_zerozero}
@@ -280,7 +280,7 @@ These models are now checked for compliance with the rules of the RDC. It is
 checked if there are enough distinct entities in the whole model and if every
 level of each dummy variable is checked for compliance with the rules.
 
-A pre-selection of problematic and unproblematic models has been made to better
+A selection of problematic and unproblematic models has been made to better
 explain the differences. To check for compliance, the model object (`model`),
 the data used (`data`) and the ID variable (`id_var`) must be specified in
 `sdc_model()`.
@@ -461,7 +461,7 @@ files or a list of files at once.
 
 A character vector containing the path(s) of the R script(s) which should be run
 must be specified as well as a character vector containing the path(s) of the
-text file(s) where the log(s) should be stored. To replace exsting log files,
+text file(s) where the log(s) should be stored. To replace existing log files,
 one can specify the argument `replace = TRUE`.
 
 A simple call of this function could look as follows:

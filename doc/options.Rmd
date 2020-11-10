@@ -40,7 +40,7 @@ set, it defaults to `5` Consider the following example:
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
 ```
 
-This can be adapted to the policy of your research data centre by setting the
+This can be adapted to the policy of your research data center by setting the
 option `sdc.n_ids` to the desired value. For example, if your policy allows
 results to be released if there are at least three different entities behind
 each number, set

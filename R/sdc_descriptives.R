@@ -60,7 +60,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
         "A share of ",
         signif(share_0, digits = 1L),
         " of 'val_var' are zero. These will be treated as 'NA'.\n",
-        "To prevent this behaviour and / or avoid this message, set ",
+        "To prevent this behavior and / or avoid this message, set ",
         "'zero_as_NA' explicitly."
       )
     } else {

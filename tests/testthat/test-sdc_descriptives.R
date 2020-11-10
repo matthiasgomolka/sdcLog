@@ -16,8 +16,8 @@ setcolorder(test_dt, c("id", "sector", "year"))
 
 # test check_distinct_ids ----
 test_that("check_distinct_ids() returns a call", {
-  expect_true(is.call(sdcLog:::check_distinct_ids(test_dt, "id", "val")))
-  expect_type(sdcLog:::check_distinct_ids(test_dt, "id", "val"), "language")
+  expect_true(is.call(check_distinct_ids(test_dt, "id", "val")))
+  expect_type(check_distinct_ids(test_dt, "id", "val"), "language")
 })
 
 ## functionality tests
@@ -48,8 +48,8 @@ test_that("check_distinct_ids() distinct_ids correctly", {
 # test check_dominance ----
 ## pure technical tests
 test_that("check_dominance() returns a call", {
-  expect_true(is.call(sdcLog:::check_dominance(test_dt, "id", "val")))
-  expect_type(sdcLog:::check_dominance(test_dt, "id", "val"), "language")
+  expect_true(is.call(check_dominance(test_dt, "id", "val")))
+  expect_type(check_dominance(test_dt, "id", "val"), "language")
 })
 
 ## functionality tests
@@ -273,7 +273,7 @@ test_that("sdc_descriptives() handles NA values correctly", {
     ),
     paste0(
       "A share of 0.8 of 'val_var' are zero. These will be treated as 'NA'.\n",
-      "To prevent this behaviour and / or avoid this message, set ",
+      "To prevent this behavior and / or avoid this message, set ",
       "'zero_as_NA' explicitly."
     ),
     fixed = TRUE
@@ -286,7 +286,7 @@ test_that("sdc_descriptives() handles NA values correctly", {
     ),
     paste0(
       "A share of 0.8 of 'val_var' are zero. These will be treated as 'NA'.\n",
-      "To prevent this behaviour and / or avoid this message, set ",
+      "To prevent this behavior and / or avoid this message, set ",
       "'zero_as_NA' explicitly."
     ),
     fixed = TRUE
