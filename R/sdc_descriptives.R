@@ -5,7 +5,6 @@
 #'   are computed.
 #' @param by Grouping variables (or expression). Can be provided as in
 #'   [data.table::data.table()].
-#' @importFrom data.table as.data.table set
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
 #' @importFrom data.table as.data.table set
 #' @export
@@ -48,6 +47,7 @@
 #'   compliance with the criteria distinct_ids and dominance.
 
 sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL) {
+  distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
   # input checks
   check_args(data, id_var, val_var, by, zero_as_NA)
 
@@ -72,7 +72,7 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
     }
   }
 
-  if (zero_as_NA) {
+  if (isTRUE(zero_as_NA)) {
     data.table::set(
       data,
       i = which(data[[val_var]] == 0),
@@ -93,15 +93,17 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
   #     message("The value '", possible_na_df[[1, 1]], "' occurs frequently in the data: Is it used as coding for NA?")}
 
 
-  # check distinct_ids
+  # check distinct_ids ----
   expr_distinct_ids <- eval(substitute(
     check_distinct_ids(data, id_var, val_var, by)
   ))
-  distinct_ids <- eval(expr_distinct_ids)
-  class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
+  distinct_ids <- structure(
+    eval(expr_distinct_ids),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
 
   # print(distinct_ids)
-  if (nrow(distinct_ids) > 0L) {
+  if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),
       "Not enough distinct entities", ".",
@@ -109,15 +111,17 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
     )
   }
 
-  # check dominance
+  # check dominance ----
   expr_dominance <- eval(substitute(
     check_dominance(data, id_var, val_var, by)
   ))
-  dominance <- eval(expr_dominance)
-  class(dominance) <- c("sdc_dominance", class(dominance))
+  dominance <- structure(
+    eval(expr_dominance),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
 
   # print(dominance)
-  if (nrow(dominance) > 0L) {
+  if (nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),
       "Dominant entities", ".",

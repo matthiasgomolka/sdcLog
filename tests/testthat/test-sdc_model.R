@@ -1,6 +1,4 @@
-library(testthat)
 library(data.table)
-
 
 # create dt for model tests ----
 set.seed(1)
@@ -69,10 +67,10 @@ summary(model_3)
 # model 5:
 # only problems with dummy (dummy_3)
 # y = β0 + β1*x_1 + β2*x_2 + β3*dummy_3 + u
-model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = model_test_dt)
-summary(model_5)
+model_4 <- lm(y ~ x_1 + x_2 + dummy_3, data = model_test_dt)
+summary(model_4)
 
-# sdc_model(model_test_dt, model_5, "id")
+# sdc_model(model_test_dt, model_4, "id")
 
 # tests: return, functionality etc.
 
@@ -90,7 +88,7 @@ test_that("sdc_model() returns warning, if necessary", {
     expect_warning(sdc_model(model_test_dt, model_2, "id"))
   )
   capture.output(
-    expect_warning(sdc_model(model_test_dt, model_5, "id"))
+    expect_warning(sdc_model(model_test_dt, model_4, "id"))
   )
 })
 
@@ -101,7 +99,7 @@ test_that("sdc_model() returns warning, if necessary", {
 # y = β0 + β1*x_1 + β2*x_2 + u
 # no problems at all
 # create distinct ref
-distinct_ref_1 <- data.table(distinct_ids = numeric())
+distinct_ref_1 <- data.table(distinct_ids = 10L)
 class(distinct_ref_1) <- c("sdc_distinct_ids", class(distinct_ref_1))
 
 # create dummy list ref
@@ -161,22 +159,61 @@ test_that("sdc_model() returns/works correctly", {
 # y = β0 + β1*x_1 + β2*x_2 + β3*dummy_1 + β4*dummy_2 + u
 # all good, with dummys
 # create distinct ref
-distinct_ref_4 <- data.table(distinct_ids = numeric())
-class(distinct_ref_4) <- c("sdc_distinct_ids", class(distinct_ref_4))
+distinct_ref_3 <- data.table(distinct_ids = 10L)
+class(distinct_ref_3) <- c("sdc_distinct_ids", class(distinct_ref_3))
 
 # create dummy list ref
 dummy_1 <- data.table(
-  dummy_1 = character(),
-  distinct_ids = numeric()
+  dummy_1 = c("M1", "M2"),
+  distinct_ids = 10L
 )
 
 dummy_2 <- data.table(
-  dummy_2 = factor(),
-  distinct_ids = numeric()
+  dummy_2 = factor(paste0("Y", 1:8)),
+  distinct_ids = 5L
 )
 
-dummy_ref_4 <- list(dummy_1, dummy_2)
-dummy_vars_4 <- c("dummy_1", "dummy_2")
+dummy_ref_3 <- list(dummy_1, dummy_2)
+dummy_vars_3 <- c("dummy_1", "dummy_2")
+names(dummy_ref_3) <- dummy_vars_3
+
+# create ref. list
+res_3 <- list(
+  message_options = message_options(),
+  message_arguments = message_arguments(id_var = "id"),
+  distinct_ids = distinct_ref_3,
+  dummy_list = dummy_ref_3
+)
+class(res_3) <- c("sdc_model", class(res_3))
+
+# test that sdc_model works correctly
+# check with equivalent (otherwise attributes (key) for dummys would have to be
+# set)
+test_that("sdc_model() returns/works correctly", {
+  expect_equal(
+    sdc_model(model_test_dt, model_3, "id"),
+    res_3,
+    ignore_attr = TRUE
+  )
+})
+
+
+### set up model_4:
+# y = β0 + β1*x_1 + β2*x_2 + β3*dummy_3 + u
+# only problems with dummy_3
+# create distinct ref
+distinct_ref_4 <- data.table(distinct_ids = 10L)
+class(distinct_ref_4) <- c("sdc_distinct_ids", class(distinct_ref_4))
+
+# create dummy list ref
+dummy_3 <- data.table(
+  dummy_3 = c("FR", "BE", "DE", "ES"),
+  distinct_ids = c(4L, rep(10L, 3L))
+)
+class(dummy_3) <- c("sdc_distinct_ids", class(dummy_3))
+
+dummy_ref_4 <- list(dummy_3)
+dummy_vars_4 <- c("dummy_3")
 names(dummy_ref_4) <- dummy_vars_4
 
 # create ref. list
@@ -189,52 +226,13 @@ res_4 <- list(
 class(res_4) <- c("sdc_model", class(res_4))
 
 # test that sdc_model works correctly
-# check with equivalent (otherwise attributes (key) for dummys would have to be
-# set)
-test_that("sdc_model() returns/works correctly", {
-  expect_equal(
-    sdc_model(model_test_dt, model_3, "id"),
-    res_4,
-    ignore_attr = TRUE
-  )
-})
-
-
-### set up model_5:
-# y = β0 + β1*x_1 + β2*x_2 + β3*dummy_3 + u
-# only problems with dummy_3
-# create distinct ref
-distinct_ref_5 <- data.table(distinct_ids = numeric())
-class(distinct_ref_5) <- c("sdc_distinct_ids", class(distinct_ref_5))
-
-# create dummy list ref
-dummy_3 <- data.table(
-  dummy_3 = "FR",
-  distinct_ids = 4L
-)
-
-dummy_ref_5 <- list(dummy_3)
-dummy_vars_5 <- c("dummy_3")
-names(dummy_ref_5) <- dummy_vars_5
-
-# create ref. list
-res_5 <- list(
-  message_options = message_options(),
-  message_arguments = message_arguments(id_var = "id"),
-  distinct_ids = distinct_ref_5,
-  dumy_list = dummy_ref_5
-)
-class(res_5) <- c("sdc_model", class(res_5))
-
-# test that sdc_model works correctly
 # check with equivalent (otherwise attributes for dummys would have to be set)
 test_that("sdc_model() returns/works correctly", {
   expect_warning(
     capture_output(
       expect_equal(
-        sdc_model(model_test_dt, model_5, "id"),
-        res_5,
-        ignore_attr = TRUE
+        sdc_model(model_test_dt, model_4, "id"),
+        res_4
       )
     ),
     "Potential disclosure problem: Not enough distinct entities."

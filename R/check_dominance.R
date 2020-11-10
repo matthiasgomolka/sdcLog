@@ -19,6 +19,7 @@ check_dominance <- function(DT, id_var, val_var, by = NULL) {
     ][order(-agg_val_var),
       .(value_share = cumsum(agg_val_var) / sum(agg_val_var)),
       keyby = by
-    ][, .SD[getOption("sdc.n_ids_dominance", 2L)], keyby = by][value_share >= getOption("sdc.share_dominance", 0.85)]
+    ][, .SD[getOption("sdc.n_ids_dominance", 2L)], keyby = by
+    ][order(-value_share)]
   )
 }

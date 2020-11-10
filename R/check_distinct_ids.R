@@ -13,6 +13,7 @@ check_distinct_ids <- function(DT, id_var, val_var, by = NULL) {
       .(distinct_ids = data.table::uniqueN(.SD)),
       .SDcols = id_var,
       keyby = by
-    ][distinct_ids < getOption("sdc.n_ids", 5L)]
+    ][order(distinct_ids)]
+    # [distinct_ids < getOption("sdc.n_ids", 5L)]
   )
 }

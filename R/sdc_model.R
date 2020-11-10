@@ -57,11 +57,11 @@ sdc_model <- function(data, model, id_var) {
   # general check for number of distinct ID's
   # no call of check_distinct_ids() because we have no single val_var here
   distinct_ids <-
-    model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))][distinct_ids < getOption("sdc.n_ids", 5L)]
+    model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))]#
 
   # warning via print method for distinct ID's
   class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
-  if (nrow(distinct_ids) > 0L) {
+  if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),
       "Not enough distinct entities", ".",
@@ -104,7 +104,12 @@ sdc_model <- function(data, model, id_var) {
 
 
 conditional_print <- function(list) {
-  problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+  distinct_ids <- NULL # removes NSE notes in R CMD check
+  problems <- vapply(
+    list,
+    function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L,
+    FUN.VALUE = logical(1L)
+  )
   for (i in seq_along(problems)) {
     if (problems[[i]] | getOption("sdc.info_level", 1L) > 1L) {
       print(list[i])
@@ -114,7 +119,12 @@ conditional_print <- function(list) {
 
 
 dummy_warning <- function(list) {
-  problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
+  distinct_ids <- NULL # removes NSE notes in R CMD check
+  problems <- vapply(
+    list,
+    function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L,
+    FUN.VALUE = logical(1L)
+  )
   if (sum(problems) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),
