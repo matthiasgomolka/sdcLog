@@ -7,18 +7,18 @@
 sdc_log(r_scripts, log_files, replace = FALSE)
 }
 \arguments{
-\item{r_scripts}{character vector containing the path(s) of the R script(s)
-which should be run with logging}
+\item{r_scripts}{\link{character} vector containing the path(s) of the R script(s)
+which should be run with logging.}
 
-\item{log_files}{character vector containing the path(s) of the text file(s)
-where the log(s) should be stored}
+\item{log_files}{\link{character} vector containing the path(s) of the text
+file(s) where the log(s) should be stored.}
 
-\item{replace}{logical. Indicates whether to replace existing log files.}
+\item{replace}{\link{logical} Indicates whether to replace existing log files.}
 }
 \value{
 Invisible \code{NULL}.
 }
 \description{
 This function creates Stata-like log files from R Scripts. It
-can handle single files or a list of files (in a character vector) at once.
+can handle several files (in a \link{character} vector) at once.
 }

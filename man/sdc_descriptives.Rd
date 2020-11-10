@@ -2,7 +2,7 @@
 % Please edit documentation in R/sdc_descriptives.R
 \name{sdc_descriptives}
 \alias{sdc_descriptives}
-\title{Check if your descriptive statistics comply to statistical disclosure control}
+\title{Disclosure control for descriptive statistics}
 \usage{
 sdc_descriptives(data, id_var, val_var, by = NULL, zero_as_NA = NULL)
 }
@@ -14,17 +14,18 @@ sdc_descriptives(data, id_var, val_var, by = NULL, zero_as_NA = NULL)
 \item{val_var}{\link{character} vector of value variables on which descriptives
 are computed.}
 
-\item{by}{Grouping variables (or expression). Can be provided as in
-\code{\link[data.table:data.table]{data.table::data.table()}}.}
+\item{by}{Grouping variables (or expression) as in \link{data.table}'s \code{by}.}
 
 \item{zero_as_NA}{\link{logical} If TRUE, zeros in 'val_var' are treated as NA.}
 }
 \value{
-A list \link{list} with detailed information about options, settings,
-compliance with the criteria distinct_ids and dominance.
+A \link{list} of class \code{sdc_descriptives} with detailed information about
+options, settings, and compliance with the criteria distinct entities and
+dominance.
 }
 \description{
-Check if your descriptive statistics comply to statistical disclosure control
+Checks if your descriptive statistics comply to statistical
+disclosure control. Checks for number of distinct entities and dominance.
 }
 \examples{
 sdc_descriptives(

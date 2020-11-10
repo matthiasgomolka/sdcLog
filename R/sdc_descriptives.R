@@ -1,11 +1,7 @@
-#' Check if your descriptive statistics comply to statistical disclosure control
-#' @param data [data.frame] from which the descriptives are calculated.
-#' @param id_var [character] The name of the id variable.
-#' @param val_var [character] vector of value variables on which descriptives
-#'   are computed.
-#' @param by Grouping variables (or expression). Can be provided as in
-#'   [data.table::data.table()].
-#' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
+#' Disclosure control for descriptive statistics
+#' @description Checks if your descriptive statistics comply to statistical
+#'   disclosure control. Checks for number of distinct entities and dominance.
+#' @inheritParams common_arguments
 #' @importFrom data.table as.data.table set
 #' @export
 #' @examples
@@ -43,9 +39,9 @@
 #'   by = c("sector", "year"),
 #'   zero_as_NA = FALSE
 #' )
-#' @return A list [list] with detailed information about options, settings,
-#'   compliance with the criteria distinct_ids and dominance.
-
+#' @return A [list] of class `sdc_descriptives` with detailed information about
+#'   options, settings, and compliance with the criteria distinct entities and
+#'   dominance.
 sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
   # input checks

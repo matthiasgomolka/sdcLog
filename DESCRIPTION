@@ -1,11 +1,18 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data
     Centres
-Version: 0.0.0.9000
-Author: Matthias Gomolka [aut, cre], Tim Becker [aut]
-Maintainer: Matthias Gomolka <matthias.gomolka@bundesbank.de>
-Description: Helps researchers to explicitly show that they obey
-    rules for output control imposed by research data centres.
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Matthias",
+             family = "Gomolka",
+             role = c("aut", "cre"),
+             email = "matthias.gomolka@posteo.de"),
+      person(given = "Tim",
+             family = "Becker",
+             role = "aut"))
+Description: Tools for researchers to explicitly show that their
+    results comply to rules for statistical disclusure control imposed by
+    research data centres.
 License: GPL-3
 URL: https://github.com/matthiasgomolka/sdcLog
 BugReports: https://github.com/matthiasgomolka/sdcLog/issues
@@ -28,8 +35,8 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Config/testthat/edition: 3

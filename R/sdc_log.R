@@ -1,16 +1,15 @@
 #' Create Stata-like log files from R Scripts
 #' @description This function creates Stata-like log files from R Scripts. It
-#'   can handle single files or a list of files (in a character vector) at once.
-#' @param r_scripts character vector containing the path(s) of the R script(s)
-#'   which should be run with logging
-#' @param log_files character vector containing the path(s) of the text file(s)
-#'   where the log(s) should be stored
-#' @param replace logical. Indicates whether to replace existing log files.
-#' @return Invisible \code{NULL}.
+#'   can handle several files (in a [character] vector) at once.
+#' @param r_scripts [character] vector containing the path(s) of the R script(s)
+#'   which should be run with logging.
+#' @param log_files [character] vector containing the path(s) of the text
+#'   file(s) where the log(s) should be stored.
+#' @param replace [logical] Indicates whether to replace existing log files.
+#' @return Invisible `NULL`.
 #' @importFrom checkmate assert_character assert_logical assert_file
 #'   test_file_exists
 #' @export
-
 sdc_log <- function(r_scripts, log_files, replace = FALSE) {
   # check inputs
   checkmate::assert_character(r_scripts, unique = TRUE)

@@ -2,23 +2,26 @@
 % Please edit documentation in R/sdc_model.R
 \name{sdc_model}
 \alias{sdc_model}
-\title{check if your model complies to RDC rules}
+\title{Disclosure control for models}
 \usage{
 sdc_model(data, model, id_var)
 }
 \arguments{
-\item{data}{\link{data.frame} The dataset from which the model is estimated.}
+\item{data}{\link{data.frame} from which the descriptives are calculated.}
 
 \item{model}{The estimated model object. Can be a model type like lm, glm and
 various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 
-\item{id_var}{\link{character} The name of the id variable as a character.}
+\item{id_var}{\link{character} The name of the id variable.}
 }
 \value{
-A list with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
+A \link{list} of class \code{sdc_model} with detailed information about
+options, settings, and compliance with the distinct entities criterion.
 }
 \description{
-check if your model complies to RDC rules
+Checks if your model complies to RDC rules. Checks for overall
+number of entities and number of entities for each level of dummy
+variables.
 }
 \examples{
 # Check simple models
@@ -28,12 +31,6 @@ sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
 model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
 sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 
-model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+model_3 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
-
-model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
-
-model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
-sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
 }

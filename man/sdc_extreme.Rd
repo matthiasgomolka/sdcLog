@@ -2,8 +2,7 @@
 % Please edit documentation in R/sdc_extreme.R
 \name{sdc_extreme}
 \alias{sdc_extreme}
-\title{check if calculation of extreme values comply to RDC rules.
-If so, function returns average min and max values according to RDC rules.}
+\title{Calculate RDC rule-compliant extreme values}
 \usage{
 sdc_extreme(
   data,
@@ -15,16 +14,14 @@ sdc_extreme(
 )
 }
 \arguments{
-\item{data}{\link{data.frame} The dataset from which the extreme values can be
-calculated.}
+\item{data}{\link{data.frame} from which the descriptives are calculated.}
 
-\item{id_var}{\link{character} The name of the id variable as a character.}
+\item{id_var}{\link{character} The name of the id variable.}
 
-\item{val_var}{\link{character} Character vector of value variables on which
-descriptives are computed.}
+\item{val_var}{\link{character} vector of value variables on which descriptives
+are computed.}
 
-\item{by}{Grouping variables. Can be provided as in
-\code{\link[data.table:data.table]{data.table::data.table()}}.}
+\item{by}{Grouping variables (or expression) as in \link{data.table}'s \code{by}.}
 
 \item{n_min}{\link{integer} The number of values used to calculate the minimum, by
 default 5.}
@@ -33,18 +30,24 @@ default 5.}
 default 5.}
 }
 \value{
-A list \link{list} with detailed information about options, settings and the calculated extreme values (if possible).
+A list \link{list} of class \code{sdc_extreme} with detailed information about
+options, settings and the calculated extreme values (if possible).
 }
 \description{
-check if calculation of extreme values comply to RDC rules.
-If so, function returns average min and max values according to RDC rules.
+Checks if calculation of extreme values comply to RDC rules. If
+so, function returns average min and max values according to RDC rules.
 }
 \examples{
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_1")
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2")
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2", n_min = 7)
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_max = 10)
-sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2")
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2",
+            n_min = 7)
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
+            n_min = 10, n_max = 10)
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
+            n_min = 8, n_max = 8)
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
+            by = year)
+sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
+            by = c("sector", "year"))
 }

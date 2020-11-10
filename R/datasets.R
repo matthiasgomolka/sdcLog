@@ -1,5 +1,5 @@
 #' Example Datasets used in the vignette
-#' Recreated after the example data from nobsdes.
+#' @description Recreated after the example data from nobsdes.
 #' @name sdc_DT
 #' @docType data
 #' @usage data("sdc_DT")
@@ -12,12 +12,12 @@
 #' @keywords datasets
 "sdc_DT"
 
-#' Example data
-#' Utilized in the vignette
+#' Example data for `sdc_descriptives()`
+#' @description Utilized in the vignette.
 #' @name sdc_descriptives_DT
 #' @docType data
 #' @usage data("sdc_descriptives_DT")
-#' @format A data.table with 20 rows and 4 columns.
+#' @format A data.table with 20 rows and 5 columns.
 #' @details The data.table contains the following columns:
 #' - id [factor] random identifier
 #' - sector [factor] economic sector
@@ -26,21 +26,21 @@
 #' @keywords datasets
 "sdc_descriptives_DT"
 
-#' Example data
-#' Utilized in the vignette
-#' @name sdc_descriptives_DT
+#' Example data for `sdc_model()`
+#' @description Utilized in the vignette
+#' @name sdc_model_DT
 #' @docType data
 #' @usage data("sdc_model_DT")
 #' @format A data.table with 80 rows and 9 columns.
 #' @details The data.table contains the following columns:
-#' - id [factor] random identifier
-#' - y - x_4 [numeric] value variables
-#' - dummy_1 - dummy_3 [factor] dummy variables
+#'   - id [factor] random identifier
+#'   - y - x_4 [numeric] value variables
+#'   - dummy_1 - dummy_3 [factor] dummy variables
 #' @keywords datasets
 "sdc_model_DT"
 
-#' Example data
-#' Utilized in the vignette
+#' Example data for `sdc_extreme()`
+#' @description Utilized in the vignette
 #' @name sdc_extreme_DT
 #' @docType data
 #' @usage data("sdc_extreme_DT")

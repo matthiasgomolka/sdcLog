@@ -1,8 +1,8 @@
-#' check if your model complies to RDC rules
-#' @param data [data.frame] The dataset from which the model is estimated.
-#' @param model The estimated model object. Can be a model type like lm, glm and
-#'   various others (anything which can be handled by [broom::augment()]).
-#' @param id_var [character] The name of the id variable as a character.
+#' Disclosure control for models
+#' @description Checks if your model complies to RDC rules. Checks for overall
+#'   number of entities and number of entities for each level of dummy
+#'   variables.
+#' @inheritParams common_arguments
 #' @importFrom data.table as.data.table uniqueN
 #' @importFrom broom augment
 #' @importFrom stats na.omit
@@ -16,16 +16,10 @@
 #' model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
 #' sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 #'
-#' model_3 <- lm(y ~ x_1 + x_2 + x_4, data = sdc_model_DT)
+#' model_3 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 #' sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
-#'
-#' model_4 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
-#' sdc_model(data = sdc_model_DT, model = model_4, id_var = "id")
-#'
-#' model_5 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
-#' sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
-#' @return A list with detailed information about options, settings, compliance with the criteria distinct_ids and dominance.
-
+#' @return A [list] of class `sdc_model` with detailed information about
+#'   options, settings, and compliance with the distinct entities criterion.
 sdc_model <- function(data, model, id_var) {
 
   # check inputs

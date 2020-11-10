@@ -3,25 +3,15 @@
 \docType{data}
 \name{sdc_descriptives_DT}
 \alias{sdc_descriptives_DT}
-\alias{sdc_model_DT}
-\title{Example data
-Utilized in the vignette}
+\title{Example data for \code{sdc_descriptives()}}
 \format{
-A data.table with 20 rows and 4 columns.
-
-A data.table with 80 rows and 9 columns.
+A data.table with 20 rows and 5 columns.
 }
 \usage{
 data("sdc_descriptives_DT")
-
-data("sdc_model_DT")
 }
 \description{
-Example data
-Utilized in the vignette
-
-Example data
-Utilized in the vignette
+Utilized in the vignette.
 }
 \details{
 The data.table contains the following columns:
@@ -30,13 +20,6 @@ The data.table contains the following columns:
 \item sector \link{factor} economic sector
 \item year \link{integer} time variable
 \item val_1, val_2 \link{numeric} value variables
-}
-
-The data.table contains the following columns:
-\itemize{
-\item id \link{factor} random identifier
-\item y - x_4 \link{numeric} value variables
-\item dummy_1 - dummy_3 \link{factor} dummy variables
 }
 }
 \keyword{datasets}

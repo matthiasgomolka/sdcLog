@@ -1,37 +1,32 @@
-#' check if calculation of extreme values comply to RDC rules.
-#'   If so, function returns average min and max values according to RDC rules.
-#' @param data [data.frame] The dataset from which the extreme values can be
-#'   calculated.
-#' @param id_var [character] The name of the id variable as a character.
-#' @param val_var [character] Character vector of value variables on which
-#'   descriptives are computed.
-#' @param by Grouping variables. Can be provided as in
-#'   [data.table::data.table()].
-#' @param n_min [integer] The number of values used to calculate the minimum, by
-#'   default 5.
-#' @param n_max [integer] The number of values used to calculate the maximum, by
-#'   default 5.
+#' Calculate RDC rule-compliant extreme values
+#' @description Checks if calculation of extreme values comply to RDC rules. If
+#'   so, function returns average min and max values according to RDC rules.
+#' @inheritParams common_arguments
 #' @importFrom data.table as.data.table data.table setorderv fintersect .N set
 #' @importFrom checkmate assert_int
 #' @export
 #' @examples
-#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_1")
-#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2")
-#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_2", n_min = 7)
-#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 10, n_max = 10)
-#' sdc_extreme(data = sdc_extreme_DT, id = "id", val_var = "val_3", n_min = 8, n_max = 8)
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = year)
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-#' @return A list [list] with detailed information about options, settings and the calculated extreme values (if possible).
-
-
-sdc_extreme <- function(
-  data,
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2")
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2",
+#'             n_min = 7)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
+#'             n_min = 10, n_max = 10)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
+#'             n_min = 8, n_max = 8)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
+#'             by = year)
+#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
+#'             by = c("sector", "year"))
+#' @return A list [list] of class `sdc_extreme` with detailed information about
+#'   options, settings and the calculated extreme values (if possible).
+sdc_extreme <- function(data,
   id_var,
   val_var,
   by = NULL,
   n_min = getOption("sdc.n_ids", 5L),
-  n_max = n_min) {
+  n_max = n_min
+) {
   # input checks
   check_args(data, id_var, val_var, by)
   checkmate::assert_int(n_max)
