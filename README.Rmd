@@ -13,7 +13,7 @@ library(badger)
 
 `r badge_lifecycle("experimental")`
 `r badger::badge_cran_release(color = "orange")`
-[![R build status](https://github.com/Plebejer/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/Plebejer/sdcLog/actions)
+[![R build status](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions)
 `r badger::badge_codecov()`
 `r badge_dependencies()`
 
@@ -21,5 +21,5 @@ sdcLog is work in progress and aims to provide tools which simplify statistical
 disclosure control in the context of research data centres.
 
 Please note that the 'sdcLog' project is released with a
-[Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md). By contributing to
+[Contributor Code of Conduct](https://github.com/matthiasgomolka/sdcLog/blob/main/.github/CODE_OF_CONDUCT.md). By contributing to
 this project, you agree to abide by its terms.

@@ -8,3 +8,5 @@
 ^Meta$
 ^README.Rmd$
 ^\.vscode$
+^CRAN-RELEASE$
+^cran-comments\.md$

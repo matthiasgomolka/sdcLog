@@ -11,7 +11,7 @@ Authors@R:
              family = "Becker",
              role = "aut"))
 Description: Tools for researchers to explicitly show that their
-    results comply to rules for statistical disclusure control imposed by
+    results comply to rules for statistical disclosure control imposed by
     research data centres.
 License: GPL-3
 URL: https://github.com/matthiasgomolka/sdcLog
