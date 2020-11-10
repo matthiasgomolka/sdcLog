@@ -7,7 +7,7 @@ status](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.sv
 [![](https://codecov.io/gh/matthiasgomolka/sdcLog/branch/master/graph/badge.svg)](https://codecov.io/gh/matthiasgomolka/sdcLog)
 [![Dependencies](https://tinyverse.netlify.com/badge/sdcLog)](https://cran.r-project.org/package=sdcLog)
 
-sdcLog is work in progress and aims to provide tools which simplify
+‘sdcLog’ is work in progress and aims to provide tools which simplify
 statistical disclosure control in the context of research data centers.
 
 Please note that the ‘sdcLog’ project is released with a [Contributor
