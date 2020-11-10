@@ -1,0 +1,34 @@
+---
+title: "Frequently Asked Questions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Frequently Asked Questions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include=FALSE}
+library(sdcLog)
+```
+
+---
+
+1.  **I want to use `sdc_log()` on a `main.R` script which calls several other
+    scripts via `source()` in the order I need in my analysis. But the contents
+    from the other R scripts are not logged. How can I log the outputs from the
+    subordinated scripts as well?**
+    
+    In your `main.R` script, use `sdc_log()` instead of `source()` to run the
+    subordinated scripts. This way, you will end up with a separate log file for
+    each script which is called via `sdc_log()` from `main.R`.
+
+---
+
+This vignette will be extended as users have more questions.
