@@ -95,7 +95,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
 
     # this assures that this is no infinite loop; problems will be catched
     # during the check for overlaps
-    if (n == nrow(data)) {
+    if (n >= nrow(data)) {
       return(SD_results[["SD"]])
     }
   }

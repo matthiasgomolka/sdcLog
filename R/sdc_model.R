@@ -127,14 +127,3 @@ dummy_warning <- function(list) {
     )
   }
 }
-
-dominance_warning <- function(list) {
-  problems <- vapply(list, function(x) nrow(x) > 0L, FUN.VALUE = logical(1L))
-  if (sum(problems) > 0L) {
-    warning(
-      crayon::bold("Potential disclosure problem: "),
-      "Dominant entities", ".",
-      call. = FALSE
-    )
-  }
-}

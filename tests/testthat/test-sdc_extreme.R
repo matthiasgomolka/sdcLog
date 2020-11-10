@@ -343,7 +343,7 @@ test_that("find_SD() returns correct subset", {
 
 
 
-# test arguments in sdc_extreme
+# test arguments in sdc_extreme ----
 
 # test that sdc_extreme retruns appropriate error
 test_that("sdc_extreme() returns appropriate error", {
@@ -369,3 +369,21 @@ test_that("sdc_extreme() returns appropriate error", {
     expect_error(sdc_extreme(id = "id", val_var = "val_1"), "argument \"data\" is missing, with no default")
   })
 })
+
+# no infinite loop ----
+test_that("sdc_extreme() does not enter an infinite loop", {
+  messages <- capture_messages(sdc_extreme(extreme_test_dt[1:5], "id", "val_2"))
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0(
+      "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+      "sdc.share_dominance: 0.85 ]\n",
+      "[ SETTINGS: id_var: id | val_var: val_2 ]\n",
+      "It is impossible to compute extreme values for variable 'val_2' that ",
+      "comply to RDC rules.",
+      collapse = ""
+    ),
+    fixed = TRUE
+  )
+})
+

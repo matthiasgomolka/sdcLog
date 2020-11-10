@@ -31,6 +31,7 @@ by_to_char <- function(by) {
     return(gsub(",", ", ", fixed = TRUE, str))
   }
 
+  # not sure anymore, what the purpose of the following code is ...
   if (grepl("^(:|>|<|=)", str[1L])) {
     paste(str[2L], str[1L], str[3L])
   } else {
