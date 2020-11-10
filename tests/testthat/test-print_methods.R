@@ -1,4 +1,4 @@
-suppressPackageStartupMessages(library(data.table))
+library(data.table)
 
 
 # test print.sdc_distinct_ids ----
@@ -6,14 +6,14 @@ distinct_ids_1 <- data.table(distinct_ids = integer(0L))
 
 test_that("print.sdc_distinct_ids works for most simple case", {
   options(sdc.info_level = 0L)
-  expect_silent(sdcLog:::print.sdc_distinct_ids(distinct_ids_1))
+  expect_silent(print.sdc_distinct_ids(distinct_ids_1))
 
   options(sdc.info_level = 1L)
-  expect_silent(sdcLog:::print.sdc_distinct_ids(distinct_ids_1))
+  expect_silent(print.sdc_distinct_ids(distinct_ids_1))
 
   options(sdc.info_level = 2L)
   expect_message(
-    sdcLog:::print.sdc_distinct_ids(distinct_ids_1),
+    print.sdc_distinct_ids(distinct_ids_1),
     "No problem with number of distinct entities.",
     fixed = TRUE
   )
@@ -30,13 +30,13 @@ expect_print.sdc_distinct_ids_2 <- function(x) {
 
 test_that("print.sdc_distinct_ids works for problematic case", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_distinct_ids_2(sdcLog:::print.sdc_distinct_ids(distinct_ids_2))
+  expect_print.sdc_distinct_ids_2(print.sdc_distinct_ids(distinct_ids_2))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_distinct_ids_2(sdcLog:::print.sdc_distinct_ids(distinct_ids_2))
+  expect_print.sdc_distinct_ids_2(print.sdc_distinct_ids(distinct_ids_2))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_distinct_ids_2(sdcLog:::print.sdc_distinct_ids(distinct_ids_2))
+  expect_print.sdc_distinct_ids_2(print.sdc_distinct_ids(distinct_ids_2))
 })
 
 distinct_ids_3 <- data.table(sector = paste0("S", 1:2), distinct_ids = 3L:4L)
@@ -50,13 +50,13 @@ expect_print.sdc_distinct_ids_3 <- function(x) {
 
 test_that("print.sdc_distinct_ids works for problematic by case", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_distinct_ids_3(sdcLog:::print.sdc_distinct_ids(distinct_ids_3))
+  expect_print.sdc_distinct_ids_3(print.sdc_distinct_ids(distinct_ids_3))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_distinct_ids_3(sdcLog:::print.sdc_distinct_ids(distinct_ids_3))
+  expect_print.sdc_distinct_ids_3(print.sdc_distinct_ids(distinct_ids_3))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_distinct_ids_3(sdcLog:::print.sdc_distinct_ids(distinct_ids_3))
+  expect_print.sdc_distinct_ids_3(print.sdc_distinct_ids(distinct_ids_3))
 })
 
 
@@ -65,14 +65,14 @@ dominance_1 <- data.table(value_share = numeric(0))
 
 test_that("print.sdc_dominance works for most simple case", {
   options(sdc.info_level = 0L)
-  expect_silent(sdcLog:::print.sdc_dominance(dominance_1))
+  expect_silent(print.sdc_dominance(dominance_1))
 
   options(sdc.info_level = 1L)
-  expect_silent(sdcLog:::print.sdc_dominance(dominance_1))
+  expect_silent(print.sdc_dominance(dominance_1))
 
   options(sdc.info_level = 2L)
   expect_message(
-    sdcLog:::print.sdc_dominance(dominance_1),
+    print.sdc_dominance(dominance_1),
     "No problem with dominance.",
     fixed = TRUE
   )
@@ -89,13 +89,13 @@ expect_print.sdc_dominance_2 <- function(x) {
 
 test_that("print.sdc_dominance works for problematic case", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_dominance_2(sdcLog:::print.sdc_dominance(dominance_2))
+  expect_print.sdc_dominance_2(print.sdc_dominance(dominance_2))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_dominance_2(sdcLog:::print.sdc_dominance(dominance_2))
+  expect_print.sdc_dominance_2(print.sdc_dominance(dominance_2))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_dominance_2(sdcLog:::print.sdc_dominance(dominance_2))
+  expect_print.sdc_dominance_2(print.sdc_dominance(dominance_2))
 })
 
 dominance_3 <- data.table(sector = paste0("S", 1:2), value_share = c(0.88, 0.9))
@@ -109,13 +109,13 @@ expect_print.sdc_dominance_3 <- function(x) {
 
 test_that("print.sdc_dominance works for problematic by case", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_dominance_3(sdcLog:::print.sdc_dominance(dominance_3))
+  expect_print.sdc_dominance_3(print.sdc_dominance(dominance_3))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_dominance_3(sdcLog:::print.sdc_dominance(dominance_3))
+  expect_print.sdc_dominance_3(print.sdc_dominance(dominance_3))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_dominance_3(sdcLog:::print.sdc_dominance(dominance_3))
+  expect_print.sdc_dominance_3(print.sdc_dominance(dominance_3))
 })
 
 
@@ -136,7 +136,7 @@ class(descriptives_1) <- c("sdc_descriptives", class(descriptives_1))
 
 test_that("print.sdc_descriptives works for most simple case", {
   options(sdc.info_level = 0L)
-  messages <- capture_messages(sdcLog:::print.sdc_descriptives(descriptives_1))
+  messages <- capture_messages(print.sdc_descriptives(descriptives_1))
   expect_match(
     paste0(messages, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
@@ -148,7 +148,7 @@ test_that("print.sdc_descriptives works for most simple case", {
   )
 
   options(sdc.info_level = 1L)
-  messages <- capture_messages(sdcLog:::print.sdc_descriptives(descriptives_1))
+  messages <- capture_messages(print.sdc_descriptives(descriptives_1))
   expect_match(
     paste0(messages, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
@@ -161,7 +161,7 @@ test_that("print.sdc_descriptives works for most simple case", {
   )
 
   options(sdc.info_level = 2L)
-  messages <- capture_messages(sdcLog:::print.sdc_descriptives(descriptives_1))
+  messages <- capture_messages(print.sdc_descriptives(descriptives_1))
   expect_match(
     paste0(messages, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
@@ -191,9 +191,9 @@ class(descriptives_2) <- c("sdc_descriptives", class(descriptives_2))
 
 
 expect_print.sdc_descriptives_2 <- function(x) {
-  output <- capture_output_lines(
+  output <- capture_output_lines({
     message <- capture_messages(x)
-  )
+  })
 
   expect_match(
     paste0(message, collapse = ""),
@@ -221,13 +221,13 @@ expect_print.sdc_descriptives_2 <- function(x) {
 
 test_that("print.sdc_descriptives works for problematic case", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_descriptives_2(sdcLog:::print.sdc_descriptives(descriptives_2))
+  expect_print.sdc_descriptives_2(print.sdc_descriptives(descriptives_2))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_descriptives_2(sdcLog:::print.sdc_descriptives(descriptives_2))
+  expect_print.sdc_descriptives_2(print.sdc_descriptives(descriptives_2))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_descriptives_2(sdcLog:::print.sdc_descriptives(descriptives_2))
+  expect_print.sdc_descriptives_2(print.sdc_descriptives(descriptives_2))
 })
 
 
@@ -252,9 +252,9 @@ class(descriptives_3) <- c("sdc_descriptives", class(descriptives_3))
 
 
 expect_print.sdc_descriptives_3 <- function(x) {
-  output <- capture_output_lines(
+  output <- capture_output_lines({
     message <- capture_messages(x)
-  )
+  })
 
   expect_match(
     paste0(message, collapse = ""),
@@ -282,13 +282,13 @@ expect_print.sdc_descriptives_3 <- function(x) {
 
 test_that("print.sdc_descriptives works for problematic by case", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_descriptives_3(sdcLog:::print.sdc_descriptives(descriptives_3))
+  expect_print.sdc_descriptives_3(print.sdc_descriptives(descriptives_3))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_descriptives_3(sdcLog:::print.sdc_descriptives(descriptives_3))
+  expect_print.sdc_descriptives_3(print.sdc_descriptives(descriptives_3))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_descriptives_3(sdcLog:::print.sdc_descriptives(descriptives_3))
+  expect_print.sdc_descriptives_3(print.sdc_descriptives(descriptives_3))
 })
 
 
@@ -332,9 +332,9 @@ class(model_ref_1) <- c("sdc_model", class(model_ref_1))
 
 test_that("print.sdc_model works for most simple case", {
   options(sdc.info_level = 0L)
-  invisible(capture.output(
-    messages <- capture_messages(sdcLog:::print.sdc_model(model_ref_1))
-  ))
+  invisible(capture.output({
+    messages <- capture_messages(print.sdc_model(model_ref_1))
+  }))
   expect_match(
     paste0(messages, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
@@ -346,9 +346,9 @@ test_that("print.sdc_model works for most simple case", {
   )
 
   options(sdc.info_level = 1L)
-  invisible(capture.output(
-    messages <- capture_messages(sdcLog:::print.sdc_model(model_ref_1))
-  ))
+  invisible(capture.output({
+    messages <- capture_messages(print.sdc_model(model_ref_1))
+  }))
   expect_match(
     paste0(messages, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
@@ -361,18 +361,15 @@ test_that("print.sdc_model works for most simple case", {
   )
 
   options(sdc.info_level = 2L)
-  invisible(capture.output(
-    messages <- capture_messages(sdcLog:::print.sdc_model(model_ref_1))
-  ))
+  invisible(capture.output({
+    messages <- capture_messages(print.sdc_model(model_ref_1))
+  }))
   expect_match(
     paste0(messages, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id ]\n",
       "No problem with number of distinct entities.\n",
-      "No problem with dominance.\n",
-      "No problem with dominance.\n",
-      "No problem with dominance.\n",
       "Output complies to RDC rules.\n",
       collapse = ""
     ),
@@ -419,9 +416,9 @@ model_ref_2 <- list(
 class(model_ref_2) <- c("sdc_model", class(model_ref_2))
 
 expect_print.sdc_model_2 <- function(x) {
-  output <- capture_output_lines(
+  output <- capture_output_lines({
     message <- capture_messages(x)
-  )
+  })
 
   expect_match(
     paste0(message, collapse = ""),
@@ -441,18 +438,6 @@ expect_print.sdc_model_2 <- function(x) {
 
   expect_match(
     output[5],
-    "Dominant entities:",
-    fixed = TRUE
-  )
-
-  expect_match(
-    output[10],
-    "Dominant entities:",
-    fixed = TRUE
-  )
-
-  expect_match(
-    output[15],
     "Not enough distinct entities:",
     fixed = TRUE
   )
@@ -461,13 +446,13 @@ expect_print.sdc_model_2 <- function(x) {
 
 test_that("print.sdc_model works for problematic cases", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_model_2(sdcLog:::print.sdc_model(model_ref_2))
+  expect_print.sdc_model_2(print.sdc_model(model_ref_2))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_model_2(sdcLog:::print.sdc_model(model_ref_2))
+  expect_print.sdc_model_2(print.sdc_model(model_ref_2))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_model_2(sdcLog:::print.sdc_model(model_ref_2))
+  expect_print.sdc_model_2(print.sdc_model(model_ref_2))
 })
 
 
@@ -514,9 +499,9 @@ class(model_ref_3) <- c("sdc_model", class(model_ref_3))
 
 
 expect_print.sdc_model_3_info_0_1 <- function(x) {
-  output <- capture_output_lines(
+  output <- capture_output_lines({
     message <- capture_messages(x)
-  )
+  })
 
   expect_match(
     paste0(message, collapse = ""),
@@ -536,28 +521,21 @@ expect_print.sdc_model_3_info_0_1 <- function(x) {
 
   expect_match(
     output[6],
-    "Dominant entities:",
-    fixed = TRUE
-  )
-
-  expect_match(
-    output[11],
     "Not enough distinct entities:",
     fixed = TRUE
   )
 }
 
 expect_print.sdc_model_3_info_2 <- function(x) {
-  output <- capture_output_lines(
+  output <- capture_output_lines({
     message <- capture_messages(x)
-  )
+  })
 
   expect_match(
     paste0(message, collapse = ""),
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id ]\n",
-      "No problem with dominance.\n",
       "No problem with number of distinct entities.\n",
       collapse = ""
     ),
@@ -572,12 +550,6 @@ expect_print.sdc_model_3_info_2 <- function(x) {
 
   expect_match(
     output[6],
-    "Dominant entities:",
-    fixed = TRUE
-  )
-
-  expect_match(
-    output[13],
     "Not enough distinct entities:",
     fixed = TRUE
   )
@@ -586,11 +558,11 @@ expect_print.sdc_model_3_info_2 <- function(x) {
 
 test_that("print.sdc_model works for problematic cases", {
   options(sdc.info_level = 0L)
-  expect_print.sdc_model_3_info_0_1(sdcLog:::print.sdc_model(model_ref_3))
+  expect_print.sdc_model_3_info_0_1(print.sdc_model(model_ref_3))
 
   options(sdc.info_level = 1L)
-  expect_print.sdc_model_3_info_0_1(sdcLog:::print.sdc_model(model_ref_3))
+  expect_print.sdc_model_3_info_0_1(print.sdc_model(model_ref_3))
 
   options(sdc.info_level = 2L)
-  expect_print.sdc_model_3_info_2(sdcLog:::print.sdc_model(model_ref_3))
+  expect_print.sdc_model_3_info_2(print.sdc_model(model_ref_3))
 })

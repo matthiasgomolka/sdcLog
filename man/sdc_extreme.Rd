@@ -5,7 +5,14 @@
 \title{check if calculation of extreme values comply to RDC rules.
 If so, function returns average min and max values according to RDC rules.}
 \usage{
-sdc_extreme(data, id_var, val_var, by = NULL, n_min = 5L, n_max = n_min)
+sdc_extreme(
+  data,
+  id_var,
+  val_var,
+  by = NULL,
+  n_min = getOption("sdc.n_ids", 5L),
+  n_max = n_min
+)
 }
 \arguments{
 \item{data}{\link{data.frame} The dataset from which the extreme values can be

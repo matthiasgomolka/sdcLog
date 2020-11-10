@@ -1,4 +1,4 @@
-# test setup ####
+# test setup ----
 library(data.table)
 
 set.seed(1)
@@ -21,28 +21,26 @@ test_that("check_distinct_ids() returns a call", {
 })
 
 ## functionality tests
-distinct_ids_ref_1 <- data.table(distinct_ids = integer())
+distinct_ids_ref_1 <- data.table(distinct_ids = 10L)
 distinct_ids_ref_2 <- data.table(
-  sector = character(), distinct_ids = integer(),
+  sector = c("S1", "S2"), distinct_ids = 5L,
   key = "sector"
 )
-distinct_ids_ref_3 <- data.table(
-  sector = "S1", year = 2019L, distinct_ids = 4L,
-  key = c("sector", "year")
-)
+
+distinct_ids_ref_3 <- CJ(sector = c("S1", "S2"), year = 2019L:2020)
+distinct_ids_ref_3[, distinct_ids := c(4L, rep(5L, 3L))]
+
 test_that("check_distinct_ids() distinct_ids correctly", {
   expect_identical(
-    eval(sdcLog:::check_distinct_ids(test_dt, "id", "val")),
+    eval(check_distinct_ids(test_dt, "id", "val")),
     distinct_ids_ref_1
   )
   expect_identical(
-    eval(sdcLog:::check_distinct_ids(test_dt, "id", "val", by = sector)),
+    eval(check_distinct_ids(test_dt, "id", "val", by = sector)),
     distinct_ids_ref_2
   )
   expect_identical(
-    eval(sdcLog:::check_distinct_ids(test_dt, "id", "val",
-      by = .(sector, year)
-    )),
+    eval(check_distinct_ids(test_dt, "id", "val", by = .(sector, year))),
     distinct_ids_ref_3
   )
 })
@@ -55,30 +53,34 @@ test_that("check_dominance() returns a call", {
 })
 
 ## functionality tests
-dominance_ref_1 <- data.table(value_share = numeric())
+dominance_ref_1 <- data.table(value_share = 0.8111461969431632557104)
 dominance_ref_2 <- data.table(
-  sector = "S2", value_share = 0.888866740023071,
+  sector = c("S2", "S1"), value_share = c(0.888866740023071, 0.834414924858227),
   key = "sector"
 )
+setorder(dominance_ref_2, -value_share)
 dominance_ref_3 <- data.table(
-  sector = c("S1", "S2"), year = rep(2020L, 2L),
-  value_share = c(0.913682312146633, 0.934568784234764),
+  sector = c("S2", "S1", "S1", "S2"),
+  year = c(2020, 2020, 2019, 2019),
+  value_share = c(
+    0.9345687842347638607521, 0.9136823121466332020546,
+    0.6815010551185097797955, 0.5506964573607419088930
+  ),
   key = c("sector", "year")
 )
+setorder(dominance_ref_3, -value_share)
 
 test_that("check_dominance() calculates correctly", {
   expect_identical(
-    eval(sdcLog:::check_dominance(test_dt, "id", "val")),
+    eval(check_dominance(test_dt, "id", "val")),
     dominance_ref_1
   )
   expect_equal(
-    eval(sdcLog:::check_dominance(test_dt, "id", "val", by = sector)),
+    eval(check_dominance(test_dt, "id", "val", by = sector)),
     dominance_ref_2
   )
   expect_equal(
-    eval(sdcLog:::check_dominance(test_dt, "id", "val",
-      by = .(sector, year)
-    )),
+    eval(check_dominance(test_dt, "id", "val", by = .(sector, year))),
     dominance_ref_3
   )
 })
@@ -110,9 +112,9 @@ class(descriptives_ref_1) <- c("sdc_descriptives", class(descriptives_ref_1))
 
 # descriptives tests 1 ####
 test_that("sdc_descriptives works in simple cases", {
-  expect_equal(
-    sdc_descriptives(test_dt, "id", "val"), descriptives_ref_1,
-    ignore_attr = TRUE
+  expect_identical(
+    sdc_descriptives(test_dt, "id", "val"),
+    descriptives_ref_1
   )
 })
 
@@ -138,7 +140,7 @@ class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
 
 descriptives_expect_2 <- function(x) {
   expect_warning(
-    expect_equal(x, descriptives_ref_2, ignore_attr = TRUE),
+    expect_equal(x, descriptives_ref_2),
     ifelse(getOption("sdc.info_level", 1L) > 1L,
       paste0(bold("Potential disclosure problem: "), "Dominant entities."), ""
     ),
@@ -188,8 +190,7 @@ class(descriptives_ref_3) <- c("sdc_descriptives", class(descriptives_ref_3))
 descriptives_expect_3 <- function(x) {
   warnings <- capture_warnings(expect_equal(
     sdc_descriptives(test_dt, "id", "val", by = .(sector, year)),
-    descriptives_ref_3,
-    ignore_attr = TRUE
+    descriptives_ref_3
   ))
   warnings <- gsub("\\\033\\[[1-2]{1,2}m", "", warnings)
   expect_match(

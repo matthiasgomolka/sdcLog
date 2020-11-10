@@ -26,12 +26,12 @@
 
 
 sdc_extreme <- function(
-                        data,
-                        id_var,
-                        val_var,
-                        by = NULL,
-                        n_min = 5L,
-                        n_max = n_min) {
+  data,
+  id_var,
+  val_var,
+  by = NULL,
+  n_min = getOption("sdc.n_ids", 5L),
+  n_max = n_min) {
   # input checks
   check_args(data, id_var, val_var, by)
   checkmate::assert_int(n_max)
@@ -110,6 +110,7 @@ find_SD <- function(data, type, n, id_var, val_var, by) {
 
 #' @importFrom data.table .SD
 find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
+  distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
   SD <- eval(substitute(
     data[order(-get(val_var)), SD_fun(.SD, n), by = by],
     env = parent.frame(n = 2L)
@@ -130,6 +131,9 @@ find_SD_problems <- function(data, SD_fun, n, id_var, val_var, by) {
 
   list(
     SD = SD,
-    problems = sum(nrow(results_distinct_ids), nrow(results_dominance)) != 0L
+    problems = sum(
+      nrow(results_distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]),
+      nrow(results_dominance[value_share >= getOption("sdc.share_dominance", 0.85)])
+    ) != 0L
   )
 }
