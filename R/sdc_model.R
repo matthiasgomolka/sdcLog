@@ -3,7 +3,7 @@
 #'   number of entities and number of entities for each level of dummy
 #'   variables.
 #' @inheritParams common_arguments
-#' @importFrom data.table as.data.table uniqueN
+#' @importFrom data.table as.data.table uniqueN rbindlist setDT := %flike%
 #' @importFrom broom augment tidy
 #' @importFrom stats na.omit
 #' @importFrom checkmate assert_data_frame assert_string
@@ -21,11 +21,12 @@
 #' @return A [list] of class `sdc_model` with detailed information about
 #'   options, settings, and compliance with the distinct entities criterion.
 sdc_model <- function(data, model, id_var) {
+  var_level <- var <- level <- term <- NULL # to silence NSE notes in RCDM check
 
   # check inputs
   check_args(data, id_var)
 
-  data <- data.table::as.data.table(data)
+  data.table::setDT(data)
 
   # model df
   data_model <- tryCatch(
@@ -75,73 +76,72 @@ sdc_model <- function(data, model, id_var) {
 
   # warnings for dummy variables
   dummy_list <- lapply(dummy_vars, function(x) {
-    distinct_ids_per_value <- eval(
+    distinct_ids_level <- eval(
       check_distinct_ids(dummy_data, id_var, val_var = x, by = x)
     )
-    class(distinct_ids_per_value) <-
-      c("sdc_distinct_ids", class(distinct_ids_per_value))
-    distinct_ids_per_value
+    class(distinct_ids_level) <-
+      c("sdc_distinct_ids", class(distinct_ids_level))
+    distinct_ids_level
   })
 
-  dummy_warning(dummy_list)
+  list_warning(dummy_list)
 
 
   # interactions ----
-  # refactor this (until line 129) in separate function?!
-  # replace stringi by base functions
   dummy_levels <- lapply(dummy_vars, function(x) {
     DT <- data.table::CJ(var = x, level = unique(levels(data[[x]])))
-    DT[, var_level := stringi::stri_join(var, level)]
+    DT[, var_level := paste0(var, level)]
   })
   dummy_levels <- data.table::rbindlist(dummy_levels)
 
-  interactions <- broom::tidy(model)[["term"]]
-  interactions <- stringi::stri_subset_fixed(interactions, ":")
-  interactions <- stringi::stri_split_fixed(interactions, ":")
+  interactions <- data.table::setDT(broom::tidy(model))
+  interactions <- interactions[term %flike% ":", term]
+  interactions <- strsplit(interactions, ":", fixed = TRUE)
   interactions <- lapply(interactions, function(x) {
     # unlist() drops all non-dummy variables. This is fine, because possible
     # problems would be caught during the simple distinct id checks for dummy
     # variables
     unlist(
-      lapply(x, function(y) {
-        dummy_levels[which(var_level == y)][["var"]]
-      })
+      lapply(x, function(y) dummy_levels[var_level == y, var])
     )
   })
 
   dummy_interactions <-
     !(vapply(interactions, length, FUN.VALUE = integer(1L)) == 1L)
-
   interactions <- unique(interactions[dummy_interactions])
+  names(interactions) <- vapply(
+    interactions, paste0, collapse = ":", FUN.VALUE = character(1L)
+  )
 
+  inter_list <- mapply(
+    interactions, names(interactions),
+    SIMPLIFY = FALSE,
+    FUN = function(x, name_x) {
+      inter_df <- data.table::copy(model_df)
+      inter_df[, (name_x) := do.call(paste, args = c(.SD, sep = ":")),
+               .SDcols = x]
 
-  lapply(interactions, function(x) {
-    inter_df <- data.table::copy(model_df)
-    inter_var <- stringi::stri_join(x, collapse = "_")
-    inter_df[, (inter_var) :=
-               do.call(stringi::stri_join, args = c(.SD, sep = "_")), .SDcols = x]
+      structure(
+        eval(check_distinct_ids(
+          inter_df, id_var, val_var = name_x, by = name_x
+        )),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      )
+    })
 
-    distinct_ids_per_value <- eval(
-      check_distinct_ids(inter_df, id_var, val_var = inter_var, by = inter_var)
-    )
-    class(distinct_ids_per_value) <-
-      c("sdc_distinct_ids", class(distinct_ids_per_value))
-    distinct_ids_per_value
-  })
-
-
-
-
+  list_warning(inter_list)
 
   # return list with all problem df's &| messages
-  res <- list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = id_var),
-    distinct_ids = distinct_ids,
-    dummy_list = dummy_list
+  structure(
+    list(
+      message_options = message_options(),
+      message_arguments = message_arguments(id_var = id_var),
+      distinct_ids = distinct_ids,
+      dummies = dummy_list,
+      interactions = inter_list
+    ),
+    class = c("sdc_model", "list")
   )
-  class(res) <- c("sdc_model", class(res))
-  res
 }
 
 
@@ -160,13 +160,15 @@ conditional_print <- function(list) {
 }
 
 
-dummy_warning <- function(list) {
+list_warning <- function(list) {
   distinct_ids <- NULL # removes NSE notes in R CMD check
   problems <- vapply(
     list,
     function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L,
     FUN.VALUE = logical(1L)
   )
+
+
   if (sum(problems) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),

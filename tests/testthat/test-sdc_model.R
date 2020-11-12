@@ -112,7 +112,7 @@ res_1 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_1,
-  dummy_list = dummy_ref_1
+  dummies = dummy_ref_1
 )
 
 class(res_1) <- c("sdc_model", class(res_1))
@@ -139,7 +139,7 @@ res_2 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_2,
-  dummy_list = dummy_ref_2
+  dummies = dummy_ref_2
 )
 
 class(res_2) <- c("sdc_model", class(res_2))
@@ -182,7 +182,7 @@ res_3 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_3,
-  dummy_list = dummy_ref_3
+  dummies = dummy_ref_3
 )
 class(res_3) <- c("sdc_model", class(res_3))
 
@@ -221,7 +221,7 @@ res_4 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_4,
-  dummy_list = dummy_ref_4
+  dummies = dummy_ref_4
 )
 class(res_4) <- c("sdc_model", class(res_4))
 

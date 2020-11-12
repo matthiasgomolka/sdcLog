@@ -64,12 +64,15 @@ print.sdc_model <- function(x, ...) {
     print_fun <- print
   }
 
-  if (length(x[["dummy_list"]]) != 0) {
-    print_fun(x[["dummy_list"]])
+  if (length(x[["dummies"]]) != 0) {
+    print_fun(x[["dummies"]])
+  }
+  if (length(x[["interactions"]]) != 0) {
+    print_fun(x[["interactions"]])
   }
 
   n_problems <- vapply(
-    x[["dummy_list"]],
+    c(x[["dummies"]], x[["interactions"]]),
     function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]),
     FUN.VALUE = integer(1L)
   )

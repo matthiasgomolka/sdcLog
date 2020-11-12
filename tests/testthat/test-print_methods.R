@@ -325,7 +325,7 @@ model_ref_1 <- list(
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ids_1,
   dominance_list = dominance_list_1,
-  dummy_list = dummy_list_1
+  dummies = dummy_list_1
 )
 
 class(model_ref_1) <- c("sdc_model", class(model_ref_1))
@@ -409,8 +409,7 @@ model_ref_2 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ids_2,
-  dominance_list = dominance_list_2,
-  dummy_list = dummy_list_2
+  dummies = dummy_list_2
 )
 
 class(model_ref_2) <- c("sdc_model", class(model_ref_2))
@@ -491,8 +490,7 @@ model_ref_3 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ids_3,
-  dominance_list = dominance_list_3,
-  dummy_list = dummy_list_3
+  dummies = dummy_list_3
 )
 
 class(model_ref_3) <- c("sdc_model", class(model_ref_3))
