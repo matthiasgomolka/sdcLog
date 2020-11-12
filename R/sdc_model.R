@@ -4,7 +4,7 @@
 #'   variables.
 #' @inheritParams common_arguments
 #' @importFrom data.table as.data.table uniqueN
-#' @importFrom broom augment
+#' @importFrom broom augment tidy
 #' @importFrom stats na.omit
 #' @importFrom checkmate assert_data_frame assert_string
 #' @export
@@ -48,7 +48,7 @@ sdc_model <- function(data, model, id_var) {
   model_df <- data[, c(id_var, model_vars), with = FALSE]
   model_df <- stats::na.omit(model_df)
 
-  # general check for number of distinct ID's
+  # general check for number of distinct ID's ----
   # no call of check_distinct_ids() because we have no single val_var here
   distinct_ids <-
     model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))]#
@@ -64,11 +64,12 @@ sdc_model <- function(data, model, id_var) {
   }
 
 
-  # extract dummy cols
+  # dummy cols ----
   var_df <- model_df[, model_vars, with = FALSE]
 
   dummy_vars <- vapply(var_df, is_dummy, FUN.VALUE = logical(1L))
   dummy_vars <- names(dummy_vars)[dummy_vars == TRUE]
+  names(dummy_vars) <- dummy_vars
 
   dummy_data <- model_df[, c(id_var, dummy_vars), with = FALSE]
 
@@ -82,8 +83,55 @@ sdc_model <- function(data, model, id_var) {
     distinct_ids_per_value
   })
 
-  names(dummy_list) <- dummy_vars
   dummy_warning(dummy_list)
+
+
+  # interactions ----
+  # refactor this (until line 129) in separate function?!
+  # replace stringi by base functions
+  dummy_levels <- lapply(dummy_vars, function(x) {
+    DT <- data.table::CJ(var = x, level = unique(levels(data[[x]])))
+    DT[, var_level := stringi::stri_join(var, level)]
+  })
+  dummy_levels <- data.table::rbindlist(dummy_levels)
+
+  interactions <- broom::tidy(model)[["term"]]
+  interactions <- stringi::stri_subset_fixed(interactions, ":")
+  interactions <- stringi::stri_split_fixed(interactions, ":")
+  interactions <- lapply(interactions, function(x) {
+    # unlist() drops all non-dummy variables. This is fine, because possible
+    # problems would be caught during the simple distinct id checks for dummy
+    # variables
+    unlist(
+      lapply(x, function(y) {
+        dummy_levels[which(var_level == y)][["var"]]
+      })
+    )
+  })
+
+  dummy_interactions <-
+    !(vapply(interactions, length, FUN.VALUE = integer(1L)) == 1L)
+
+  interactions <- unique(interactions[dummy_interactions])
+
+
+  lapply(interactions, function(x) {
+    inter_df <- data.table::copy(model_df)
+    inter_var <- stringi::stri_join(x, collapse = "_")
+    inter_df[, (inter_var) :=
+               do.call(stringi::stri_join, args = c(.SD, sep = "_")), .SDcols = x]
+
+    distinct_ids_per_value <- eval(
+      check_distinct_ids(inter_df, id_var, val_var = inter_var, by = inter_var)
+    )
+    class(distinct_ids_per_value) <-
+      c("sdc_distinct_ids", class(distinct_ids_per_value))
+    distinct_ids_per_value
+  })
+
+
+
+
 
   # return list with all problem df's &| messages
   res <- list(
