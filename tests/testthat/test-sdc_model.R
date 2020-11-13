@@ -84,12 +84,8 @@ summary(model_4)
 # model 5 (dummy problem)
 
 test_that("sdc_model() returns warning, if necessary", {
-  capture.output(
-    expect_warning(sdc_model(model_test_dt, model_2, "id"))
-  )
-  capture.output(
-    expect_warning(sdc_model(model_test_dt, model_4, "id"))
-  )
+  expect_warning(sdc_model(model_test_dt, model_2, "id"))
+  expect_warning(sdc_model(model_test_dt, model_4, "id"))
 })
 
 
@@ -106,16 +102,20 @@ class(distinct_ref_1) <- c("sdc_distinct_ids", class(distinct_ref_1))
 dummy_ref_1 <- list()
 dummy_vars <- as.character()
 names(dummy_ref_1) <- dummy_vars
+interactions_ref_1 <- list()
+names(interactions_ref_1) <- character()
 
 # create ref. list
-res_1 <- list(
-  message_options = message_options(),
-  message_arguments = message_arguments(id_var = "id"),
-  distinct_ids = distinct_ref_1,
-  dummies = dummy_ref_1
+res_1 <- structure(
+  list(
+    message_options = message_options(),
+    message_arguments = message_arguments(id_var = "id"),
+    distinct_ids = distinct_ref_1,
+    dummies = dummy_ref_1,
+    interactions = interactions_ref_1
+  ),
+  class = c("sdc_model", "list")
 )
-
-class(res_1) <- c("sdc_model", class(res_1))
 
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
@@ -133,13 +133,16 @@ class(distinct_ref_2) <- c("sdc_distinct_ids", class(distinct_ref_2))
 dummy_ref_2 <- list()
 dummy_vars <- as.character()
 names(dummy_ref_2) <- dummy_vars
+interactions_ref_2 <- list()
+names(interactions_ref_2) <- character()
 
 # create ref. list
 res_2 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_2,
-  dummies = dummy_ref_2
+  dummies = dummy_ref_2,
+  interactions = interactions_ref_2
 )
 
 class(res_2) <- c("sdc_model", class(res_2))
@@ -176,13 +179,16 @@ dummy_2 <- data.table(
 dummy_ref_3 <- list(dummy_1, dummy_2)
 dummy_vars_3 <- c("dummy_1", "dummy_2")
 names(dummy_ref_3) <- dummy_vars_3
+interactions_ref_3 <- list()
+names(interactions_ref_3) <- character()
 
 # create ref. list
 res_3 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_3,
-  dummies = dummy_ref_3
+  dummies = dummy_ref_3,
+  interactions = interactions_ref_3
 )
 class(res_3) <- c("sdc_model", class(res_3))
 
@@ -215,13 +221,16 @@ class(dummy_3) <- c("sdc_distinct_ids", class(dummy_3))
 dummy_ref_4 <- list(dummy_3)
 dummy_vars_4 <- c("dummy_3")
 names(dummy_ref_4) <- dummy_vars_4
+interactions_ref_4 <- list()
+names(interactions_ref_4) <- character()
 
 # create ref. list
 res_4 <- list(
   message_options = message_options(),
   message_arguments = message_arguments(id_var = "id"),
   distinct_ids = distinct_ref_4,
-  dummies = dummy_ref_4
+  dummies = dummy_ref_4,
+  interactions = interactions_ref_4
 )
 class(res_4) <- c("sdc_model", class(res_4))
 

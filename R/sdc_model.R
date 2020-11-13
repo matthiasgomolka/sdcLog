@@ -89,7 +89,7 @@ sdc_model <- function(data, model, id_var) {
 
   # interactions ----
   dummy_levels <- lapply(dummy_vars, function(x) {
-    DT <- data.table::CJ(var = x, level = unique(levels(data[[x]])))
+    DT <- data.table::CJ(var = x, level = unique(as.character(data[[x]])))
     DT[, var_level := paste0(var, level)]
   })
   dummy_levels <- data.table::rbindlist(dummy_levels)
