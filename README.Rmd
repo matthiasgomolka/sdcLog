@@ -14,7 +14,7 @@ library(badger)
 `r badge_lifecycle("experimental")`
 `r badger::badge_cran_release(color = "orange")`
 [![R build status](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions)
-`r badger::badge_codecov()`
+[![](https://codecov.io/gh/matthiasgomolka/sdcLog/branch/main/graph/badge.svg)](https://codecov.io/gh/matthiasgomolka/sdcLog)
 `r badge_dependencies()`
 
 'sdcLog' is work in progress and aims to provide tools which simplify
