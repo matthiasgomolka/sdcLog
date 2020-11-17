@@ -1,0 +1,46 @@
+---
+title: "sdcLog"
+subtitle: "Utilities for statistical disclosure control in the context of research data centers"
+author: "Matthias Gomolka ![](graphics/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png){width=3%} "
+institute: "Deutsche Bundesbank"
+date: "2020-12-04"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+# style_duo(
+#   primary_color = "#1F4257", 
+#   secondary_color = "#F97B64",
+  style_duo_accent(
+    # base_color = "#169aaf",# "#803689",# "#43418A",
+  # base_color = "#1c5253",
+  header_font_google = google_font("Inter"),
+  # text_font_google   = google_font("Inter", "300", "300i"),
+  code_font_google   = google_font("JetBrains Mono")
+)
+# style_duo(primary_color = "#1F4257", secondary_color = "#F97B64")
+```
+```{r setup, include=FALSE}
+# options(htmltools.dir.version = FALSE)
+```
+
+# Why?
+
+- there are other
+
+---
+class: inverse, center, middle
+
+# About me
+
+<img src="graphics/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png" style="width:5.0%" /> [@matthiasgomolka](https://twitter.com/matthiasgomolka)
+
+<img src="graphics/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png" style="width:5.0%" /> https://github.com/matthiasgomolka/sdcLog 

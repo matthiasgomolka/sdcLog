@@ -12,6 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#"
 )
+
+user_options <- options()
+
 options(datatable.print.class = FALSE)
 options(datatable.print.keys = FALSE)
 options(datatable.print.trunc.cols = FALSE)
@@ -130,3 +133,7 @@ prints the results of the separate checks on distinct entities and dominance.
 # General remarks
 Please note that these options affect all functions of sdcLog, not just
 `sdc_descriptives()`.
+
+```{r reset options, include=FALSE}
+options(user_options)
+```

@@ -10,3 +10,4 @@
 ^\.vscode$
 ^CRAN-RELEASE$
 ^cran-comments\.md$
+^presentations$
