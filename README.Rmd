@@ -9,7 +9,8 @@ library(badger)
 ```
 
 `r badge_lifecycle("experimental")`
-`r badger::badge_cran_release(color = "orange")`
+[![CRAN release](https://www.r-pkg.org/badges/version/sdcLog)](https://CRAN.R-project.org/package=sdcLog)
+[![Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R build status](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions)
 [![](https://codecov.io/gh/matthiasgomolka/sdcLog/branch/main/graph/badge.svg)](https://codecov.io/gh/matthiasgomolka/sdcLog)
 `r badge_dependencies()`
