@@ -1,46 +1,188 @@
 ---
 title: "sdcLog"
 subtitle: "Utilities for statistical disclosure control in the context of research data centers"
-author: "Matthias Gomolka ![](graphics/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png){width=3%} "
-institute: "Deutsche Bundesbank"
-date: "2020-12-04"
+author: "Matthias Gomolka"
+institute: "Deutsche Bundesbank, Research Data and Service Center"
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
     lib_dir: libs
     nature:
+      ratio: '16:9'
       highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+      highlightLines: yes
+      countIncrementalSlides: no
+      slideNumberFormat: "Slides available at https://tinyurl.com/uRos2020sdcLog | Twitter: @matthiasgomolka"
 ---
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
+library(sdcLog)
+library(DiagrammeR)
 # style_duo(
-#   primary_color = "#1F4257", 
-#   secondary_color = "#F97B64",
+  # primary_color = "#1F4257",
+  # secondary_color = "#F97B64",
   style_duo_accent(
-    # base_color = "#169aaf",# "#803689",# "#43418A",
+    # base_color = "#169aaf", # "#803689",# "#43418A",
   # base_color = "#1c5253",
-  header_font_google = google_font("Inter"),
-  # text_font_google   = google_font("Inter", "300", "300i"),
-  code_font_google   = google_font("JetBrains Mono")
+  header_font_google = google_font("Fira Sans"),
+  text_font_google   = google_font("Fira Sans", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
 )
 # style_duo(primary_color = "#1F4257", secondary_color = "#F97B64")
 ```
 ```{r setup, include=FALSE}
-# options(htmltools.dir.version = FALSE)
+options(htmltools.dir.version = FALSE)
+options(datatable.print.keys = FALSE)
+options(datatable.print.class = FALSE)
+# options(datatable.print.)
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE
+)
 ```
 
-# Why?
+# What do I do?
 
-- there are other
+I work at the Bundesbank's Research Data Center. We enable researchers to work
+with confidential microdata.
+
+At our premises we supply formally anonymized data to researchers.
+
+Before researchers receive their research results, we need to check if the
+results contain any confidential information.
+
+This is where `sdcLog` comes into play.
+
+--
+--
+
+---
+
+# A tiny bit of theory
+
+Two simple rules:
+
+**1. Each result must be based on at least 5 different entities.**
+
+--
+
+**2. The largest two entities must account for less than 85% of a result (dominance).**
+
+<!-- Results are virtually everything that researchers like so much that they want to take it home. -->
+
+---
+
+# An example // sdc_descriptives()
+
+```{r sdc_descriptives_1, echo=3}
+data("sdc_descriptives_DT")
+DT <- sdc_descriptives_DT
+head(DT)
+```
+
+```{r sdc_descriptives_2}
+# results wanted
+DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
+```
+
+--
+
+```{r sdc_descriptives_3}
+# show that this result is fine
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
+```
+
+---
+
+# An example // sdc_descriptives() (cont.)
+```{r sdc_descriptives_4}
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+```
+
+---
+
+# Another example // sdc_model()
+```{r sdc_model_1, echo=FALSE}
+data("sdc_model_DT")
+DT <- sdc_model_DT
+```
+
+```{r sdc_model_2}
+# results wanted
+model_1 <- lm(y ~ x_1 + x_2, data = DT)
+```
+
+--
+
+```{r sdc_model_3}
+# show that this result is fine
+sdc_model(data = DT, model = model_1, id_var = "id")
+```
+
+---
+
+# Another example // sdc_model() (cont.)
+```{r sdc_model_4}
+model_2 <- lm(y ~ x_1 + x_2 + dummy_3, data = DT)
+sdc_model(data = DT, model = model_2, id_var = "id")
+```
+
+---
+
+# Why is it called sdcLog?
+
+.pull-left[
+At our Research Data Center (and any other I know), researchers need to provide log files which document what they have done.
+
+Based on these log files, Research Data Centers check if the output can be released.
+]
+--
+
+.pull-right[
+```{r diagrammer, echo=FALSE}
+grViz("
+digraph boxes_and_circles {
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 12]
+  
+  # several 'node' statements
+  node [shape = box, fontname = 'Fira Sans', width = 5.5]
+  script [label = 'R Script\ncontains nsdc_descriptives() / sdc_extreme() / sdc_model()'];
+  
+  node [width = 1] 
+  'log file'
+  
+  node [shape = box, width = 3]
+  checks [label = 'manual checks by RDC staff']
+
+  node [shape = oval, width = 1]
+  'sdc_log()'
+
+  # several 'edge' statements
+  'script' -> 'sdc_log()'
+  'sdc_log()' -> 'log file'
+  'log file' -> checks
+}
+")
+```
+]
+
+---
+
+# How to install?
+
+```{r install, eval=FALSE}
+# CRAN
+install.packages("sdcLog")
+
+# GitHub
+remotes::install_github("https://github.com/matthiasgomolka/sdcLog")
+```
 
 ---
 class: inverse, center, middle
 
-# About me
+# Get in touch!
 
-<img src="graphics/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png" style="width:5.0%" /> [@matthiasgomolka](https://twitter.com/matthiasgomolka)
-
-<img src="graphics/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png" style="width:5.0%" /> https://github.com/matthiasgomolka/sdcLog 
