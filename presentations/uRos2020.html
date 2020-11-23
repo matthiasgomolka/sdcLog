@@ -27,18 +27,53 @@ class: center, middle, inverse, title-slide
 
 # What do I do?
 
-I work at the Bundesbank's Research Data Center. We enable researchers to work
-with confidential microdata.
+I work at the Bundesbank's Research Data Center. 
 
-At our premises we supply formally anonymized data to researchers.
+---
+
+# What do I do?
+
+I work at the Bundesbank's Research Data Center. 
+
+We provide
+
+ - formally anonymized confidential microdata
+ - to researchers
+ - in a secure environment (no internet, ...)
+
+---
+
+# What do I do?
+
+I work at the Bundesbank's Research Data Center. 
+
+We provide
+
+ - formally anonymized confidential microdata
+ - to researchers
+ - in a secure environment (no internet, ...)
 
 Before researchers receive their research results, we need to check if the
 results contain any confidential information.
 
-This is where `sdcLog` comes into play.
+---
 
---
---
+# What do I do?
+
+I work at the Bundesbank's Research Data Center. 
+
+We provide
+
+ - formally anonymized confidential microdata
+ - to researchers
+ - in a secure environment (no internet, ...)
+
+Before researchers receive their research results, we need to check if the
+results contain any confidential information.
+
+It's the researchers duty to show that their results are not confidential.
+
+This is where `sdcLog` comes into play.
 
 ---
 
@@ -48,15 +83,35 @@ Two simple rules:
 
 **1. Each result must be based on at least 5 different entities.**
 
---
+---
+
+# A tiny bit of theory
+
+Two simple rules:
+
+**1. Each result must be based on at least 5 different entities.**
 
 **2. The largest two entities must account for less than 85% of a result (dominance).**
 
-&lt;!-- Results are virtually everything that researchers like so much that they want to take it home. --&gt;
+---
+
+# An example
+
+
+```r
+head(DT)
+#&gt;    id sector year     val_1    val_2
+#&gt; 1:  A     S1 2019        NA 9.477642
+#&gt; 2:  A     S1 2020 94.174449 5.856641
+#&gt; 3:  B     S1 2019  4.349115 3.697140
+#&gt; 4:  B     S1 2020  2.589011 6.796527
+#&gt; 5:  C     S1 2019  6.155680 7.213390
+#&gt; 6:  C     S1 2020  7.183206 5.948330
+```
 
 ---
 
-# An example // sdc_descriptives()
+# An example
 
 
 ```r
@@ -79,7 +134,30 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
 #&gt; 2:     S2 24.43726
 ```
 
---
+---
+
+# An example
+
+
+```r
+head(DT)
+#&gt;    id sector year     val_1    val_2
+#&gt; 1:  A     S1 2019        NA 9.477642
+#&gt; 2:  A     S1 2020 94.174449 5.856641
+#&gt; 3:  B     S1 2019  4.349115 3.697140
+#&gt; 4:  B     S1 2020  2.589011 6.796527
+#&gt; 5:  C     S1 2019  6.155680 7.213390
+#&gt; 6:  C     S1 2020  7.183206 5.948330
+```
+
+
+```r
+# results wanted
+DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
+#&gt;    sector     mean
+#&gt; 1:     S1 15.42511
+#&gt; 2:     S2 24.43726
+```
 
 
 ```r
@@ -92,7 +170,7 @@ sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
 
 ---
 
-# An example // sdc_descriptives() (cont.)
+# Another example
 
 ```r
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
@@ -116,64 +194,43 @@ sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 
 ---
 
-# Another example // sdc_model()
+# Other functionality
 
+`sdc_model()` for disclosure control of models
 
-
-```r
-# results wanted
-model_1 &lt;- lm(y ~ x_1 + x_2, data = DT)
-```
-
---
-
-
-```r
-# show that this result is fine
-sdc_model(data = DT, model = model_1, id_var = "id")
-#&gt; [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-#&gt; [ SETTINGS: id_var: id ]
-#&gt; Output complies to RDC rules.
-```
-
----
-
-# Another example // sdc_model() (cont.)
-
-```r
-model_2 &lt;- lm(y ~ x_1 + x_2 + dummy_3, data = DT)
-sdc_model(data = DT, model = model_2, id_var = "id")
-#&gt; Warning: Potential disclosure problem: Not enough distinct entities.
-#&gt; [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-#&gt; [ SETTINGS: id_var: id ]
-#&gt; $dummy_3
-#&gt; Not enough distinct entities:
-#&gt;    dummy_3 distinct_ids
-#&gt; 1:      FR            4
-#&gt; 2:      BE           10
-#&gt; 3:      DE           10
-#&gt; 4:      ES           10
-```
+`sdc_extreme()` for non-confidential min/max values
 
 ---
 
 # Why is it called sdcLog?
 
-.pull-left[
-At our Research Data Center (and any other I know), researchers need to provide log files which document what they have done.
-
-Based on these log files, Research Data Centers check if the output can be released.
-]
---
-
-.pull-right[
-<div id="htmlwidget-11267dbf84882fb71402" style="width:504px;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-11267dbf84882fb71402">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 12]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains nsdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-]
+&lt;center&gt;
+<div id="htmlwidget-5dad88d674e52ff1a6f8" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5dad88d674e52ff1a6f8">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+&lt;/center&gt;
 
 ---
 
-# How to install?
+# Why is it called sdcLog?
+
+&lt;center&gt;
+<div id="htmlwidget-ea777c7ad0f244662d4e" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea777c7ad0f244662d4e">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+&lt;/center&gt;
+
+---
+
+# Why is it called sdcLog?
+
+&lt;center&gt;
+<div id="htmlwidget-707dfe320c134c5693c9" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-707dfe320c134c5693c9">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+&lt;/center&gt;
+
+---
+class: middle
+
+# Get in touch!
 
 
 ```r
@@ -183,11 +240,6 @@ install.packages("sdcLog")
 # GitHub
 remotes::install_github("https://github.com/matthiasgomolka/sdcLog")
 ```
-
----
-class: inverse, center, middle
-
-# Get in touch!
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -196,7 +248,7 @@ class: inverse, center, middle
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
-"slideNumberFormat": "Slides available at https://tinyurl.com/uRos2020sdcLog | Twitter: @matthiasgomolka"
+"slideNumberFormat": "Slides available at https://tinyurl.com/sdcLog-uRos2020 | Twitter: @matthiasgomolka"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
