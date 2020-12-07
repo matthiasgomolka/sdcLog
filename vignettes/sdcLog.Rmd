@@ -273,6 +273,10 @@ model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
 model_2 <- lm(y ~ x_1 + x_2 + x_3, data = sdc_model_DT)
 model_3 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = sdc_model_DT)
 model_4 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
+
+model_5 <- lm(y ~ x_1 + x_2 + dummy_2 + dummy_4, data = sdc_model_DT)
+model_6 <- lm(y ~ x_1 + x_2 + dummy_2 * dummy_4, data = sdc_model_DT)
+model_7 <- lm(y ~ x_1 + x_2 + dummy_1 * dummy_2, data = sdc_model_DT)
 ```
 
 ## Examples
@@ -318,6 +322,26 @@ For `model_4` the problem stems from a small number of distinct entities for the
 value level `FR` of `dummy_3`. Therefore this model cannot be released either.
 Please note that this last case is probably the most common problem to occur
 when checking models.
+
+### Models with interaction term
+It is also possible to check models with interaction term. To demonstrate this functionality, `model_5`, `model_6` and `model_7` are checked.
+
+`model_5` includes two dummy variables without interaction term. Testing this model does not cause any problems. However, if an interaction term of the dummy variables is included, as in `model_6`, problems occur as shown below. 
+
+```{r interaction_term_problem}
+sdc_model(data = sdc_model_DT, model = model_5, id_var = "id")
+
+sdc_model(data = sdc_model_DT, model = model_6, id_var = "id")
+```
+
+The interaction term causes that not enough distinct entities are present. In this case the output cannot be released.
+
+In contrast to the previous case, a different interaction term as in `model_7` does not causes any problems.
+
+```{r interaction_term_no_problem}
+sdc_model(data = sdc_model_DT, model = model_7, id_var = "id")
+```
+
 
 # sdc_extreme()
 

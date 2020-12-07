@@ -81,9 +81,9 @@ sdc_model_DT <- data.table::data.table(
   dummy_1 = as.factor(sort(rep_len(paste0("S", 1L:2L), n))),
   dummy_2 = as.factor(rep_len(paste0("Y", 1L:8L), n)),
   dummy_3 = as.factor(c(rep(rawToChar(as.raw(c(66, 69))), n / 4), rep(rawToChar(as.raw(68:69)), n / 4), rep(rawToChar(as.raw(c(69, 83))), 36), rep(rawToChar(as.raw(c(70, 82))), 4))),
+  dummy_4 = as.factor("W"),
   key = "id"
 )
-
 
 # create problems id's for x_3
 # sdc_model_DT[id %chin% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
@@ -92,5 +92,8 @@ sdc_model_DT[id %in% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
 # create problems dominance for x_4
 # sdc_model_DT[id %chin% c("A", "B"), x_4 := x_4 * 100]
 sdc_model_DT[id %in% c("A", "B"), x_4 := x_4 * 100]
+
+# create problem with interaction for dummmy_4 (dummy_2:dummy_4 interaction)
+sdc_model_DT[id %in% c("A", "C", "E", "G", "J"), dummy_4 := "M"]
 
 usethis::use_data(sdc_model_DT, overwrite = TRUE)
