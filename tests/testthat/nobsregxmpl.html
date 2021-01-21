@@ -1,0 +1,997 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style>
+/* CSS for Markstat 2.0 using Pandoc 2.0 */
+body{padding:14px 28px;}
+body, table {font-family: Helvetica, Arial, Sans-serif; font-size: 14px;}
+h1, h2, h3, h4 {font-weight: normal; color: #3366cc}
+h1 {font-size: 200%;}
+h2 {font-size: 150%;}
+h3 {font-size: 120%;}
+h4 {font-size: 100%; font-weight:bold}
+img.center {display:block; margin-left:auto; margin-right:auto}
+.small{font-size:8pt;}
+a {color: black;}
+a:visited {color: #808080;}
+a.plain {text-decoration:none;}
+a.plain:hover {text-decoration:underline;}
+.em {font-weight:bold;}
+pre, code {font-family: "lucida console", monospace;}
+pre.stata {font-size:13px; line-height:13px;}
+pre {padding:8px; border:1px solid #c0c0c0; border-radius:8px; background-color:#fdfdfd;}
+code {color:#3366cc; background-color:#fafafa;}
+pre code { color:black; background-color:white}
+/* Added for Pandoc */
+figure > img, div.figure > img {display:block; margin:auto}
+figcaption, p.caption {text-align:center; font-weight:bold; color:#3366cc;}
+h1.title {text-align:center; margin-bottom:0}
+p.author, h2.author {font-style:italic; text-align:center;margin-top:4px;margin-bottom:0}
+p.date, h3.date {text-align:center;margin-top:4px; margin-bottom:0}
+/* Tables*/
+table { margin:auto; border-collapse:collapse; }
+table caption { margin-bottom:1ex;}
+th, td { padding:4px 6px;}
+thead tr:first-child th {border-top:1px solid black; padding-top:6px}
+thead tr:last-child  th {padding-bottom:6px}
+tbody tr:first-child td {border-top:1px solid black; padding-top:6px}
+tbody tr:last-child  td {padding-bottom:6px;}
+table tbody:last-child tr:last-child td {border-bottom:1px solid black;}
+</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Harald Stahl" />
+  <meta name="date" content="2019-11-28" />
+  <title>Data disclosure control for regressions</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Data disclosure control for regressions</h1>
+<h2 class="author">Harald Stahl</h2>
+<h3 class="date">2019-11-28</h3>
+</div>
+<h1 id="create-artificial-data">Create artificial data</h1>
+<p>Create artificial data for eleven IDs (1-11), ten years (2001-2010), three countries (17, 39, 400), and continuous variables x, y, and z.</p>
+<pre class='stata'>. clear
+
+. qui set obs 301
+
+. gen id   = int((_n-1)/30)+1
+
+. gen hv   = _n-30*(id-1)
+
+. gen year = 2000+mod(hv,10)+10*(mod(hv,10)==0)    
+
+. gen land = int((2000-year+hv)/10)+1 
+
+. qui replace land =  17 if land==1
+
+. qui replace land =  39 if land==2
+
+. qui replace land = 400 if land==3    
+
+. drop hv
+
+. set seed 4869382
+
+. gen x = runiform()
+
+. gen y = runiform()
+
+. gen z = runiform()
+</pre>
+<p>Create an id, that has to be ignored (since x is missing, see Create missings)</p>
+<pre class='stata'>. qui replace id = 11 if _n==301 
+</pre>
+<p>It is not permitted to publish information on specific firms. Create a dummy variable if id==1</p>
+<pre class='stata'>. gen id1 = id==1  
+</pre>
+<p>The dummy variable dum_5_57 (id/year/land: 1/2005/17, 6/2007/17) is 1 for only two distinct ids. Therefore, it must not be published. In contrast, the dummy variable dum_5_57_178 (id/year/land: 1/2005/17, 6/2007/17, 8/2008/39) is 1 for three distinct ids and can be published.</p>
+<pre class='stata'>. qui gen dum_5_57     = _n==5|_n==57  
+
+. qui gen dum_5_57_178 = _n==5|_n==57|_n==178 
+</pre>
+<p>Create missings Often, yearly dummies are used as catch all dummies. However, a dummy for the year 2002 would identify the ids 1 and 2. Therefore, the coefficient for the 2002-dummy causes a disclosure problem.</p>
+<pre class='stata'>. qui replace x = . if year==2002 &amp; id > 2        
+
+. qui replace x = . if id==11
+</pre>
+<p>Change the variable z so that it has for one id only values different from zero. Then this id is identified by z and no regression coeffcient for z must be published. nobsreg creates a dichotomous auxiliary variable that is 0 if z = 0 and 1 if z &lt;&gt; 0. If z = 1 for only one or two ids a disclosure problem is reported.</p>
+<pre class='stata'>. qui replace z = 0 if id!=1  
+</pre>
+<p>Later on there is an example using two different identifiers. This occurs e.g. if the data includes domestic firms as well as their affiliates abroad. Then confidentiality has to be assured for both, parent institutes and subsidiaries.</p>
+<pre class='stata'>. gen idtest = id         
+
+. qui replace idtest = 5 if year==2010 
+
+. cls
+</pre>
+<h1 id="applying-nobsreg">Applying nobsreg</h1>
+<h2 id="how-to-use-nobsreg-with-and-without-global-idlist">How to use nobsreg with and without global idlist</h2>
+<p>All data disclosure control routines require a variable denoting the identifier of the entity to be protected. nobsreg allows two alternatives. The first one consists in writing this variable after nobsreg. The other is specifying a global macro idlist. This idlist may consist of more than one identifier because it is not always sufficient to investigate confidentiality for one identifier only. E. g. a sample may consist of two MFIs with each having three subsidiaries abroad. Then confidentiality has to be assured for both, parent institutes and subsidiaries. nobsreg loops through the idlist.</p>
+<p>Run an example regression first.</p>
+<pre class='stata'>. reg y x z dum_5_57 dum_5_57_178 i.year
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(13, 262)      =      1.03
+       Model │  1.10700967        13   .08515459   Prob > F        =    0.4247
+    Residual │  21.7079768       262  .082854873   R-squared       =    0.0485
+─────────────┼──────────────────────────────────   Adj R-squared   =    0.0013
+       Total │  22.8149865       275  .082963587   Root MSE        =    .28785
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │   .0365534   .0609099     0.60   0.549    -.0833819    .1564886
+           z │  -.0034838   .1022684    -0.03   0.973    -.2048563    .1978888
+    dum_5_57 │  -.4030255    .358645    -1.12   0.262    -1.109219     .303168
+dum_5_57_178 │    .407554   .2930811     1.39   0.166    -.1695402    .9846482
+             │
+        year │
+       2002  │   .0603145   .1307487     0.46   0.645    -.1971375    .3177666
+       2003  │  -.1127114   .0743284    -1.52   0.131    -.2590684    .0336456
+       2004  │   .0497138   .0743923     0.67   0.505    -.0967691    .1961967
+       2005  │   -.100111   .0747922    -1.34   0.182    -.2473813    .0471594
+       2006  │   -.027439   .0744322    -0.37   0.713    -.1740004    .1191223
+       2007  │  -.0248192   .0747094    -0.33   0.740    -.1719264     .122288
+       2008  │  -.1405596   .0749612    -1.88   0.062    -.2881627    .0070434
+       2009  │  -.0704793   .0743364    -0.95   0.344    -.2168522    .0758935
+       2010  │  -.0911756   .0743961    -1.23   0.221    -.2376659    .0553147
+             │
+       _cons │   .5108017   .0604133     8.46   0.000     .3918443    .6297591
+─────────────┴────────────────────────────────────────────────────────────────
+</pre>
+<p>Apply nobsreg without any id. You receive an error message that the disclosure control was aborted.</p>
+<pre class='stata'>. nobsreg
+You have to specify a variable with the ids of the entity to be protected!
+Disclosure control aborted.
+</pre>
+<p>Now set global idlist. Don't forget &quot;&quot;. If you run several regressions using the same identifiers global idlist is preferable.</p>
+<pre class='stata'>. global idlist "id idtest"
+</pre>
+<pre class='stata'>. reg y x z dum_5_57 dum_5_57_178 i.year
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(13, 262)      =      1.03
+       Model │  1.10700967        13   .08515459   Prob > F        =    0.4247
+    Residual │  21.7079768       262  .082854873   R-squared       =    0.0485
+─────────────┼──────────────────────────────────   Adj R-squared   =    0.0013
+       Total │  22.8149865       275  .082963587   Root MSE        =    .28785
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │   .0365534   .0609099     0.60   0.549    -.0833819    .1564886
+           z │  -.0034838   .1022684    -0.03   0.973    -.2048563    .1978888
+    dum_5_57 │  -.4030255    .358645    -1.12   0.262    -1.109219     .303168
+dum_5_57_178 │    .407554   .2930811     1.39   0.166    -.1695402    .9846482
+             │
+        year │
+       2002  │   .0603145   .1307487     0.46   0.645    -.1971375    .3177666
+       2003  │  -.1127114   .0743284    -1.52   0.131    -.2590684    .0336456
+       2004  │   .0497138   .0743923     0.67   0.505    -.0967691    .1961967
+       2005  │   -.100111   .0747922    -1.34   0.182    -.2473813    .0471594
+       2006  │   -.027439   .0744322    -0.37   0.713    -.1740004    .1191223
+       2007  │  -.0248192   .0747094    -0.33   0.740    -.1719264     .122288
+       2008  │  -.1405596   .0749612    -1.88   0.062    -.2881627    .0070434
+       2009  │  -.0704793   .0743364    -0.95   0.344    -.2168522    .0758935
+       2010  │  -.0911756   .0743961    -1.23   0.221    -.2376659    .0553147
+             │
+       _cons │   .5108017   .0604133     8.46   0.000     .3918443    .6297591
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+
+Number of distinct values for variable  idtest  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (idtest) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (idtest) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  │     2010 │
+  └──────────┘
+</pre>
+<p>Using nobsreg id does not overwrite the idlist. Try</p>
+<pre class='stata'>. nobsreg id
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+</pre>
+<p>and</p>
+<pre class='stata'>. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+
+Number of distinct values for variable  idtest  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (idtest) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (idtest) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  │     2010 │
+  └──────────┘
+</pre>
+<h2 id="how-to-use-nobsreg-with-p-a-r-t-i-c-u-l-a-r-regressions">How to use nobsreg with p a r t i c u l a r regressions</h2>
+<pre class='stata'>. global idlist "id"
+</pre>
+<p>nobsreg can deal with the bootstrap command</p>
+<pre class='stata'>. bootstrap, reps(10): reg y x z dum_5_57 dum_5_57_178 i.year
+(running regress on estimation sample)
+
+Bootstrap replications (10)
+────┼─── 1 ───┼─── 2 ───┼─── 3 ───┼─── 4 ───┼─── 5 
+.xx.x...x.
+
+Linear regression                               Number of obs     =        276
+                                                Replications      =          6
+                                                Wald chi2(5)      =          .
+                                                Prob > chi2       =          .
+                                                R-squared         =     0.0485
+                                                Adj R-squared     =     0.0013
+                                                Root MSE          =     0.2878
+
+─────────────┬────────────────────────────────────────────────────────────────
+             │   Observed   Bootstrap                         Normal-based
+           y │      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │   .0365534   .0523073     0.70   0.485    -.0659671    .1390738
+           z │  -.0034838   .1459512    -0.02   0.981    -.2895429    .2825754
+    dum_5_57 │  -.4030255   .1453877    -2.77   0.006    -.6879802   -.1180707
+dum_5_57_178 │    .407554    .041744     9.76   0.000     .3257372    .4893708
+             │
+        year │
+       2002  │   .0603145   .1429043     0.42   0.673    -.2197728    .3404019
+       2003  │  -.1127114   .0463507    -2.43   0.015     -.203557   -.0218657
+       2004  │   .0497138   .0320027     1.55   0.120    -.0130104     .112438
+       2005  │   -.100111   .0350509    -2.86   0.004    -.1688095   -.0314125
+       2006  │   -.027439   .0726725    -0.38   0.706    -.1698745    .1149964
+       2007  │  -.0248192   .0472334    -0.53   0.599     -.117395    .0677565
+       2008  │  -.1405596   .0481454    -2.92   0.004    -.2349228   -.0461964
+       2009  │  -.0704793   .0589688    -1.20   0.232     -.186056    .0450974
+       2010  │  -.0911756   .0496231    -1.84   0.066    -.1884351    .0060838
+             │
+       _cons │   .5108017   .0467266    10.93   0.000     .4192192    .6023843
+─────────────┴────────────────────────────────────────────────────────────────
+Note: One or more parameters could not be estimated in 4 bootstrap replicates;
+      standard-error estimates include only complete replications.
+
+. nobsreg
+
+For bootstrap it is better to run an artificial OLS-regression with the same variables.
+reg y x z dum_5_57 dum_5_57_178 i.year
+
+Number of distinct values for variable  id  :   10
+
+In  bootstrap , reps(10): reg y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+</pre>
+<p>However, the last draw can be a bad one. Run an artificial OLS-regression</p>
+<pre class='stata'>. qui reg y x z dum_5_57 dum_5_57_178 i.year
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+</pre>
+<p>Using an artificial OLS-regression that is equivalent to the original problem in terms of data disclosure control is the preferable solution if nobsreg cannot be used for the original problem.</p>
+<h2 id="how-to-get-uncritical-r-e-s-u-l-t-s">How to get uncritical r e s u l t s</h2>
+<p>You are not allowed to show or take with you the results for the variables z, dum_5_57 and 2002.year. However, You can quietly regress, invoke nobsreg, store the results and drop problematic results.</p>
+<pre class='stata'>. eststo: quietly reg y x z dum_5_57 dum_5_57_178 i.year
+(est1 stored)
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+
+
+. esttab, drop(z dum_5_57 2001.year 2002.year)
+
+────────────────────────────
+                      (1)   
+                        y   
+────────────────────────────
+x                  0.0366   
+                   (0.60)   
+
+dum_5_57_178        0.408   
+                   (1.39)   
+
+2003.year          -0.113   
+                  (-1.52)   
+
+2004.year          0.0497   
+                   (0.67)   
+
+2005.year          -0.100   
+                  (-1.34)   
+
+2006.year         -0.0274   
+                  (-0.37)   
+
+2007.year         -0.0248   
+                  (-0.33)   
+
+2008.year          -0.141   
+                  (-1.88)   
+
+2009.year         -0.0705   
+                  (-0.95)   
+
+2010.year         -0.0912   
+                  (-1.23)   
+
+_cons               0.511***
+                   (8.46)   
+────────────────────────────
+N                     276   
+────────────────────────────
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+</pre>
+<p>In this example, nobsreg shows a problem with the year 2002. However, it does not provide the coefficient, nor does it tell, whether the problem refers to 1 or 2 units.</p>
+<p>You may save the admissible output in a separate file</p>
+<p>esttab using ${path_log}/AllowedOutput.tex, drop(z dum_5_57 2001.year 2002.year)</p>
+<p>Ask for the do-file so that you know your commands producing this output, and provide the RDSC with the 'usual' log-file with the nobsreg output, so that the RDSC can see which coefficients have to be disclosed (z dum_5_57 2001.year 2002.year).</p>
+<h2 id="v-a-r-i-a-b-l-e-l-i-s-t-s">V a r i a b l e l i s t s</h2>
+<p>It is possible to use locals and to uncomment variables.</p>
+<pre class='stata'>. local dummies "dum_5_57 dum_5_57_178"
+
+. reg y x z `dummies' /* z */ year land
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(6, 269)       =      0.68
+       Model │  .341536854         6  .056922809   Prob > F        =    0.6649
+    Residual │  22.4734496       269  .083544422   R-squared       =    0.0150
+─────────────┼──────────────────────────────────   Adj R-squared   =   -0.0070
+       Total │  22.8149865       275  .082963587   Root MSE        =    .28904
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │   .0400202   .0607408     0.66   0.511    -.0795676    .1596081
+           z │   .0139671   .1007317     0.14   0.890    -.1843558    .2122899
+    dum_5_57 │  -.3494338   .3547804    -0.98   0.326    -1.047933    .3490656
+dum_5_57_178 │   .3501826   .2912532     1.20   0.230     -.223243    .9236083
+        year │  -.0094733   .0062457    -1.52   0.130    -.0217701    .0028234
+        land │  -.0000245   .0000995    -0.25   0.806    -.0002204    .0001714
+       _cons │   19.45896   12.52846     1.55   0.122    -5.207355    44.12527
+─────────────┴────────────────────────────────────────────────────────────────
+</pre>
+<p>It is possible to use time-series operators</p>
+<pre class='stata'>. egen idland = group(id land)
+
+. xtset idland year, yearly
+       panel variable:  idland (unbalanced)
+        time variable:  year, 2001 to 2010
+                delta:  1 year
+</pre>
+<pre class='stata'>. reg y x z dum_5_57 dum_5_57_178 id1 i.year l.z, nocons
+
+      Source │       SS           df       MS      Number of obs   =       246
+─────────────┼──────────────────────────────────   F(14, 232)      =     42.25
+       Model │   53.240816        14  3.80291543   Prob > F        =    0.0000
+    Residual │  20.8835579       232  .090015336   R-squared       =    0.7183
+─────────────┼──────────────────────────────────   Adj R-squared   =    0.7013
+       Total │  74.1243739       246  .301318593   Root MSE        =    .30003
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │    .081034   .0659433     1.23   0.220    -.0488902    .2109582
+           z │  -.0156308   .2192699    -0.07   0.943    -.4476457     .416384
+    dum_5_57 │  -.4947692   .3773462    -1.31   0.191    -1.238232    .2486941
+dum_5_57_178 │   .4173198   .3055451     1.37   0.173    -.1846781    1.019318
+         id1 │  -.0484428    .184578    -0.26   0.793    -.4121062    .3152206
+             │
+        year │
+       2003  │   .3667141   .0628078     5.84   0.000     .2429675    .4904607
+       2004  │   .5326689   .0622431     8.56   0.000      .410035    .6553029
+       2005  │   .3816055   .0614601     6.21   0.000     .2605142    .5026968
+       2006  │   .4529422   .0654602     6.92   0.000     .3239697    .5819146
+       2007  │   .4526718   .0631133     7.17   0.000     .3283233    .5770204
+       2008  │   .3486155   .0639856     5.45   0.000     .2225484    .4746827
+       2009  │   .4108196   .0628426     6.54   0.000     .2870045    .5346346
+       2010  │   .3956774    .061585     6.42   0.000       .27434    .5170147
+             │
+           z │
+         L1. │   .2887068    .220747     1.31   0.192    -.1462182    .7236317
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z dum_5_57 dum_5_57_178 id1 i.year l.z, nocons
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  id1  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  l.z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+</pre>
+<pre class='stata'>. reg y x z L(1 2/3).z id1 i.year 
+
+      Source │       SS           df       MS      Number of obs   =       210
+─────────────┼──────────────────────────────────   F(12, 197)      =      0.80
+       Model │   .79456124        12  .066213437   Prob > F        =    0.6522
+    Residual │  16.3446483       197  .082967758   R-squared       =    0.0464
+─────────────┼──────────────────────────────────   Adj R-squared   =   -0.0117
+       Total │  17.1392096       209  .082005787   Root MSE        =    .28804
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │   .0018721   .0697786     0.03   0.979    -.1357369     .139481
+             │
+           z │
+         --. │   .0649884    .244712     0.27   0.791    -.4176029    .5475797
+         L1. │   .1438439   .2377969     0.60   0.546    -.3251104    .6127981
+         L2. │  -.1717303   .2410702    -0.71   0.477    -.6471398    .3036792
+         L3. │    .021523   .2351266     0.09   0.927    -.4421653    .4852112
+             │
+         id1 │  -.0542437   .2515943    -0.22   0.830    -.5504075    .4419201
+             │
+        year │
+       2005  │  -.1538447   .0746946    -2.06   0.041    -.3011483   -.0065411
+       2006  │  -.0713393   .0747113    -0.95   0.341    -.2186759    .0759974
+       2007  │   -.077289   .0751423    -1.03   0.305    -.2254755    .0708976
+       2008  │  -.1674841   .0749642    -2.23   0.027    -.3153195   -.0196487
+       2009  │  -.1237612   .0750189    -1.65   0.101    -.2717043     .024182
+       2010  │  -.1388094   .0749857    -1.85   0.066    -.2866871    .0090684
+             │
+       _cons │   .5786733   .0613617     9.43   0.000     .4576632    .6996834
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x z L(1 2/3).z id1 i.year
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  L1.z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  L2.z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  L3.z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  id1  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+</pre>
+<h2 id="i-n-t-e-r-a-c-t-i-o-n-s">I n t e r a c t i o n s</h2>
+<p>It is possible to use interactions, up to three interaction terms at a time. Continuous variables can be interacted with a discrete variable, but you have to use c.var.</p>
+<pre class='stata'>. gen byte CH = land==39
+
+. reg y x year##CH##c.z
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(40, 235)      =      1.55
+       Model │  4.76681107        40  .119170277   Prob > F        =    0.0248
+    Residual │  18.0481754       235  .076800746   R-squared       =    0.2089
+─────────────┼──────────────────────────────────   Adj R-squared   =    0.0743
+       Total │  22.8149865       275  .082963587   Root MSE        =    .27713
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │   .0039982   .0621026     0.06   0.949    -.1183508    .1263472
+             │
+        year │
+       2002  │  -.3761491   .2066277    -1.82   0.070    -.7832285    .0309303
+       2003  │  -.0811814   .0918986    -0.88   0.378    -.2622317    .0998688
+       2004  │   .2208449   .0918547     2.40   0.017     .0398809    .4018089
+       2005  │  -.0767706   .0909501    -0.84   0.399    -.2559523     .102411
+       2006  │   .0327154    .091917     0.36   0.722    -.1483711     .213802
+       2007  │   .0953664   .0918937     1.04   0.300    -.0856743     .276407
+       2008  │  -.0039815    .091067    -0.04   0.965    -.1833936    .1754306
+       2009  │  -.0278241   .0918191    -0.30   0.762    -.2087179    .1530697
+       2010  │   -.000447    .091241    -0.00   0.996    -.1802018    .1793078
+             │
+        1.CH │   .1555404   .1129281     1.38   0.170    -.0669403    .3780211
+             │
+     year#CH │
+     2002 1  │   .7166788   .3586928     2.00   0.047     .0100145    1.423343
+     2003 1  │  -.1207312   .1602338    -0.75   0.452    -.4364095    .1949471
+     2004 1  │  -.4890736   .1599429    -3.06   0.002    -.8041787   -.1739684
+     2005 1  │  -.0036886   .1592146    -0.02   0.982    -.3173589    .3099816
+     2006 1  │  -.1028133   .1596798    -0.64   0.520    -.4174001    .2117734
+     2007 1  │  -.3225883   .1597215    -2.02   0.045    -.6372572   -.0079194
+     2008 1  │  -.3320888   .1592309    -2.09   0.038    -.6457911   -.0183865
+     2009 1  │  -.1606227   .1596595    -1.01   0.315    -.4751695    .1539241
+     2010 1  │  -.1676558   .1596795    -1.05   0.295    -.4822421    .1469304
+             │
+           z │   .6512328   .4142712     1.57   0.117     -.164927    1.467393
+             │
+    year#c.z │
+       2002  │   .2043287   .5682966     0.36   0.720    -.9152781    1.323936
+       2003  │   .8425592   .9211675     0.91   0.361    -.9722422     2.65736
+       2004  │  -.5128107   .4694494    -1.09   0.276    -1.437678    .4120563
+       2005  │  -.6136952   .5301204    -1.16   0.248    -1.658091    .4307003
+       2006  │     -.7229   .4807622    -1.50   0.134    -1.670054    .2242544
+       2007  │  -.8319559   .9625875    -0.86   0.388    -2.728359    1.064447
+       2008  │  -.3573079   .6768491    -0.53   0.598    -1.690775    .9761593
+       2009  │  -.3961596    .650148    -0.61   0.543    -1.677023    .8847036
+       2010  │   -1.15882   .6241356    -1.86   0.065    -2.388436    .0707954
+             │
+      CH#c.z │
+          1  │  -1.187086   .6913977    -1.72   0.087    -2.549215     .175044
+             │
+ year#CH#c.z │
+     2002 1  │   .4081606   2.162194     0.19   0.850      -3.8516    4.667922
+     2003 1  │  -.5444467   1.123928    -0.48   0.629    -2.758709    1.669816
+     2004 1  │  -.6376159   2.103407    -0.30   0.762     -4.78156    3.506328
+     2005 1  │   -.809302   1.395406    -0.58   0.562    -3.558405    1.939801
+     2006 1  │   .6088595   .9468004     0.64   0.521    -1.256442    2.474161
+     2007 1  │   1.092551   2.996817     0.36   0.716    -4.811508    6.996611
+     2008 1  │     .54501   .9470038     0.58   0.565    -1.320692    2.410712
+     2009 1  │   2.691188   1.558719     1.73   0.086    -.3796604    5.762037
+     2010 1  │   .9253583   .9984318     0.93   0.355    -1.041662    2.892379
+             │
+       _cons │   .4651235   .0702829     6.62   0.000     .3266583    .6035886
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In regress y x year##CH##c.z
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+        year#CH
+  ┌──────────┐
+  │   2002.0 │
+  │   2002.1 │
+  └──────────┘
+
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+         year#z
+  ┌──────────┐
+  │   2001.1 │
+  │   2002.1 │
+  │   2003.1 │
+  │   2004.1 │
+  │   2005.1 │
+  │   2006.1 │
+  │   2007.1 │
+  │   2008.1 │
+  │   2009.1 │
+  │   2010.1 │
+  │   2002.0 │
+  └──────────┘
+
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+      year#CH#z
+  ┌──────────┐
+  │ 2001.0.1 │
+  │ 2002.0.1 │
+  │ 2003.0.1 │
+  │ 2004.0.1 │
+  │ 2005.0.1 │
+  │ 2006.0.1 │
+  │ 2007.0.1 │
+  │ 2008.0.1 │
+  │ 2009.0.1 │
+  │ 2010.0.1 │
+  │ 2001.1.1 │
+  │ 2002.1.1 │
+  │ 2003.1.1 │
+  │ 2004.1.1 │
+  │ 2005.1.1 │
+  │ 2006.1.1 │
+  │ 2007.1.1 │
+  │ 2008.1.1 │
+  │ 2009.1.1 │
+  │ 2010.1.1 │
+  │ 2002.0.0 │
+  │ 2002.1.0 │
+  └──────────┘
+
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+           CH#z
+  ┌──────────┐
+  │      0.1 │
+  │      1.1 │
+  └──────────┘
+
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  c.z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+
+. reg y x year#c.z##CH
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(22, 253)      =      1.19
+       Model │  2.14716798        22  .097598545   Prob > F        =    0.2526
+    Residual │  20.6678185       253  .081690982   R-squared       =    0.0941
+─────────────┼──────────────────────────────────   Adj R-squared   =    0.0153
+       Total │  22.8149865       275  .082963587   Root MSE        =    .28582
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │  -.0001637   .0628208    -0.00   0.998     -.123882    .1235546
+             │
+    year#c.z │
+       2001  │   .6322138   .4120213     1.53   0.126    -.1792148    1.443642
+       2002  │   .3146207   .2830574     1.11   0.267    -.2428283    .8720697
+       2003  │   1.123662   .8105909     1.39   0.167    -.4727033    2.720027
+       2004  │   .3665313   .2223024     1.65   0.100    -.0712676    .8043302
+       2005  │  -.0779877   .3293342    -0.24   0.813    -.7265735     .570598
+       2006  │  -.0468872   .2415371    -0.19   0.846    -.5225666    .4287922
+       2007  │   .1732428   .8588063     0.20   0.840    -1.518077    1.864563
+       2008  │   .2620279   .5395263     0.49   0.628    -.8005069    1.324563
+       2009  │   .1611154   .4972945     0.32   0.746    -.8182488     1.14048
+       2010  │  -.5351535   .4610656    -1.16   0.247    -1.443169     .372862
+             │
+        1.CH │  -.0215134   .0386369    -0.56   0.578    -.0976043    .0545776
+             │
+ year#CH#c.z │
+     2001 1  │  -.8620569   .6822164    -1.26   0.208    -2.205604    .4814898
+     2002 1  │   2.342243   1.494995     1.57   0.118    -.6019785    5.286464
+     2003 1  │  -1.402112   .8715922    -1.61   0.109    -3.118612    .3143885
+     2004 1  │  -2.753287   1.957324    -1.41   0.161    -6.608012    1.101438
+     2005 1  │  -1.550164   1.202542    -1.29   0.199    -3.918432    .8181042
+     2006 1  │  -.4078635   .6407602    -0.64   0.525    -1.669767    .8540398
+     2007 1  │  -1.022628   2.865075    -0.36   0.721    -6.665063    4.619807
+     2008 1  │  -.8240381   .6483974    -1.27   0.205    -2.100982     .452906
+     2009 1  │   1.502787   1.371012     1.10   0.274    -1.197263    4.202837
+     2010 1  │  -.2382666   .7019383    -0.34   0.735    -1.620653     1.14412
+             │
+       _cons │   .4792544   .0356389    13.45   0.000     .4090677     .549441
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x year#c.z##CH
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+         year#z
+  ┌──────────┐
+  │   2001.1 │
+  │   2002.1 │
+  │   2003.1 │
+  │   2004.1 │
+  │   2005.1 │
+  │   2006.1 │
+  │   2007.1 │
+  │   2008.1 │
+  │   2009.1 │
+  │   2010.1 │
+  │   2002.0 │
+  └──────────┘
+
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+      year#z#CH
+  ┌──────────┐
+  │ 2001.1.0 │
+  │ 2002.1.0 │
+  │ 2003.1.0 │
+  │ 2004.1.0 │
+  │ 2005.1.0 │
+  │ 2006.1.0 │
+  │ 2007.1.0 │
+  │ 2008.1.0 │
+  │ 2009.1.0 │
+  │ 2010.1.0 │
+  │ 2001.1.1 │
+  │ 2002.1.1 │
+  │ 2003.1.1 │
+  │ 2004.1.1 │
+  │ 2005.1.1 │
+  │ 2006.1.1 │
+  │ 2007.1.1 │
+  │ 2008.1.1 │
+  │ 2009.1.1 │
+  │ 2010.1.1 │
+  │ 2002.0.0 │
+  │ 2002.0.1 │
+  └──────────┘
+
+
+. reg y x year#c.z#CH
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(21, 254)      =      1.24
+       Model │  2.12184084        21   .10104004   Prob > F        =    0.2178
+    Residual │  20.6931456       254  .081469077   R-squared       =    0.0930
+─────────────┼──────────────────────────────────   Adj R-squared   =    0.0180
+       Total │  22.8149865       275  .082963587   Root MSE        =    .28543
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           x │  -.0023313   .0626148    -0.04   0.970    -.1256417    .1209791
+             │
+ year#CH#c.z │
+     2001 0  │   .6465001   .4106628     1.57   0.117    -.1622377    1.455238
+     2001 1  │  -.2581985   .5369984    -0.48   0.631    -1.315735    .7993381
+     2002 0  │   .3242406   .2821457     1.15   0.252    -.2314023    .8798835
+     2002 1  │   2.587207   1.460185     1.77   0.078    -.2884041    5.462819
+     2003 0  │   1.152444   .8078416     1.43   0.155    -.4384767    2.743365
+     2003 1  │  -.2941826   .3191486    -0.92   0.358    -.9226971    .3343319
+     2004 0  │   .3750584   .2214728     1.69   0.092    -.0610986    .8112153
+     2004 1  │   -2.48493    1.93361    -1.29   0.200    -6.292879    1.323019
+     2005 0  │  -.0695973   .3285421    -0.21   0.832    -.7166109    .5774163
+     2005 1  │  -1.689787   1.151725    -1.47   0.144    -3.957934    .5783596
+     2006 0  │  -.0381806   .2407028    -0.16   0.874    -.5122081    .4358469
+     2006 1  │   -.484644   .5901087    -0.82   0.412    -1.646773     .677485
+     2007 0  │   .2055064   .8556847     0.24   0.810    -1.479634    1.890647
+     2007 1  │  -.9768076   2.726914    -0.36   0.720    -6.347049    4.393434
+     2008 0  │   .2790571   .5379267     0.52   0.604    -.7803075    1.338422
+     2008 1  │  -.5791672   .3615573    -1.60   0.110    -1.291199    .1328648
+     2009 0  │   .1794223    .495532     0.36   0.718    -.7964524    1.155297
+     2009 1  │   1.604933    1.27549     1.26   0.209    -.9069499    4.116815
+     2010 0  │  -.5225773   .4598861    -1.14   0.257    -1.428253    .3830983
+     2010 1  │  -.7988329   .5247121    -1.52   0.129    -1.832173    .2345076
+             │
+       _cons │   .4731438   .0338611    13.97   0.000     .4064596    .5398281
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y x year#c.z#CH
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+      year#z#CH
+  ┌──────────┐
+  │ 2001.1.0 │
+  │ 2002.1.0 │
+  │ 2003.1.0 │
+  │ 2004.1.0 │
+  │ 2005.1.0 │
+  │ 2006.1.0 │
+  │ 2007.1.0 │
+  │ 2008.1.0 │
+  │ 2009.1.0 │
+  │ 2010.1.0 │
+  │ 2001.1.1 │
+  │ 2002.1.1 │
+  │ 2003.1.1 │
+  │ 2004.1.1 │
+  │ 2005.1.1 │
+  │ 2006.1.1 │
+  │ 2007.1.1 │
+  │ 2008.1.1 │
+  │ 2009.1.1 │
+  │ 2010.1.1 │
+  │ 2002.0.0 │
+  │ 2002.0.1 │
+  └──────────┘
+</pre>
+<p>The following line is not requested for disclosure control. However, if you are concerned e.g. with data mining type</p>
+<pre class='stata'>. mata: nobstable
+                   1              2
+     ┌───────────────────────────────┐
+   1 │      Variable   distinct ids  │
+   2 │      ────────   ────────────  │
+   3 │             x                 │
+   4 │           &lt;>0             10  │
+   5 │     year#z#CH                 │
+   6 │      2001.1.0              1  │
+   7 │      2002.1.0              1  │
+   8 │      2003.1.0              1  │
+   9 │      2004.1.0              1  │
+  10 │      2005.1.0              1  │
+  11 │      2006.1.0              1  │
+  12 │      2007.1.0              1  │
+  13 │      2008.1.0              1  │
+  14 │      2009.1.0              1  │
+  15 │      2010.1.0              1  │
+  16 │      2001.1.1              1  │
+  17 │      2002.1.1              1  │
+  18 │      2003.1.1              1  │
+  19 │      2004.1.1              1  │
+  20 │      2005.1.1              1  │
+  21 │      2006.1.1              1  │
+  22 │      2007.1.1              1  │
+  23 │      2008.1.1              1  │
+  24 │      2009.1.1              1  │
+  25 │      2010.1.1              1  │
+  26 │      2001.0.0              9  │
+  27 │      2002.0.0              1  │
+  28 │      2003.0.0              9  │
+  29 │      2004.0.0              9  │
+  30 │      2005.0.0              9  │
+  31 │      2006.0.0              9  │
+  32 │      2007.0.0              9  │
+  33 │      2008.0.0              9  │
+  34 │      2009.0.0              9  │
+  35 │      2010.0.0              9  │
+  36 │      2001.0.1              9  │
+  37 │      2002.0.1              1  │
+  38 │      2003.0.1              9  │
+  39 │      2004.0.1              9  │
+  40 │      2005.0.1              9  │
+  41 │      2006.0.1              9  │
+  42 │      2007.0.1              9  │
+  43 │      2008.0.1              9  │
+  44 │      2009.0.1              9  │
+  45 │      2010.0.1              9  │
+  46 │      ────────   ────────────  │
+  47 │            id             10  │
+     └───────────────────────────────┘
+</pre>
+<p>To interact a lagged variable it has to be created. il.year does not work neither does year##l.x.</p>
+<pre class='stata'>. reg y z dum_5_57 dum_5_57_178 year##c.x
+
+      Source │       SS           df       MS      Number of obs   =       276
+─────────────┼──────────────────────────────────   F(22, 253)      =      0.96
+       Model │  1.76497967        22  .080226348   Prob > F        =    0.5106
+    Residual │  21.0500068       253  .083201608   R-squared       =    0.0774
+─────────────┼──────────────────────────────────   Adj R-squared   =   -0.0029
+       Total │  22.8149865       275  .082963587   Root MSE        =    .28845
+
+─────────────┬────────────────────────────────────────────────────────────────
+           y │      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+─────────────┼────────────────────────────────────────────────────────────────
+           z │  -.0091597   .1046555    -0.09   0.930    -.2152666    .1969473
+    dum_5_57 │  -.4082038   .3624655    -1.13   0.261    -1.122038    .3056302
+dum_5_57_178 │   .3885828   .2961102     1.31   0.191    -.1945721    .9717376
+             │
+        year │
+       2002  │   .3077223   .2694243     1.14   0.254    -.2228777    .8383223
+       2003  │   -.069729   .1482778    -0.47   0.639    -.3617451    .2222871
+       2004  │    .157337   .1415213     1.11   0.267    -.1213729    .4360468
+       2005  │   .0589035   .1396504     0.42   0.674     -.216122    .3339289
+       2006  │   .2212145    .156868     1.41   0.160    -.0877189    .5301479
+       2007  │   .1290671   .1387975     0.93   0.353    -.1442785    .4024127
+       2008  │   .0039191   .1471436     0.03   0.979    -.2858634    .2937015
+       2009  │   .0030173   .1440658     0.02   0.983    -.2807037    .2867383
+       2010  │  -.1243546   .1444226    -0.86   0.390    -.4087783    .1600692
+             │
+           x │     .24583   .1812863     1.36   0.176    -.1111925    .6028526
+             │
+    year#c.x │
+       2002  │  -.4856097   .4533361    -1.07   0.285    -1.378403    .4071835
+       2003  │    -.08329   .2662294    -0.31   0.755    -.6075982    .4410182
+       2004  │  -.2200297   .2557037    -0.86   0.390    -.7236087    .2835494
+       2005  │  -.3463313   .2625947    -1.32   0.188    -.8634813    .1708188
+       2006  │  -.4758489   .2646899    -1.80   0.073     -.997125    .0454273
+       2007  │  -.3196536   .2444036    -1.31   0.192    -.8009783    .1616711
+       2008  │  -.2959364   .2601623    -1.14   0.256     -.808296    .2164232
+       2009  │  -.1481827   .2549452    -0.58   0.562     -.650268    .3539026
+       2010  │   .1025505   .2681138     0.38   0.702    -.4254687    .6305696
+             │
+       _cons │   .4084022   .1033604     3.95   0.000     .2048457    .6119586
+─────────────┴────────────────────────────────────────────────────────────────
+
+. nobsreg
+
+Number of distinct values for variable  id  :   10
+
+In  regress y z dum_5_57 dum_5_57_178 year##c.x
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  z  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem: Number of distinct ids (id) for variable  dum_5_57  too small.
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+potential D I S C L O S U R E problem because of too few observations in at least one category
+ 
+           year
+  ┌──────────┐
+  │     2002 │
+  └──────────┘
+
+potential D I S C L O S U R E problem because of too few observations in at least one category
+(in case of a continuous variable x: 1 means x!=0 &amp; x!=.  and  0 means x==0)
+ 
+         year#x
+  ┌──────────┐
+  │   2002.1 │
+  └──────────┘
+</pre>
+<p>global endmark &quot;<br /><span class="math display">$$&quot; puts $$</span><br /> after each nobsreg output. Using nobsclean.do you can erase this output.</p>
+</body>
+</html>
