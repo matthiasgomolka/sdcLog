@@ -12,6 +12,7 @@ test_dt <- data.table(
 test_dt[, sector := sort(rep_len(paste0("S", 1L:2L), n))]
 test_dt[id == "A" & year == 2019L, val := NA_real_]
 test_dt[id %chin% c("A", "F") & year == 2020L, val := val * 50]
+test_dt <- rbindlist(list(test_dt, data.table(id = "K")), fill = TRUE)
 setcolorder(test_dt, c("id", "sector", "year"))
 
 # test check_distinct_ids ----
@@ -21,27 +22,34 @@ test_that("check_distinct_ids() returns a call", {
 })
 
 ## functionality tests
-distinct_ids_ref_1 <- data.table(distinct_ids = 10L)
-distinct_ids_ref_2 <- data.table(
+distinct_ids_ref_1 <- data.table(distinct_ids = 11L)
+distinct_ids_ref_2 <- data.table(distinct_ids = 10L)
+distinct_ids_ref_3 <- data.table(
   sector = c("S1", "S2"), distinct_ids = 5L,
   key = "sector"
 )
 
-distinct_ids_ref_3 <- CJ(sector = c("S1", "S2"), year = 2019L:2020)
-distinct_ids_ref_3[, distinct_ids := c(4L, rep(5L, 3L))]
+distinct_ids_ref_4 <- CJ(sector = c("S1", "S2"), year = 2019L:2020)
+distinct_ids_ref_4[, distinct_ids := c(4L, rep(5L, 3L))]
+
 
 test_that("check_distinct_ids() distinct_ids correctly", {
   expect_identical(
-    eval(check_distinct_ids(test_dt, "id", "val")),
+    eval(check_distinct_ids(test_dt, "id")),
     distinct_ids_ref_1
   )
+
   expect_identical(
-    eval(check_distinct_ids(test_dt, "id", "val", by = sector)),
+    eval(check_distinct_ids(test_dt, "id", "val")),
     distinct_ids_ref_2
   )
   expect_identical(
-    eval(check_distinct_ids(test_dt, "id", "val", by = .(sector, year))),
+    eval(check_distinct_ids(test_dt, "id", "val", by = sector)),
     distinct_ids_ref_3
+  )
+  expect_identical(
+    eval(check_distinct_ids(test_dt, "id", "val", by = .(sector, year))),
+    distinct_ids_ref_4
   )
 })
 
@@ -88,12 +96,12 @@ test_that("check_dominance() calculates correctly", {
 
 # test sdc_descriptives ####
 # descriptives setup 1 ####
-class(distinct_ids_ref_1) <- c("sdc_distinct_ids", class(distinct_ids_ref_1))
+class(distinct_ids_ref_2) <- c("sdc_distinct_ids", class(distinct_ids_ref_2))
 class(dominance_ref_1) <- c("sdc_dominance", class(dominance_ref_1))
 descriptives_ref_1 <- list(
   message_options = message_options(),
   message_arguments = message_arguments("id", "val", zero_as_NA = FALSE),
-  distinct_ids = distinct_ids_ref_1,
+  distinct_ids = distinct_ids_ref_2,
   dominance = dominance_ref_1
 )
 class(descriptives_ref_1) <- c("sdc_descriptives", class(descriptives_ref_1))
@@ -119,7 +127,7 @@ test_that("sdc_descriptives works in simple cases", {
 })
 
 # descriptives setup 2 ####
-class(distinct_ids_ref_2) <- c("sdc_distinct_ids", class(distinct_ids_ref_2))
+class(distinct_ids_ref_3) <- c("sdc_distinct_ids", class(distinct_ids_ref_3))
 class(dominance_ref_2) <- c("sdc_dominance", class(dominance_ref_2))
 
 
@@ -133,7 +141,7 @@ descriptives_ref_2 <- list(
     paste0(" | zero_as_NA: FALSE"),
     " ]"
   ),
-  distinct_ids = distinct_ids_ref_2,
+  distinct_ids = distinct_ids_ref_3,
   dominance = dominance_ref_2
 )
 class(descriptives_ref_2) <- c("sdc_descriptives", class(descriptives_ref_2))
@@ -169,7 +177,7 @@ test_that("sdc_descriptives works in medium cases", {
 
 
 # descriptives setup 3 ####
-class(distinct_ids_ref_3) <- c("sdc_distinct_ids", class(distinct_ids_ref_3))
+class(distinct_ids_ref_4) <- c("sdc_distinct_ids", class(distinct_ids_ref_4))
 class(dominance_ref_3) <- c("sdc_dominance", class(dominance_ref_3))
 descriptives_ref_3 <- list(
   message_options = message_options(),
@@ -181,7 +189,7 @@ descriptives_ref_3 <- list(
     paste0(" | zero_as_NA: FALSE"),
     " ]"
   ),
-  distinct_ids = distinct_ids_ref_3,
+  distinct_ids = distinct_ids_ref_4,
   dominance = dominance_ref_3
 )
 class(descriptives_ref_3) <- c("sdc_descriptives", class(descriptives_ref_3))
