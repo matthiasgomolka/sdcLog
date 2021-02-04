@@ -4,7 +4,7 @@
 \alias{check_dominance}
 \title{Internal function which creates cross-tables with number of distinct id's}
 \usage{
-check_dominance(data, id_var, val_var, by = NULL)
+check_dominance(data, id_var, val_var = NULL, by = NULL)
 }
 \arguments{
 \item{data}{\link{data.frame} from which the descriptive statistics are

@@ -42,7 +42,7 @@
 #' @return A [list] of class `sdc_descriptives` with detailed information about
 #'   options, settings, and compliance with the criteria distinct entities and
 #'   dominance.
-sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL) {
+sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA = NULL) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
   # input checks
   check_args(data, id_var, val_var, by, zero_as_NA)
@@ -50,21 +50,23 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
   data <- data.table::as.data.table(data)
 
   # handling 0's
-  share_0 <- data[get(val_var) == 0, .N] / nrow(data)
-  zero_as_NA_guess <- share_0 > 0 & !is_dummy(data[[val_var]])
+  if (!is.null(val_var)) {
+    share_0 <- data[get(val_var) == 0, .N] / nrow(data)
+    zero_as_NA_guess <- share_0 > 0 & !is_dummy(data[[val_var]])
 
-  if (is.null(zero_as_NA)) {
-    if (zero_as_NA_guess) {
-      zero_as_NA <- TRUE
-      message(
-        "A share of ",
-        signif(share_0, digits = 1L),
-        " of 'val_var' are zero. These will be treated as 'NA'.\n",
-        "To prevent this behavior and / or avoid this message, set ",
-        "'zero_as_NA' explicitly."
-      )
-    } else {
-      zero_as_NA <- FALSE
+    if (is.null(zero_as_NA)) {
+      if (zero_as_NA_guess) {
+        zero_as_NA <- TRUE
+        message(
+          "A share of ",
+          signif(share_0, digits = 1L),
+          " of 'val_var' are zero. These will be treated as 'NA'.\n",
+          "To prevent this behavior and / or avoid this message, set ",
+          "'zero_as_NA' explicitly."
+        )
+      } else {
+        zero_as_NA <- FALSE
+      }
     }
   }
 
@@ -101,26 +103,28 @@ sdc_descriptives <- function(data, id_var, val_var, by = NULL, zero_as_NA = NULL
   # print(distinct_ids)
   if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     warning(
-      crayon::bold("Potential disclosure problem: "),
+      crayon::bold("DISCLOSURE PROBLEM: "),
       "Not enough distinct entities", ".",
       call. = FALSE
     )
   }
 
   # check dominance ----
-  expr_dominance <- eval(substitute(
-    check_dominance(data, id_var, val_var, by)
-  ))
+  # browser()
+  by <- substitute(by)
+  # dominance <- eval(substitute(
+  #   check_dominance(data, id_var, val_var, by)
+  # ))
   dominance <- structure(
-    eval(expr_dominance),
+    check_dominance(data, id_var, val_var, by),
     class = c("sdc_dominance", "data.table", "data.frame")
   )
 
   # print(dominance)
   if (nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
     warning(
-      crayon::bold("Potential disclosure problem: "),
-      "Dominant entities", ".",
+      crayon::bold("DISCLOSURE PROBLEM: "),
+      "Dominant entities.",
       call. = FALSE
     )
   }

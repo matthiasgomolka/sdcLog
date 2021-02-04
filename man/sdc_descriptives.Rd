@@ -4,7 +4,7 @@
 \alias{sdc_descriptives}
 \title{Disclosure control for descriptive statistics}
 \usage{
-sdc_descriptives(data, id_var, val_var, by = NULL, zero_as_NA = NULL)
+sdc_descriptives(data, id_var, val_var = NULL, by = NULL, zero_as_NA = NULL)
 }
 \arguments{
 \item{data}{\link{data.frame} from which the descriptive statistics are

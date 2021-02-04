@@ -8,9 +8,15 @@ print.sdc_distinct_ids <- function(x, ...) {
     cat(crayon::red("Not enough distinct entities:\n"))
     print(data.table::as.data.table(x))
 
-  # withOUT problems
+    # withOUT problems
   } else if (getOption("sdc.info_level", 1L) > 1L) {
-    message("No problem with number of distinct entities.")
+    message(
+      paste0(
+        "No problem with number of distinct entities (",
+        min(x[["distinct_ids"]]),
+        ")."
+      )
+    )
   }
 
 }
@@ -20,14 +26,29 @@ print.sdc_distinct_ids <- function(x, ...) {
 #' @export
 print.sdc_dominance <- function(x, ...) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
+
   # with problems
   if (nrow(x[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
     cat(crayon::red("Dominant entities:\n"))
     print(data.table::as.data.table(x))
 
-  # withOUT problems
+
+    # withOUT problems
   } else if (getOption("sdc.info_level", 1L) > 1L) {
-    message("No problem with dominance.")
+
+    # without dominance check (i.e. val_var = NULL in sdc_descriptives())
+    dt_no_check <- structure(
+      data.table::data.table(value_share = NA_real_),
+      class = c("sdc_dominance", "data.table", "data.frame")
+    )
+
+    if (identical(x, dt_no_check)) {
+      message("No dominance check conducted, because 'val_var = NULL'.")
+
+    # regular case without problems
+    } else {
+      message("No problem with dominance.")
+    }
   }
 
 }

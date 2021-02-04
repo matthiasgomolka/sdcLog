@@ -4,7 +4,7 @@
 \alias{check_distinct_ids}
 \title{Internal function which creates cross-tables with number of distinct id's}
 \usage{
-check_distinct_ids(data, id_var, val_var, by = NULL)
+check_distinct_ids(data, id_var, val_var = NULL, by = NULL)
 }
 \arguments{
 \item{data}{\link{data.frame} from which the descriptive statistics are

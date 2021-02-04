@@ -2,7 +2,7 @@ library(data.table)
 
 
 # test print.sdc_distinct_ids ----
-distinct_ids_1 <- data.table(distinct_ids = integer(0L))
+distinct_ids_1 <- data.table(distinct_ids = 10L)
 
 test_that("print.sdc_distinct_ids works for most simple case", {
   options(sdc.info_level = 0L)
@@ -14,7 +14,7 @@ test_that("print.sdc_distinct_ids works for most simple case", {
   options(sdc.info_level = 2L)
   expect_message(
     print.sdc_distinct_ids(distinct_ids_1),
-    "No problem with number of distinct entities.",
+    "No problem with number of distinct entities (10).",
     fixed = TRUE
   )
 })
@@ -118,6 +118,26 @@ test_that("print.sdc_dominance works for problematic by case", {
   expect_print.sdc_dominance_3(print.sdc_dominance(dominance_3))
 })
 
+dominance_4 <- structure(
+  data.table(value_share = NA_real_),
+  class = c("sdc_dominance", "data.table", "data.frame")
+)
+
+test_that("print.sdc_dominance works for val_var = NULL", {
+  options(sdc.info_level = 0L)
+  expect_silent(print.sdc_dominance(dominance_4))
+
+  options(sdc.info_level = 1L)
+  expect_silent(print.sdc_dominance(dominance_4))
+
+  options(sdc.info_level = 2L)
+  expect_message(
+    print.sdc_dominance(dominance_4),
+    "No dominance check conducted, because 'val_var = NULL'.",
+    fixed = TRUE
+  )
+})
+
 
 # test print.sdc_descriptives ----
 descriptives_1 <- list(
@@ -167,7 +187,7 @@ test_that("print.sdc_descriptives works for most simple case", {
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id | val_var: val ]\n",
-      "No problem with number of distinct entities.\n",
+      "No problem with number of distinct entities (10).\n",
       "No problem with dominance.\n",
       "Output complies to RDC rules.",
       collapse = ""
@@ -292,6 +312,63 @@ test_that("print.sdc_descriptives works for problematic by case", {
 })
 
 
+descriptives_4 <- list(
+  message_options = message_options(),
+  message_arguments = message_arguments(id_var = "id"),
+  distinct_ids = distinct_ids_1,
+  dominance = structure(
+    data.table::data.table(value_share = NA_real_),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+)
+
+class(descriptives_4[["distinct_ids"]]) <-
+  c("sdc_distinct_ids", class(descriptives_4[["distinct_ids"]]))
+class(descriptives_4) <- c("sdc_descriptives", class(descriptives_4))
+
+
+test_that("print.sdc_descriptives works for most simple case", {
+  options(sdc.info_level = 0L)
+  messages <- capture_messages(print.sdc_descriptives(descriptives_1))
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+           "sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val ]\n",
+           collapse = ""
+    ),
+    fixed = TRUE
+  )
+
+  options(sdc.info_level = 1L)
+  messages <- capture_messages(print.sdc_descriptives(descriptives_1))
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+           "sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val ]\n",
+           "Output complies to RDC rules.",
+           collapse = ""
+    ),
+    fixed = TRUE
+  )
+
+  options(sdc.info_level = 2L)
+  messages <- capture_messages(print.sdc_descriptives(descriptives_1))
+  expect_match(
+    paste0(messages, collapse = ""),
+    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
+           "sdc.share_dominance: 0.85 ]\n",
+           "[ SETTINGS: id_var: id | val_var: val ]\n",
+           "No problem with number of distinct entities (10).\n",
+           "No problem with dominance.\n",
+           "Output complies to RDC rules.",
+           collapse = ""
+    ),
+    fixed = TRUE
+  )
+})
+
 # test print.sdc_model ----
 ### create model ref.
 
@@ -369,7 +446,7 @@ test_that("print.sdc_model works for most simple case", {
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id ]\n",
-      "No problem with number of distinct entities.\n",
+      "No problem with number of distinct entities (10).\n",
       "Output complies to RDC rules.\n",
       collapse = ""
     ),
@@ -478,7 +555,7 @@ dummy_1 <- data.table(
 )
 class(dummy_1) <- c("sdc_distinct_ids", class(dummy_1))
 
-dummy_2 <- data.table(distinct_ids = numeric(0))
+dummy_2 <- data.table(distinct_ids = 10L)
 class(dummy_2) <- c("sdc_distinct_ids", class(dummy_2))
 
 dummy_list_3 <- list(dummy_1, dummy_2)
@@ -534,7 +611,7 @@ expect_print.sdc_model_3_info_2 <- function(x) {
     paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
       "sdc.share_dominance: 0.85 ]\n",
       "[ SETTINGS: id_var: id ]\n",
-      "No problem with number of distinct entities.\n",
+      "No problem with number of distinct entities (10).\n",
       collapse = ""
     ),
     fixed = TRUE
