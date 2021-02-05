@@ -14,99 +14,76 @@ extreme_test_dt <- data.table(
 # test sdc_extreme ----
 # simple case ----
 # calculate extreme values for val_var = val_1
-extreme_ref_1 <- data.table(
-  val_var = "val_1",
-  min = extreme_test_dt[6L:10L, mean(val_1)],
-  n_obs_min = 5L,
-  max = extreme_test_dt[1L:5L, mean(val_1)],
-  n_obs_max = 5L
+extreme_ref_1 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_1"),
+    min_max = data.table(
+      val_var = "val_1",
+      min = extreme_test_dt[6L:10L, mean(val_1)],
+      distinct_ids_min = 5L,
+      max = extreme_test_dt[1L:5L, mean(val_1)],
+      distinct_ids_max = 5L
+    )
+  ),
+  class = c("sdc_extreme", "list")
 )
 
-# create test function
-extreme_expect_1 <- function(x) {
-  messages <- capture_messages(expect_identical(x, extreme_ref_1))
-  expect_match(
-    paste0(messages, collapse = ""),
-    paste0(
-      "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-      "sdc.share_dominance: 0.85 ]\n",
-      "[ SETTINGS: id_var: id | val_var: val_1 ]\n",
-      collapse = ""
-    ),
-    fixed = TRUE
-  )
-}
-
-# actual test
-test_that("sdc_extreme() works in simple cases", {
-  extreme_expect_1(
-    sdc_extreme(extreme_test_dt, "id", "val_1")
+test_that("sdc_extreme() works in simple case", {
+  expect_identical(
+    sdc_extreme(extreme_test_dt, "id", "val_1"),
+    extreme_ref_1
   )
 })
-
 
 # problematic case 1 ----
 # problem with dominance for 1:5, so 1:9 necessary but would lead to overlap, so
 # all extreme values NA
-extreme_ref_2 <- data.table(
-  val_var = "val_2",
-  min = NA_real_,
-  n_obs_min = NA_integer_,
-  max = NA_real_,
-  n_obs_max = NA_integer_
+extreme_ref_2 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_2"),
+    min_max = data.table(
+      val_var = "val_2",
+      min = NA_real_,
+      distinct_ids_min = NA_integer_,
+      max = NA_real_,
+      distinct_ids_max = NA_integer_
+    )
+  ),
+  class = c("sdc_extreme", "list")
 )
 
-# create test function
-extreme_expect_2 <- function(x) {
-  messages <- capture_messages(expect_identical(x, extreme_ref_2))
-  expect_match(
-    paste0(messages, collapse = ""),
-    paste0(
-      "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-      "sdc.share_dominance: 0.85 ]\n",
-      "[ SETTINGS: id_var: id | val_var: val_2 ]\n",
-      "It is impossible to compute extreme values for variable 'val_2' that ",
-      "comply to RDC rules.",
-      collapse = ""
-    ),
-    fixed = TRUE
-  )
-}
-
-# actual test
-test_that("sdc_extreme() produces no result in case of sd_overlap", {
-  extreme_expect_2(
-    sdc_extreme(extreme_test_dt, "id", "val_2")
+test_that("sdc_extreme() produces no result in case of sd_overlap due to dominance", {
+  expect_equal(
+    sdc_extreme(extreme_test_dt, "id", "val_2"),
+    extreme_ref_2
   )
 })
 
 # problematic case 2 ----
 # problem with NA in (1:5), so 2:6 necessary but would lead to overlap, so all
 # extreme values NA
-extreme_ref_3 <- copy(extreme_ref_2)
-extreme_ref_3[, val_var := "val_3"]
-
-# create test function
-extreme_expect_3 <- function(x) {
-  messages <- capture_messages(expect_identical(x, extreme_ref_3))
-  expect_match(
-    paste0(messages, collapse = ""),
-    paste0(
-      "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-      "sdc.share_dominance: 0.85 ]\n",
-      "[ SETTINGS: id_var: id | val_var: val_3 ]\n",
-      "It is impossible to compute extreme values for variable 'val_3' that ",
-      "comply to RDC rules.",
-      collapse = ""
-    ),
-    fixed = TRUE
-  )
-}
+extreme_ref_3 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_3"),
+    min_max = data.table(
+      val_var = "val_3",
+      min = NA_real_,
+      distinct_ids_min = NA_integer_,
+      max = NA_real_,
+      distinct_ids_max = NA_integer_
+    )
+  ),
+  class = c("sdc_extreme", "list")
+)
 
 # actual test
 test_that("sdc_extreme() produces no result in case of sd_overlap", {
-  extreme_expect_3(
-    sdc_extreme(extreme_test_dt, "id", "val_3")
+  expect_identical(
+    sdc_extreme(extreme_test_dt, "id", "val_3"),
+    extreme_ref_3
   )
 })
 
@@ -126,91 +103,167 @@ setorder(extreme_test_dt_by, -val_1)
 
 # simple by case ----
 # setup test extreme values for val_var = val, by = sector
-extreme_ref_4 <- data.table(
-  val_var = "val_1",
-  sector = c("S1", "S2"),
-  min = c(
-    extreme_test_dt_by[6L:10L, mean(val_1)],
-    extreme_test_dt_by[16L:20L, mean(val_1)]
+extreme_ref_4 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_1", "sector"),
+    min_max = data.table(
+      val_var = "val_1",
+      sector = c("S1", "S2"),
+      min = c(
+        extreme_test_dt_by[6L:10L, mean(val_1)],
+        extreme_test_dt_by[16L:20L, mean(val_1)]
+      ),
+      distinct_ids_min = 5L,
+      max = c(
+        extreme_test_dt_by[1L:5L, mean(val_1)],
+        extreme_test_dt_by[11L:15L, mean(val_1)]
+      ),
+      distinct_ids_max = 5L,
+      key = "sector"
+    )
   ),
-  n_obs_min = 5L,
-  max = c(
-    extreme_test_dt_by[1L:5L, mean(val_1)],
-    extreme_test_dt_by[11L:15L, mean(val_1)]
-  ),
-  n_obs_max = 5L,
-  key = "sector"
+  class = c("sdc_extreme", "list")
 )
-
-# create test function
-extreme_expect_4 <- function(x) {
-  messages <- capture_messages(expect_identical(x, extreme_ref_4))
-  expect_match(
-    paste0(messages, collapse = ""),
-    paste0(
-      "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-      "sdc.share_dominance: 0.85 ]\n",
-      "[ SETTINGS: id_var: id | val_var: val_1 | by: sector ]\n",
-      collapse = ""
-    ),
-    fixed = TRUE
-  )
-}
 
 # actual tests
 test_that("sdc_extreme() works in simple cases with by", {
-  extreme_expect_4(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = sector)
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = sector),
+    extreme_ref_4
   )
-  extreme_expect_4(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = "sector")
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = "sector"),
+    extreme_ref_4
   )
-  extreme_expect_4(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector))
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector)),
+    extreme_ref_4
   )
 })
 
 
 # problematic by case 1 ----
 # setup test extreme values for val_var = val_2, by = sector
-extreme_ref_5 <- copy(extreme_ref_4)
-extreme_ref_5[, val_var := "val_2"]
-for (var in c("min", "max")) {
-  set(extreme_ref_5, j = var, value = NA_real_)
-}
-for (var in c("n_obs_min", "n_obs_max")) {
-  set(extreme_ref_5, j = var, value = NA_integer_)
-}
-
-# create test function
-extreme_expect_5 <- function(x) {
-  messages <- capture_messages(expect_identical(x, extreme_ref_5))
-  expect_match(
-    paste0(messages, collapse = ""),
-    paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-      "sdc.share_dominance: 0.85 ]\n",
-      "[ SETTINGS: id_var: id | val_var: val_2 | by: sector ]\n",
-      "It is impossible to compute extreme values for variable 'val_2' ",
-      "that comply to RDC rules.",
-      collapse = ""
-    ),
-    fixed = TRUE
-  )
-}
+extreme_ref_5 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_2", "sector"),
+    min_max = data.table(
+      val_var = "val_2",
+      sector = c("S1", "S2"),
+      min = NA_real_,
+      distinct_ids_min = NA_integer_,
+      max = NA_real_,
+      distinct_ids_max = NA_integer_,
+      key = "sector"
+    )
+  ),
+  class = c("sdc_extreme", "list")
+)
 
 # actual tests
 test_that("sdc_extreme() gives no result in by cases", {
-  extreme_expect_5(
-    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = sector)
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = sector),
+    extreme_ref_5
   )
-  extreme_expect_5(
-    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector")
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
+    extreme_ref_5
   )
-  extreme_expect_5(
-    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = .(sector))
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = .(sector)),
+    extreme_ref_5
   )
 })
 
+
+extreme_ref_6 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_1", "sector, val_1 > 10"),
+    min_max = data.table(
+      val_var = "val_1",
+      sector = c("S1", "S2"),
+      `val_1 > 10` = c(TRUE, FALSE),
+      min = c(
+        extreme_test_dt_by[6L:10L, mean(val_1)],
+        extreme_test_dt_by[16L:20L, mean(val_1)]
+      ),
+      distinct_ids_min = 5L,
+      max = c(
+        extreme_test_dt_by[1L:5L, mean(val_1)],
+        extreme_test_dt_by[11L:15L, mean(val_1)]
+      ),
+      distinct_ids_max = 5L,
+      key = c("sector", "val_1 > 10")
+    )
+  ),
+  class = c("sdc_extreme", "list")
+)
+
+
+extreme_ref_7 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id", "val_1", "sector, val_1 > 5"),
+    min_max = data.table(
+      val_var = "val_1",
+      sector = c("S1", "S2", "S2"),
+      `val_1 > 5` = c(TRUE, FALSE, TRUE),
+      min = NA_real_,
+      distinct_ids_min = NA_integer_,
+      max = NA_real_,
+      distinct_ids_max = NA_integer_,
+      key = c("sector", "val_1 > 5")
+    )
+  ),
+  class = c("sdc_extreme", "list")
+)
+
+extreme_ref_8 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments(
+      "id", "val_1", "sector, val_1 > 10, val_2 > 10"
+    ),
+    min_max = data.table(
+      val_var = "val_1",
+      sector = c("S1", "S2"),
+      `val_1 > 10` = c(TRUE, FALSE),
+      `val_2 > 10` = c(TRUE, FALSE),
+      min = c(
+        extreme_test_dt_by[6L:10L, mean(val_1)],
+        extreme_test_dt_by[16L:20L, mean(val_1)]
+      ),
+      distinct_ids_min = 5L,
+      max = c(
+        extreme_test_dt_by[1L:5L, mean(val_1)],
+        extreme_test_dt_by[11L:15L, mean(val_1)]
+      ),
+      distinct_ids_max = 5L,
+      key = c("sector", "val_1 > 10", "val_2 > 10")
+    )
+  ),
+  class = c("sdc_extreme", "list")
+)
+
+# actual tests
+test_that("sdc_extreme() gives no result in by cases with expressions", {
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector, val_1 > 10)),
+    extreme_ref_6
+  )
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector, val_1 > 5)),
+    extreme_ref_7
+  )
+  expect_identical(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector, val_1 > 10, val_2 > 10)),
+    extreme_ref_8
+  )
+})
 
 # tests for internal functions (removed, since not necessary) ----
 
@@ -243,19 +296,11 @@ test_that("sdc_extreme() returns appropriate error", {
 })
 
 # no infinite loop ----
+
 test_that("sdc_extreme() does not enter an infinite loop", {
-  messages <- capture_messages(sdc_extreme(extreme_test_dt[1:5], "id", "val_2"))
-  expect_match(
-    paste0(messages, collapse = ""),
-    paste0(
-      "[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-      "sdc.share_dominance: 0.85 ]\n",
-      "[ SETTINGS: id_var: id | val_var: val_2 ]\n",
-      "It is impossible to compute extreme values for variable 'val_2' that ",
-      "comply to RDC rules.",
-      collapse = ""
-    ),
-    fixed = TRUE
+  expect_identical(
+    sdc_extreme(extreme_test_dt[1:5], "id", "val_2"),
+    extreme_ref_2
   )
 })
 

@@ -8,10 +8,13 @@ check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
     val_var <- id_var
   }
   substitute(
-    data[!is.na(get(val_var)),
-      .(distinct_ids = data.table::uniqueN(.SD)),
+    data[
+      i = !is.na(get(val_var)),
+      j = .(distinct_ids = data.table::uniqueN(.SD)),
       .SDcols = id_var,
       keyby = by
-    ][order(distinct_ids)]
+    ][
+      order(distinct_ids)
+    ]
   )
 }

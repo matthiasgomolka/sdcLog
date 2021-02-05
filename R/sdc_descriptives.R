@@ -49,7 +49,7 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
 
   data <- data.table::as.data.table(data)
 
-  # handling 0's
+  # handling 0's ----
   if (!is.null(val_var)) {
     share_0 <- data[get(val_var) == 0, .N] / nrow(data)
     zero_as_NA_guess <- share_0 > 0 & !is_dummy(data[[val_var]])
@@ -79,24 +79,87 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
     )
   }
 
-  # best guess NA's
-  # possible_na_df <-
-  #     data[ , `:=`(count = .N) , by = val_var
-  #        ][which.max(count)
-  #        ][, list(possible_na = get(val_var),
-  #                 value_share = count/length(data[[val_var]]))
-  #        ][value_share >= getOption("sdc.share_possible_na", 0.20)]
-  #
-  # if (nrow(possible_na_df) > 0 && !is.na(possible_na_df[[1]])) {
-  #     message("The value '", possible_na_df[[1, 1]], "' occurs frequently in the data: Is it used as coding for NA?")}
 
+  # preprocess by ----
+  # (copied to sdc_extreme)
+  by <- substitute(by)
+  by_name <- by
+
+  # Additional steps if 'by' is not just plain character:
+  if (!is.null(by) && !is.character(by)) {
+
+    # Check if 'by' is a list of variable names (either as character or
+    # language)
+    vars_to_check <- grep(
+      "^(\\.|list|c|\\{)$", as.character(by), value = TRUE, invert = TRUE
+    )
+    by_name <- paste(vars_to_check, collapse = ", ")
+
+    if (length(vars_to_check) > 0L) {
+
+      # Case: Variable range, like 'sector:year'. Solution: Derive all variables
+      # as a character vector
+      if (":" %in% vars_to_check) {
+        range_vars <- grep(
+          ":", vars_to_check, value = TRUE, fixed = TRUE, invert = TRUE
+        )
+        range_pos <- vapply(
+          range_vars,
+          function(x) which(x == names(data)),
+          FUN.VALUE = integer(1L)
+        )
+        by <- names(data)[seq(range_pos[1], range_pos[2])]
+        by_name <- paste(range_vars, collapse = ", ")
+
+
+        # Case: 'by' is just a list of variable names. This basically works out
+        # of the box.
+      } else if (all(vars_to_check %in% names(data))) {
+
+        by_char <- as.character(by)
+
+        # Special subcase: If by is a single bare variable name, like 'sector',
+        # it is replaced by "sector". This is necessary to name the by-column
+        # correctly.
+        if (length(by_char) == 1L) {
+          by <- by_char
+        }
+      } else {
+
+        # Case: At least one element of by is an expression
+
+        # extract variables from by/vars_to_check and insert into new 'by'
+        is_in_data <- vars_to_check %in% names(data)
+        by <- vars_to_check[is_in_data]
+        by_name <- by
+
+        # Loop over all expressions and create temporary variables before
+        # slicing the data. Also, add these to the new 'by' and add their
+        # expressions to 'by_name'.
+        expr_not_in_data <- vars_to_check[!is_in_data]
+
+        # init temporary variable names
+        temp_num <- 1L
+        temp_name <- paste0("tmp_", temp_num)
+
+        for (expr in expr_not_in_data) {
+          by_name <- paste(by_name, as.character(as.expression(expr)), sep = ", ")
+
+          # make sure that tmp_* does not yet exist
+          while (temp_name %in% names(data)) {
+            temp_num <- temp_num + 1L
+            temp_name <- paste0("tmp_", temp_num)
+          }
+          data[, c(temp_name) := eval(str2lang(expr))]
+          by <- c(by, temp_name)
+        }
+      }
+    }
+  }
 
   # check distinct_ids ----
-  expr_distinct_ids <- eval(substitute(
-    check_distinct_ids(data, id_var, val_var, by)
-  ))
   distinct_ids <- structure(
-    eval(expr_distinct_ids),
+    eval(check_distinct_ids(data, id_var, val_var, by)),
     class = c("sdc_distinct_ids", "data.table", "data.frame")
   )
 
@@ -110,11 +173,6 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
   }
 
   # check dominance ----
-  # browser()
-  by <- substitute(by)
-  # dominance <- eval(substitute(
-  #   check_dominance(data, id_var, val_var, by)
-  # ))
   dominance <- structure(
     check_dominance(data, id_var, val_var, by),
     class = c("sdc_dominance", "data.table", "data.frame")
@@ -131,7 +189,7 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
 
   res <- list(
     message_options = message_options(),
-    message_arguments = message_arguments(id_var, val_var, by, zero_as_NA),
+    message_arguments = message_arguments(id_var, val_var, by_name, zero_as_NA),
     distinct_ids = distinct_ids,
     dominance = dominance
   )

@@ -71,7 +71,6 @@ print.sdc_descriptives <- function(x, ...) {
   }
 }
 
-
 #' @export
 print.sdc_model <- function(x, ...) {
   distinct_ids <- NULL # removes NSE notes in R CMD check
@@ -103,3 +102,18 @@ print.sdc_model <- function(x, ...) {
     message("Output complies to RDC rules.")
   }
 }
+
+#' @export
+print.sdc_extreme <- function(x, ...) {
+  message(x[["message_options"]])
+  message(x[["message_arguments"]])
+  if (!is.na(x[["min_max"]][[1, "min"]])) {
+    print(x[["min_max"]])
+  } else {
+    message(
+      "It is impossible to compute extreme values for variable '",
+      x[["min_max"]][[1L, "val_var"]], "' that comply to RDC rules."
+    )
+  }
+}
+

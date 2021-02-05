@@ -16,10 +16,6 @@ test_dt[id %chin% c("A", "F") & year == 2020L, val := val * 50]
 setcolorder(test_dt, c("id", "sector", "year"))
 
 # test check_distinct_ids ----
-test_that("check_distinct_ids() returns a call", {
-  expect_true(is.call(sdcLog:::check_distinct_ids(test_dt, "id", "val")))
-  expect_type(sdcLog:::check_distinct_ids(test_dt, "id", "val"), "language")
-})
 
 ## functionality tests
 distinct_ids_ref_1_dt <- data.table(distinct_ids = 10L)
@@ -32,22 +28,6 @@ distinct_ids_ref_3_dt <- data.table(
   distinct_ids = c(4L, rep(5L, 3L)),
   key = c("sector", "year")
 )
-test_that("check_distinct_ids() counts correctly", {
-  expect_identical(
-    eval(sdcLog:::check_distinct_ids(test_dt, "id", "val")),
-    distinct_ids_ref_1_dt
-  )
-  expect_identical(
-    eval(sdcLog:::check_distinct_ids(test_dt, "id", "val", by = sector)),
-    distinct_ids_ref_2_dt
-  )
-  expect_identical(
-    eval(sdcLog:::check_distinct_ids(
-      test_dt, "id", "val", by = .(sector, year)
-    )),
-    distinct_ids_ref_3_dt
-  )
-})
 
 # test check_dominance ----
 
@@ -62,21 +42,6 @@ dominance_ref_3_dt <- data.table(
   year = c(rep(2020L, 2L), rep(2019L, 2L)),
   value_share = c(0.934568784234764, 0.913682312146633, 0.68150105511851, 0.550696457360742)
 )
-
-test_that("check_dominance() calculates correctly", {
-  expect_equal(
-    sdcLog:::check_dominance(test_dt, "id", "val"),
-    dominance_ref_1_dt
-  )
-  expect_equal(
-    sdcLog:::check_dominance(test_dt, "id", "val", by = substitute(sector)),
-    dominance_ref_2_dt
-  )
-  expect_equal(
-    sdcLog:::check_dominance(test_dt, "id", "val", by = substitute(.(sector, year))),
-    dominance_ref_3_dt
-  )
-})
 
 
 # test sdc_descriptives ####
@@ -208,13 +173,70 @@ test_that("sdc_descriptives works in complex cases", {
   descriptives_expect_3(
     sdc_descriptives(test_dt, "id", "val", by = c("sector", "year"))
   )
-})
-
-
-descriptives_ref_3$message_arguments[4] <- " | by: sector : year"
-test_that("sdc_descriptives works in : case", {
   descriptives_expect_3(
     sdc_descriptives(test_dt, "id", "val", by = sector:year)
   )
 })
 
+options(sdc.info_level = 2)
+descriptives_ref_4 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments("id"),
+    distinct_ids = structure(
+      distinct_ids_ref_1_dt,
+      class = c("sdc_distinct_ids", class(distinct_ids_ref_1_dt))
+    ),
+    dominance = structure(
+      data.table(value_share = NA_real_),
+      class = c("sdc_dominance", class(dominance_ref_1_dt))
+    )
+  ),
+  class = c("sdc_descriptives", "list")
+)
+test_that("sdc_descriptives() works without 'val_var'", {
+  expect_identical(
+    sdc_descriptives(test_dt, "id"),
+    descriptives_ref_4
+  )
+})
+
+# handling zeros ----
+descriptives_ref_5 <- structure(
+  list(
+    message_options = sdcLog:::message_options(),
+    message_arguments = sdcLog:::message_arguments(
+      "id", "val", zero_as_NA = TRUE
+    ),
+    distinct_ids = structure(
+      distinct_ids_ref_1_dt,
+      class = c("sdc_distinct_ids", class(distinct_ids_ref_1_dt))
+    ),
+    dominance = structure(
+      dominance_ref_1_dt,
+      class = c("sdc_dominance", class(dominance_ref_1_dt))
+    )
+  ),
+  class = c("sdc_descriptives", "list")
+)
+
+test_dt[is.na(val), val := 0]
+
+test_that("zeros are handles correctly" , {
+  expect_message(
+    expect_equal(
+      sdc_descriptives(test_dt, "id", "val"),
+      descriptives_ref_5
+    ),
+    "A share of 0.05 of 'val_var' are zero. These will be treated as 'NA'.",
+    fixed = TRUE
+  )
+  expect_silent(
+    expect_equal(
+      sdc_descriptives(test_dt, "id", "val", zero_as_NA = TRUE),
+      descriptives_ref_5
+    )
+  )
+})
+
+# add tests for expressions in 'by'

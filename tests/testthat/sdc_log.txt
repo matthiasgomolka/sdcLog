@@ -11,8 +11,8 @@ Output complies to RDC rules.
 > sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
 [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
 [ SETTINGS: id_var: id | val_var: val_1 ]
-   val_var min n_obs_min max n_obs_max
-1:   val_1   3         5  18         5
+   val_var min distinct_ids_min max distinct_ids_max
+1:   val_1   3                5  18                5
 
 > data("sdc_model_DT")
 
