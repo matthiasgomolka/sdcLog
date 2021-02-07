@@ -162,6 +162,12 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
     eval(check_distinct_ids(data, id_var, val_var, by)),
     class = c("sdc_distinct_ids", "data.table", "data.frame")
   )
+  # set expressions as variable names
+  if (exists("expr_not_in_data")) {
+    for (i in seq_along(expr_not_in_data)) {
+      data.table::setnames(distinct_ids, old = paste0("tmp_", i), new = expr_not_in_data[i])
+    }
+  }
 
   # print(distinct_ids)
   if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
@@ -177,7 +183,12 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
     check_dominance(data, id_var, val_var, by),
     class = c("sdc_dominance", "data.table", "data.frame")
   )
-
+  # set expressions as variable names
+  if (exists("expr_not_in_data")) {
+    for (i in seq_along(expr_not_in_data)) {
+      data.table::setnames(dominance, old = paste0("tmp_", i), new = expr_not_in_data[i])
+    }
+  }
   # print(dominance)
   if (nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
     warning(
