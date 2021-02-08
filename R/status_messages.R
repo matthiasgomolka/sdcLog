@@ -20,7 +20,7 @@ message_arguments <- function(
 
   msg_by <- ""
   if (!is.null(by)) {
-    msg_by <- paste0(" | by: ", gsub(",\\s*", ", ", by))
+    msg_by <- paste0(" | by: ", paste0(by, collapse = ", "))
   }
 
   msg_zero_as_NA <- ""

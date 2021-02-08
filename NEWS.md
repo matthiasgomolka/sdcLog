@@ -1,9 +1,15 @@
 # sdcLog 0.2.0
 
+### Breaking Changes
+
+* The `by` argument in `sdc_descriptives()` and `sdc_extreme()` now only accepts
+character input. This makes the code more robust and easier to maintain.
+
 ### Features
 
 * support for interaction terms added to `sdc_model()`
-* performance improvement for `check_dominance()` (and therefore in `sdc_descriptives()` and `sdc_extreme()`)
+* performance improvement for `check_dominance()` (and therefore in
+`sdc_descriptives()` and `sdc_extreme()`)
 
 ### Bug Fixes
 

@@ -128,18 +128,18 @@ extreme_ref_4 <- structure(
 
 # actual tests
 test_that("sdc_extreme() works in simple cases with by", {
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = sector),
-    extreme_ref_4
-  )
+  # expect_identical(
+  #   sdc_extreme(extreme_test_dt_by, "id", "val_1", by = sector),
+  #   extreme_ref_4
+  # )
   expect_identical(
     sdc_extreme(extreme_test_dt_by, "id", "val_1", by = "sector"),
     extreme_ref_4
   )
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector)),
-    extreme_ref_4
-  )
+  # expect_identical(
+  #   sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector)),
+  #   extreme_ref_4
+  # )
 })
 
 
@@ -164,135 +164,96 @@ extreme_ref_5 <- structure(
 
 # actual tests
 test_that("sdc_extreme() gives no result in by cases", {
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = sector),
-    extreme_ref_5
-  )
+  # expect_identical(
+  #   sdc_extreme(extreme_test_dt_by, "id", "val_2", by = sector),
+  #   extreme_ref_5
+  # )
   expect_identical(
     sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
     extreme_ref_5
   )
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = .(sector)),
-    extreme_ref_5
-  )
+  # expect_identical(
+  #   sdc_extreme(extreme_test_dt_by, "id", "val_2", by = c("sector")),
+  #   extreme_ref_5
+  # )
 })
 
 
-extreme_ref_6 <- structure(
-  list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_1", "sector, val_1 > 10"),
-    min_max = data.table(
-      val_var = "val_1",
-      sector = c("S1", "S2"),
-      `val_1 > 10` = c(TRUE, FALSE),
-      min = c(
-        extreme_test_dt_by[6L:10L, mean(val_1)],
-        extreme_test_dt_by[16L:20L, mean(val_1)]
-      ),
-      distinct_ids_min = 5L,
-      max = c(
-        extreme_test_dt_by[1L:5L, mean(val_1)],
-        extreme_test_dt_by[11L:15L, mean(val_1)]
-      ),
-      distinct_ids_max = 5L,
-      key = c("sector", "val_1 > 10")
-    )
-  ),
-  class = c("sdc_extreme", "list")
-)
 
-
-extreme_ref_7 <- structure(
-  list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_1", "sector, val_1 > 5"),
-    min_max = data.table(
-      val_var = "val_1",
-      sector = c("S1", "S2", "S2"),
-      `val_1 > 5` = c(TRUE, FALSE, TRUE),
-      min = NA_real_,
-      distinct_ids_min = NA_integer_,
-      max = NA_real_,
-      distinct_ids_max = NA_integer_,
-      key = c("sector", "val_1 > 5")
-    )
-  ),
-  class = c("sdc_extreme", "list")
-)
-
-extreme_ref_8 <- structure(
-  list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments(
-      "id", "val_1", "sector, val_1 > 10, val_2 > 10"
-    ),
-    min_max = data.table(
-      val_var = "val_1",
-      sector = c("S1", "S2"),
-      `val_1 > 10` = c(TRUE, FALSE),
-      `val_2 > 10` = c(TRUE, FALSE),
-      min = c(
-        extreme_test_dt_by[6L:10L, mean(val_1)],
-        extreme_test_dt_by[16L:20L, mean(val_1)]
-      ),
-      distinct_ids_min = 5L,
-      max = c(
-        extreme_test_dt_by[1L:5L, mean(val_1)],
-        extreme_test_dt_by[11L:15L, mean(val_1)]
-      ),
-      distinct_ids_max = 5L,
-      key = c("sector", "val_1 > 10", "val_2 > 10")
-    )
-  ),
-  class = c("sdc_extreme", "list")
-)
-
-# actual tests
-test_that("sdc_extreme() gives no result in by cases with expressions", {
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector, val_1 > 10)),
-    extreme_ref_6
-  )
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector, val_1 > 5)),
-    extreme_ref_7
-  )
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector, val_1 > 10, val_2 > 10)),
-    extreme_ref_8
-  )
-})
 
 # tests for internal functions (removed, since not necessary) ----
 
 
 # test arguments in sdc_extreme ----
 
-# test that sdc_extreme retruns appropriate error
+# test that sdc_extreme returns appropriate error
 test_that("sdc_extreme() returns appropriate error", {
 
-  # error für nichtexistierende Elemente
-  suppressMessages({
-    # messages sind hier nicht wichtig, deshalb suppressed
-    expect_error(sdc_extreme(extreme_test_dt, "wrong_id", "val_1"), "Some items of .SDcols are not column names: [wrong_id]", fixed = TRUE)
-    expect_error(sdc_extreme(extreme_test_dt, "id", "wrong_val"), "argument specifying columns specify non existing column(s): cols[1]='wrong_val'", fixed = TRUE)
-    expect_error(sdc_extreme(wrong_test_dt, "id", "val_1"), "object 'wrong_test_dt' not found")
-    expect_error(sdc_extreme(extreme_test_dt_by, "id", "val_1", wrong_by), "object 'wrong_by' not found")
+  # throw error if data is not a data.frame
+  expect_error(
+    sdc_extreme(wrong_test_dt, "id", "val_1"),
+    "object 'wrong_test_dt' not found",
+    fixed = TRUE
+  )
 
-    # error für elements unquoted
-    expect_error(sdc_extreme(extreme_test_dt, id, "val_1"), "object 'id' not found")
-    expect_error(sdc_extreme(extreme_test_dt, "id", val_1), "object 'val_1' not found")
+  expect_error(
+    sdc_extreme("wrong_test_dt", "id", "val_1"),
+    "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.",
+    fixed = TRUE
+  )
 
-    # error für data quoted
-    expect_error(sdc_extreme("extreme_test_dt", "id", "val_1"), "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.")
+  # throw error if specified variables are not in data
+  expect_error(
+    sdc_extreme(extreme_test_dt, "wrong_id", "val_1"),
+    paste0(
+      "Assertion on 'id_var' failed: Must be a subset of {'id','val_1',",
+      "'val_2','val_3'}, but is {'wrong_id'}."
+    ),
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt, "id", "wrong_val"),
+    paste0(
+      "Assertion on 'val_var' failed: Must be a subset of {'id','val_1',",
+      "'val_2','val_3'}, but is {'wrong_val'}."
+    ),
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt_by, "id", "val_1", "wrong_by"),
+    paste0(
+      "Assertion on 'by' failed: Must be a subset of {'id','sector','val_1',",
+      "'val_2','val_3','val_4'}, but is {'wrong_by'}."
+    ),
+    fixed = TRUE
+  )
 
-    # error für missing arguments
-    expect_error(sdc_extreme(extreme_test_dt, "id"), "argument \"val_var\" is missing, with no default")
-    expect_error(sdc_extreme(extreme_test_dt, val_var = "val_1"), "argument \"id_var\" is missing, with no default")
-    expect_error(sdc_extreme(id = "id", val_var = "val_1"), "argument \"data\" is missing, with no default")
-  })
+  # error for elements unquoted
+  expect_error(
+    sdc_extreme(extreme_test_dt, id, "val_1"),
+    "object 'id' not found"
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt, "id", val_1),
+    "object 'val_1' not found"
+  )
+
+  # error for missing arguments
+  expect_error(
+    sdc_extreme(id_var = "id", val_var = "val_1"),
+    'argument "data" is missing, with no default',
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt, "id"),
+    'argument "val_var" is missing, with no default',
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt, val_var = "val_1"),
+    "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
+    fixed = TRUE
+  )
 })
 
 # no infinite loop ----

@@ -6,7 +6,7 @@
 \usage{
 sdc_extreme(
   data,
-  id_var,
+  id_var = getOption("sdc.id_var"),
   val_var,
   by = NULL,
   n_min = getOption("sdc.n_ids", 5L),
@@ -17,7 +17,7 @@ sdc_extreme(
 \item{data}{\link{data.frame} from which the descriptive statistics are
 calculated.}
 
-\item{id_var}{\link{character} The name of the id variable.}
+\item{id_var}{\link{character} The name of the id variable. Defaults to \code{ getOption("sdc.id_var")} so that you can provide \code{options(sdc.id_var = "my_id_var")} at the top of your script.}
 
 \item{val_var}{\link{character} vector of value variables on which descriptive
 statistics are computed.}
@@ -39,16 +39,19 @@ Checks if calculation of extreme values comply to RDC rules. If
 so, function returns average min and max values according to RDC rules.
 }
 \examples{
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2")
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2",
-            n_min = 7)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
-            n_min = 10, n_max = 10)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
-            n_min = 8, n_max = 8)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
-            by = year)
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
-            by = c("sector", "year"))
+sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1")
+sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2")
+sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2", n_min = 7)
+sdc_extreme(
+  sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 10, n_max = 10
+)
+sdc_extreme(
+  sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 8, n_max = 8
+)
+sdc_extreme(
+  sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year"
+)
+sdc_extreme(
+  sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
+)
 }

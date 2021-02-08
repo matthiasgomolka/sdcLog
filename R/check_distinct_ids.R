@@ -3,18 +3,17 @@
 #' @importFrom data.table uniqueN
 
 check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
+  distinct_ids <- NULL # to silence NSE notes in RCDM check
+
   # handle the case where no val_var is provided
   if (is.null(val_var)) {
     val_var <- id_var
   }
-  substitute(
-    data[
-      i = !is.na(get(val_var)),
-      j = .(distinct_ids = data.table::uniqueN(.SD)),
-      .SDcols = id_var,
-      keyby = by
-    ][
-      order(distinct_ids)
-    ]
-  )
+  data[
+    i = !is.na(get(val_var)),
+    j = list(distinct_ids = data.table::uniqueN(get(id_var))),
+    keyby = by
+  ][
+    order(distinct_ids)
+  ]
 }

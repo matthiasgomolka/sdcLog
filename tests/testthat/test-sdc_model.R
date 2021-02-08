@@ -386,8 +386,9 @@ test_that("sdc_model() returns appropriate error", {
     "restarting interrupted promise evaluation"
   )
   expect_error(
-    sdc_model(model_test_dt, model_1, wrong_id),
-    "object 'wrong_id' not found"
+    sdc_model(model_test_dt, model_1, "wrong_id"),
+    "Assertion on 'id_var' failed: Must be a subset of {'id','y','x_1','x_2','x_3','dummy_1','dummy_2','dummy_3'}, but is {'wrong_id'}.",
+    fixed = TRUE
   )
   expect_error(
     sdc_model(wrong_model_dt, model_1, "id"),
@@ -406,14 +407,15 @@ test_that("sdc_model() returns appropriate error", {
   # error für missing arguments
   expect_error(
     sdc_model(model_test_dt, model_1),
-    "argument \"id_var\" is missing, with no default"
+    "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
+    fixed = TRUE
   )
   expect_error(
     sdc_model(model_test_dt, id_var = "id"),
-    "argument \"model\" is missing, with no default"
+    'argument "model" is missing, with no default'
   )
   expect_error(
     sdc_model(model = model_1, id_var = "id"),
-    "argument \"data\" is missing, with no default"
+    'argument "data" is missing, with no default'
   )
 })

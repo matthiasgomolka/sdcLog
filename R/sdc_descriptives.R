@@ -15,7 +15,7 @@
 #'   data = sdc_descriptives_DT,
 #'   id_var = "id",
 #'   val_var = "val_1",
-#'   by = sector
+#'   by = "sector"
 #' )
 #'
 #' sdc_descriptives(
@@ -42,10 +42,23 @@
 #' @return A [list] of class `sdc_descriptives` with detailed information about
 #'   options, settings, and compliance with the criteria distinct entities and
 #'   dominance.
-sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA = NULL) {
+sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = NULL, by = NULL, zero_as_NA = NULL) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
-  # input checks
-  check_args(data, id_var, val_var, by, zero_as_NA)
+
+  # input checks ----
+  checkmate::assert_data_frame(data)
+  col_names <- names(data)
+
+  checkmate::assert_string(id_var)
+  checkmate::assert_subset(id_var, choices = names(data))
+
+  checkmate::assert_string(val_var, null.ok = TRUE)
+  checkmate::assert_subset(val_var, choices = names(data))
+
+  checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
+  checkmate::assert_subset(by, choices = names(data))
+
+  checkmate::assert_logical(zero_as_NA, len = 1L, null.ok = TRUE)
 
   data <- data.table::as.data.table(data)
 
@@ -80,100 +93,16 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
   }
 
 
-  # preprocess by ----
-  # (copied to sdc_extreme)
-  by <- substitute(by)
-  by_name <- by
-
-  # Additional steps if 'by' is not just plain character:
-  if (!is.null(by) && !is.character(by)) {
-
-    # Check if 'by' is a list of variable names (either as character or
-    # language)
-    vars_to_check <- grep(
-      "^(\\.|list|c|\\{)$", as.character(by), value = TRUE, invert = TRUE
-    )
-    by_name <- paste(vars_to_check, collapse = ", ")
-
-    if (length(vars_to_check) > 0L) {
-
-      # Case: Variable range, like 'sector:year'. Solution: Derive all variables
-      # as a character vector
-      if (":" %in% vars_to_check) {
-        range_vars <- grep(
-          ":", vars_to_check, value = TRUE, fixed = TRUE, invert = TRUE
-        )
-        range_pos <- vapply(
-          range_vars,
-          function(x) which(x == names(data)),
-          FUN.VALUE = integer(1L)
-        )
-        by <- names(data)[seq(range_pos[1], range_pos[2])]
-        by_name <- paste(range_vars, collapse = ", ")
-
-
-        # Case: 'by' is just a list of variable names. This basically works out
-        # of the box.
-      } else if (all(vars_to_check %in% names(data))) {
-
-        by_char <- as.character(by)
-
-        # Special subcase: If by is a single bare variable name, like 'sector',
-        # it is replaced by "sector". This is necessary to name the by-column
-        # correctly.
-        if (length(by_char) == 1L) {
-          by <- by_char
-        }
-      } else {
-
-        # Case: At least one element of by is an expression
-
-        # extract variables from by/vars_to_check and insert into new 'by'
-        is_in_data <- vars_to_check %in% names(data)
-        by <- vars_to_check[is_in_data]
-        by_name <- by
-
-        # Loop over all expressions and create temporary variables before
-        # slicing the data. Also, add these to the new 'by' and add their
-        # expressions to 'by_name'.
-        expr_not_in_data <- vars_to_check[!is_in_data]
-
-        # init temporary variable names
-        temp_num <- 1L
-        temp_name <- paste0("tmp_", temp_num)
-
-        for (expr in expr_not_in_data) {
-          by_name <- paste(by_name, as.character(as.expression(expr)), sep = ", ")
-
-          # make sure that tmp_* does not yet exist
-          while (temp_name %in% names(data)) {
-            temp_num <- temp_num + 1L
-            temp_name <- paste0("tmp_", temp_num)
-          }
-          data[, c(temp_name) := eval(str2lang(expr))]
-          by <- c(by, temp_name)
-        }
-      }
-    }
-  }
-
   # check distinct_ids ----
   distinct_ids <- structure(
-    eval(check_distinct_ids(data, id_var, val_var, by)),
+    check_distinct_ids(data, id_var, val_var, by),
     class = c("sdc_distinct_ids", "data.table", "data.frame")
   )
-  # set expressions as variable names
-  if (exists("expr_not_in_data")) {
-    for (i in seq_along(expr_not_in_data)) {
-      data.table::setnames(distinct_ids, old = paste0("tmp_", i), new = expr_not_in_data[i])
-    }
-  }
 
-  # print(distinct_ids)
+  # warn about distinct_ids if necessary
   if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     warning(
-      crayon::bold("DISCLOSURE PROBLEM: "),
-      "Not enough distinct entities", ".",
+      crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities.",
       call. = FALSE
     )
   }
@@ -183,24 +112,18 @@ sdc_descriptives <- function(data, id_var, val_var = NULL, by = NULL, zero_as_NA
     check_dominance(data, id_var, val_var, by),
     class = c("sdc_dominance", "data.table", "data.frame")
   )
-  # set expressions as variable names
-  if (exists("expr_not_in_data")) {
-    for (i in seq_along(expr_not_in_data)) {
-      data.table::setnames(dominance, old = paste0("tmp_", i), new = expr_not_in_data[i])
-    }
-  }
-  # print(dominance)
+
+  # warn about dominance if necessary
   if (nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
     warning(
-      crayon::bold("DISCLOSURE PROBLEM: "),
-      "Dominant entities.",
+      crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities.",
       call. = FALSE
     )
   }
 
   res <- list(
     message_options = message_options(),
-    message_arguments = message_arguments(id_var, val_var, by_name, zero_as_NA),
+    message_arguments = message_arguments(id_var, val_var, by, zero_as_NA),
     distinct_ids = distinct_ids,
     dominance = dominance
   )

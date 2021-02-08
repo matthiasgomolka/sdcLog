@@ -3,7 +3,7 @@
 #'   number of entities and number of entities for each level of dummy
 #'   variables.
 #' @inheritParams common_arguments
-#' @importFrom data.table as.data.table uniqueN rbindlist setDT := %flike%
+#' @importFrom data.table as.data.table uniqueN rbindlist := %flike%
 #' @importFrom broom augment tidy
 #' @importFrom stats na.omit
 #' @importFrom checkmate assert_data_frame assert_string
@@ -20,13 +20,18 @@
 #' sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
 #' @return A [list] of class `sdc_model` with detailed information about
 #'   options, settings, and compliance with the distinct entities criterion.
-sdc_model <- function(data, model, id_var) {
+sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   var_level <- var <- level <- term <- NULL # to silence NSE notes in RCDM check
 
   # check inputs
-  check_args(data, id_var)
+  # input checks ----
+  checkmate::assert_data_frame(data)
 
-  data.table::setDT(data)
+  checkmate::assert_string(id_var)
+  checkmate::assert_subset(id_var, choices = names(data))
+
+
+  data.table::as.data.table(data)
 
   # model df
   data_model <- tryCatch(
@@ -51,11 +56,12 @@ sdc_model <- function(data, model, id_var) {
 
   # general check for number of distinct ID's ----
   # no call of check_distinct_ids() because we have no single val_var here
-  distinct_ids <-
-    model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))]#
+  distinct_ids <- structure(
+    model_df[, list(distinct_ids = data.table::uniqueN(get(id_var)))],
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
 
-  # warning via print method for distinct ID's
-  class(distinct_ids) <- c("sdc_distinct_ids", class(distinct_ids))
+  # warning about for distinct ID's
   if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     warning(
       crayon::bold("Potential disclosure problem: "),

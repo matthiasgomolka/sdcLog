@@ -4,7 +4,7 @@
 \alias{sdc_model}
 \title{Disclosure control for models}
 \usage{
-sdc_model(data, model, id_var)
+sdc_model(data, model, id_var = getOption("sdc.id_var"))
 }
 \arguments{
 \item{data}{\link{data.frame} from which the descriptive statistics are
@@ -13,7 +13,7 @@ calculated.}
 \item{model}{The estimated model object. Can be a model type like lm, glm and
 various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 
-\item{id_var}{\link{character} The name of the id variable.}
+\item{id_var}{\link{character} The name of the id variable. Defaults to \code{ getOption("sdc.id_var")} so that you can provide \code{options(sdc.id_var = "my_id_var")} at the top of your script.}
 }
 \value{
 A \link{list} of class \code{sdc_model} with detailed information about

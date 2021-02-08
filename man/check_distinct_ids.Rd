@@ -10,7 +10,7 @@ check_distinct_ids(data, id_var, val_var = NULL, by = NULL)
 \item{data}{\link{data.frame} from which the descriptive statistics are
 calculated.}
 
-\item{id_var}{\link{character} The name of the id variable.}
+\item{id_var}{\link{character} The name of the id variable. Defaults to \code{ getOption("sdc.id_var")} so that you can provide \code{options(sdc.id_var = "my_id_var")} at the top of your script.}
 
 \item{val_var}{\link{character} vector of value variables on which descriptive
 statistics are computed.}

@@ -7,30 +7,44 @@
 #' @importFrom checkmate assert_int
 #' @export
 #' @examples
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2")
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2",
-#'             n_min = 7)
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
-#'             n_min = 10, n_max = 10)
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_3",
-#'             n_min = 8, n_max = 8)
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
-#'             by = year)
-#' sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1",
-#'             by = c("sector", "year"))
+#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1")
+#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2")
+#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2", n_min = 7)
+#' sdc_extreme(
+#'   sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 10, n_max = 10
+#' )
+#' sdc_extreme(
+#'   sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 8, n_max = 8
+#' )
+#' sdc_extreme(
+#'   sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year"
+#' )
+#' sdc_extreme(
+#'   sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
+#' )
 #' @return A list [list] of class `sdc_extreme` with detailed information about
 #'   options, settings and the calculated extreme values (if possible).
 sdc_extreme <- function(
   data,
-  id_var,
+  id_var = getOption("sdc.id_var"),
   val_var,
   by = NULL,
   n_min = getOption("sdc.n_ids", 5L),
   n_max = n_min
 ) {
-  # input checks
-  check_args(data, id_var, val_var, by)
+  # input checks ----
+  checkmate::assert_data_frame(data)
+  col_names <- names(data)
+
+  checkmate::assert_string(id_var)
+  checkmate::assert_subset(id_var, choices = names(data))
+
+  checkmate::assert_string(val_var, null.ok = TRUE)
+  checkmate::assert_subset(val_var, choices = names(data))
+
+  checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
+  checkmate::assert_subset(by, choices = names(data))
+
   checkmate::assert_int(n_max)
   checkmate::assert_int(n_min)
 
@@ -41,84 +55,6 @@ sdc_extreme <- function(
 
   # order decreasing by val_var
   data.table::setorderv(data, cols = val_var, order = -1L)
-
-  # preprocess by ----
-  # (copied from sdc_descriptives())
-  by <- substitute(by)
-  by_name <- by
-
-  # Additional steps if 'by' is not just plain character:
-  if (!is.null(by) && !is.character(by)) {
-
-    # Check if 'by' is a list of variable names (either as character or
-    # language)
-    vars_to_check <- grep(
-      "^(\\.|list|c)$", as.character(by), value = TRUE, invert = TRUE
-    )
-    by_name <- paste(vars_to_check, collapse = ", ")
-
-    if (length(vars_to_check) > 0L) {
-
-      # Case: Variable range, like 'sector:year'. Solution: Derive all variables
-      # as a character vector
-      if (":" %in% vars_to_check) {
-        range_vars <- grep(
-          ":", vars_to_check, value = TRUE, fixed = TRUE, invert = TRUE
-        )
-        range_pos <- vapply(
-          range_vars,
-          function(x) which(x == names(data)),
-          FUN.VALUE = integer(1L)
-        )
-        by <- names(data)[seq(range_pos[1], range_pos[2])]
-        by_name <- paste(range_vars, collapse = ", ")
-
-
-        # Case: 'by' is just a list of variable names. This basically works out
-        # of the box.
-      } else if (all(vars_to_check %in% names(data))) {
-
-        by_char <- as.character(by)
-
-        # Special subcase: If by is a single bare variable name, like 'sector',
-        # it is replaced by "sector". This is necessary to name the by-column
-        # correctly.
-        if (length(by_char) == 1L) {
-          by <- by_char
-        }
-      } else {
-
-        # Case: At least one element of by is an expression
-
-        # extract variables from by/vars_to_check and insert into new 'by'
-        is_in_data <- vars_to_check %in% names(data)
-        by <- vars_to_check[is_in_data]
-        by_name <- by
-
-        # Loop over all expressions and create temporary variables before
-        # slicing the data. Also, add these to the new 'by' and add their
-        # expressions to 'by_name'.
-        expr_not_in_data <- vars_to_check[!is_in_data]
-
-        # init temporary variable names
-        temp_num <- 1L
-        temp_name <- paste0("tmp_", temp_num)
-
-        for (expr in expr_not_in_data) {
-          by_name <- paste(by_name, as.character(as.expression(expr)), sep = ", ")
-
-          # make sure that tmp_* does not yet exist
-          while (temp_name %in% names(data)) {
-            temp_num <- temp_num + 1L
-            temp_name <- paste0("tmp_", temp_num)
-          }
-          data[, c(temp_name) := eval(str2lang(expr))]
-          # by <- temp_name
-          by <- c(by, temp_name)
-        }
-      }
-    }
-  }
 
   # find SD's for min and max
   SD_min <- find_SD(data, "min", n_min, id_var, val_var, by)
@@ -138,21 +74,14 @@ sdc_extreme <- function(
     ),
     keyby = by
   ]
-  keep_max <- setdiff(names(res_max), names(res_min))
 
   # combine results
   res <- cbind(
     data.table(val_var = val_var),
     res_min,
-    res_max[, keep_max, with = FALSE]
+    res_max[, setdiff(names(res_max), names(res_min)), with = FALSE]
   )
 
-  # set expressions as variable names
-  if (exists("expr_not_in_data")) {
-    for (i in seq_along(expr_not_in_data)) {
-      data.table::setnames(res, old = paste0("tmp_", i), new = expr_not_in_data[i])
-    }
-  }
   # check for overlaps of results
   sd_overlap <- nrow(data.table::fintersect(SD_min, SD_max)) > 0
 
@@ -168,7 +97,7 @@ sdc_extreme <- function(
   structure(
     list(
       message_options = message_options(),
-      message_arguments = message_arguments(id_var, val_var, by_name),
+      message_arguments = message_arguments(id_var, val_var, by),
       min_max = res
     ),
     class = c("sdc_extreme", "list")
@@ -178,10 +107,7 @@ sdc_extreme <- function(
 
 #' @importFrom utils tail head
 find_SD <- function(data, type, n_obs, id_var, val_var, by) {
-  SD_fun <- switch(type,
-                   min = utils::tail,
-                   max = utils::head
-  )
+  SD_fun <- switch(type, min = utils::tail, max = utils::head)
 
   SD_results <- find_SD_problems(data, SD_fun, n_obs, id_var, val_var, by)
 
@@ -189,7 +115,7 @@ find_SD <- function(data, type, n_obs, id_var, val_var, by) {
     n_obs <- n_obs + 1L
     SD_results <- find_SD_problems(data, SD_fun, n_obs, id_var, val_var, by)
 
-    # this assures that this is no infinite loop; problems will be catched
+    # this assures that this is no infinite loop; problems will be caught
     # during the check for overlaps
     if (n_obs >= nrow(data)) {
       return(SD_results[["SD"]])

@@ -106,19 +106,7 @@ descriptives_expect_2 <- function(x) {
 # descriptives tests 2 ####
 test_that("sdc_descriptives works in medium cases", {
   descriptives_expect_2(
-    sdc_descriptives(test_dt, "id", "val", by = sector)
-  )
-  descriptives_expect_2(
-    sdc_descriptives(test_dt, "id", "val", by = .(sector))
-  )
-  descriptives_expect_2(
-    sdc_descriptives(test_dt, "id", "val", by = list(sector))
-  )
-  descriptives_expect_2(
     sdc_descriptives(test_dt, "id", "val", by = "sector")
-  )
-  descriptives_expect_2(
-    sdc_descriptives(test_dt, "id", "val", by = c("sector"))
   )
 })
 
@@ -162,19 +150,7 @@ descriptives_expect_3 <- function(x) {
 # descriptives tests 3 ####
 test_that("sdc_descriptives works in complex cases", {
   descriptives_expect_3(
-    sdc_descriptives(test_dt, "id", "val", by = .(sector, year))
-  )
-  descriptives_expect_3(
-    sdc_descriptives(test_dt, "id", "val", by = list(sector, year))
-  )
-  descriptives_expect_3(
-    sdc_descriptives(test_dt, "id", "val", by = "sector,year")
-  )
-  descriptives_expect_3(
     sdc_descriptives(test_dt, "id", "val", by = c("sector", "year"))
-  )
-  descriptives_expect_3(
-    sdc_descriptives(test_dt, "id", "val", by = sector:year)
   )
 })
 
@@ -239,4 +215,73 @@ test_that("zeros are handles correctly" , {
   )
 })
 
-# add tests for expressions in 'by'
+
+# test that sdc_descriptives returns appropriate error
+test_that("sdc_descriptives() returns appropriate error", {
+
+  # throw error if data is not a data.frame
+  expect_error(
+    sdc_descriptives(wrong_test_dt, "id", "val_1"),
+    "object 'wrong_test_dt' not found",
+    fixed = TRUE
+  )
+
+  expect_error(
+    sdc_descriptives("wrong_test_dt", "id", "val_1"),
+    "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.",
+    fixed = TRUE
+  )
+
+  # throw error if specified variables are not in data
+  expect_error(
+    sdc_descriptives(test_dt, "wrong_id", "val_1"),
+    paste0(
+      "Assertion on 'id_var' failed: Must be a subset of {'id','sector',",
+      "'year','val'}, but is {'wrong_id'}."
+    ),
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_descriptives(test_dt, "id", "wrong_val"),
+    paste0(
+      "Assertion on 'val_var' failed: Must be a subset of {'id','sector',",
+      "'year','val'}, but is {'wrong_val'}."
+    ),
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_descriptives(test_dt, "id", "val", "wrong_by"),
+    paste0(
+      "Assertion on 'by' failed: Must be a subset of {'id','sector','year',",
+      "'val'}, but is {'wrong_by'}."
+    ),
+    fixed = TRUE
+  )
+
+  # error for elements unquoted
+  expect_error(
+    sdc_descriptives(test_dt, id, "val_1"),
+    "object 'id' not found"
+  )
+  expect_error(
+    sdc_descriptives(test_dt, "id", val_1),
+    "object 'val_1' not found"
+  )
+
+  # error for missing arguments
+  expect_error(
+    sdc_descriptives(id_var = "id", val_var = "val_1"),
+    'argument "data" is missing, with no default',
+    fixed = TRUE
+  )
+  expect_silent(
+    sdc_descriptives(test_dt, "id")
+  )
+
+  options(sdc.id_var = NULL)
+  expect_error(
+    sdc_descriptives(test_dt, val_var = "val"),
+    "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
+    fixed = TRUE
+  )
+})
