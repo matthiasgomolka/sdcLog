@@ -15,7 +15,7 @@ calculated.}
 \item{val_var}{\link{character} vector of value variables on which descriptive
 statistics are computed.}
 
-\item{by}{Grouping variables (or expression) as in \link{data.table}'s \code{by}.}
+\item{by}{\link{character} vector of grouping variables.}
 }
 \description{
 Internal function which creates cross-tables with number of distinct id's

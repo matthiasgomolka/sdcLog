@@ -11,11 +11,9 @@ print.sdc_distinct_ids <- function(x, ...) {
     # withOUT problems
   } else if (getOption("sdc.info_level", 1L) > 1L) {
     message(
-      paste0(
-        "No problem with number of distinct entities (",
-        min(x[["distinct_ids"]]),
-        ")."
-      )
+      "No problem with number of distinct entities (",
+      min(x[["distinct_ids"]]),
+      ")."
     )
   }
 
@@ -45,7 +43,7 @@ print.sdc_dominance <- function(x, ...) {
     if (identical(x, dt_no_check)) {
       message("No dominance check conducted, because 'val_var = NULL'.")
 
-    # regular case without problems
+      # regular case without problems
     } else {
       message("No problem with dominance.")
     }
@@ -84,15 +82,12 @@ print.sdc_model <- function(x, ...) {
     print_fun <- print
   }
 
-  if (length(x[["dummies"]]) != 0) {
-    print_fun(x[["dummies"]])
-  }
-  if (length(x[["interactions"]]) != 0) {
-    print_fun(x[["interactions"]])
+  if (length(x[["terms"]]) != 0) {
+    print_fun(x[["terms"]])
   }
 
   n_problems <- vapply(
-    c(x[["dummies"]], x[["interactions"]]),
+    append(list(distinct_ids = x[["distinct_ids"]]), x[["terms"]]),
     function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]),
     FUN.VALUE = integer(1L)
   )

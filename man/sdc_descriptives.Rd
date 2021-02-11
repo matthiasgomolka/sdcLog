@@ -21,7 +21,7 @@ calculated.}
 \item{val_var}{\link{character} vector of value variables on which descriptive
 statistics are computed.}
 
-\item{by}{Grouping variables (or expression) as in \link{data.table}'s \code{by}.}
+\item{by}{\link{character} vector of grouping variables.}
 
 \item{zero_as_NA}{\link{logical} If TRUE, zeros in 'val_var' are treated as NA.}
 }
