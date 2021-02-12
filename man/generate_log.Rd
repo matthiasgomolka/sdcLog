@@ -11,6 +11,9 @@ generate_log(r_script, log_file)
 
 \item{log_file}{destination file of the log file to be generated}
 }
+\value{
+\link{character} vector holding the path(s) of the written log file(s).
+}
 \description{
 Source a single R script and generate a log file
 }

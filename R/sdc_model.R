@@ -161,7 +161,7 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # combine distinct ID results from plain vars and interactions (and warn if
   # necessary)
   term_list <- c(plain_var_list, interactions_list)
-  list_warning(append(list(distinct_ids = distinct_ids), term_list))
+  warn_distinct_ids(append(list(distinct_ids = distinct_ids), term_list))
 
 
   # return list with all messages and results
@@ -189,24 +189,5 @@ conditional_print <- function(list) {
     if (problems[[i]] | getOption("sdc.info_level", 1L) > 1L) {
       print(list[i])
     }
-  }
-}
-
-
-list_warning <- function(list) {
-  distinct_ids <- NULL # removes NSE notes in R CMD check
-
-  problems <- vapply(
-    list,
-    function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L,
-    FUN.VALUE = logical(1L)
-  )
-
-  if (sum(problems) > 0L) {
-    warning(
-      crayon::bold("POTENTIAL DISCLOSURE PROBLEM: "),
-      "Not enough distinct entities.",
-      call. = FALSE
-    )
   }
 }

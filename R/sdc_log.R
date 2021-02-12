@@ -32,8 +32,6 @@ sdc_log <- function(r_scripts, log_files, replace = FALSE) {
   # write log
   # TODO: Option for running scripts in parallel
   invisible(mapply(generate_log, r_scripts, log_files, USE.NAMES = FALSE))
-
-  # message("Log(s) written to\n", paste0(log_files, collapse = "\n"))
 }
 
 

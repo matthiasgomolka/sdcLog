@@ -16,7 +16,7 @@ file(s) where the log(s) should be stored.}
 \item{replace}{\link{logical} Indicates whether to replace existing log files.}
 }
 \value{
-Invisible \code{NULL}.
+\link{character} vector holding the path(s) of the written log file(s).
 }
 \description{
 This function creates Stata-like log files from R Scripts. It
