@@ -6,7 +6,7 @@
 #' @param log_files [character] vector containing the path(s) of the text
 #'   file(s) where the log(s) should be stored.
 #' @param replace [logical] Indicates whether to replace existing log files.
-#' @return Invisible `NULL`.
+#' @return [character] vector holding the path(s) of the written log file(s).
 #' @importFrom checkmate assert_character assert_logical assert_file
 #'   test_file_exists
 #' @export
@@ -40,7 +40,7 @@ sdc_log <- function(r_scripts, log_files, replace = FALSE) {
 #' Source a single R script and generate a log file
 #' @param r_script R script to be run and logged
 #' @param log_file destination file of the log file to be generated
-#' @return NULL
+#' @return [character] vector holding the path(s) of the written log file(s).
 
 generate_log <- function(r_script, log_file) {
   file.create(log_file)
