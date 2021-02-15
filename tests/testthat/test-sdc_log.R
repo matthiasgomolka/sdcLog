@@ -12,7 +12,7 @@ test_that("sdc_log() works correctly with log files", {
   tf <- tempfile(fileext = ".txt")
   expect_message(
     sdc_log(r_script = script_1, destination = tf),
-    paste0("Log file for '.*script_1.R' written to '", tf, "'.")
+    paste0("Log file for '.*script_1.R' written to '.*", tf, "'.")
   )
   expect_identical(readLines(tf), readLines(log))
 })
@@ -126,7 +126,7 @@ test_that("error in script is handled correctly", {
         "The log file will be incomplete."
       )
     ),
-    paste0("Log file for '.*script_error.R' written to '", tf, "'.")
+    paste0("Log file for '.*script_error.R' written to '.*", tf, "'.")
   )
 
   expect_identical(sink.number(), 0L)
