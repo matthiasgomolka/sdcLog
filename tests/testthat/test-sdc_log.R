@@ -10,6 +10,8 @@ log <- list.files(pattern = "test_log.txt", recursive = TRUE)
 
 test_that("sdc_log() works correctly with log files", {
   tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
+  message(tf)
+  message(paste0("Log file for '.*script_1.R' written to '.*", tf, "'."))
   expect_message(
     sdc_log(r_script = script_1, destination = tf),
     paste0("Log file for '.*script_1.R' written to '.*", tf, "'.")
