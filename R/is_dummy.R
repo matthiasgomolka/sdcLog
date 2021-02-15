@@ -8,9 +8,9 @@ is_dummy <- function(x) {
   }
   # handling complex vectors specifically because they cause a problem in the
   # last if clause of this function
-  if (is.complex(x)) {
-    return(FALSE)
-  }
+  # if (is.complex(x)) {
+  #   return(FALSE)
+  # }
 
   if (is.logical(x)) {
     return(TRUE)
@@ -24,10 +24,8 @@ is_dummy <- function(x) {
     return(TRUE)
   }
 
-  uniques <- sort(unique(x))
-  if (length(uniques) == 2L & all.equal(uniques, c(0L, 1L)) == TRUE) {
-    return(TRUE)
-  }
+  # Detection for 0/1 variables removed since these can be handled easier as
+  # usual continuous variables
 
   return(FALSE)
 }

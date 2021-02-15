@@ -42,28 +42,40 @@ model_1 <- lm(y ~ x_1 + x_2, data = model_test_dt)
 summary(model_1)
 
 # create ref
-distinct_ref_1 <- structure(
-  data.table(distinct_ids = 10L),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-dummy_ref_1 <- structure(list(), names = character())
-interactions_ref_1 <- structure(list(), names = character())
-
-# create ref. list
-res_1 <- structure(
+ref_1 <- structure(
   list(
     message_options = message_options(),
     message_arguments = message_arguments(id_var = "id"),
-    distinct_ids = distinct_ref_1,
-    dummies = dummy_ref_1,
-    interactions = interactions_ref_1
+    distinct_ids = structure(
+      data.table(distinct_ids = 10L),
+      class = c("sdc_distinct_ids", "data.table", "data.frame")
+    ),
+    terms = list(
+      x_1 = structure(
+        data.table(
+          x_1 = "<non-zero>",
+          distinct_ids = 10L,
+          key = "x_1"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      x_2 = structure(
+        data.table(
+          x_2 = "<non-zero>",
+          distinct_ids = 10L,
+          key = "x_2"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      )
+    )
   ),
   class = c("sdc_model", "list")
 )
 
+
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
-  expect_equal(sdc_model(model_test_dt, model_1, "id"), res_1)
+  expect_equal(sdc_model(model_test_dt, model_1, "id"), ref_1)
 })
 
 # model 2 ----
@@ -73,21 +85,44 @@ model_2 <- lm(y ~ x_1 + x_2 + x_3, data = model_test_dt)
 summary(model_2)
 
 # create ref
-distinct_ref_2 <- structure(
-  data.table(distinct_ids = 4L),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
 dummy_ref_2 <- structure(list(), names = character())
 interactions_ref_2 <- structure(list(), names = character())
 
 # create ref. list
-res_2 <- structure(
+ref_2 <- structure(
   list(
     message_options = message_options(),
     message_arguments = message_arguments(id_var = "id"),
-    distinct_ids = distinct_ref_2,
-    dummies = dummy_ref_2,
-    interactions = interactions_ref_2
+    distinct_ids = structure(
+      data.table(distinct_ids = 4L),
+      class = c("sdc_distinct_ids", "data.table", "data.frame")
+    ),
+    terms = list(
+      x_1 = structure(
+        data.table(
+          x_1 = "<non-zero>",
+          distinct_ids = 4L,
+          key = "x_1"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      x_2 = structure(
+        data.table(
+          x_2 = "<non-zero>",
+          distinct_ids = 4L,
+          key = "x_2"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      x_3 = structure(
+        data.table(
+          x_3 = "<non-zero>",
+          distinct_ids = 4L,
+          key = "x_3"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      )
+    )
   ),
   class = c("sdc_model", "list")
 )
@@ -95,10 +130,15 @@ res_2 <- structure(
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
   expect_warning(
-    capture_output(
-      expect_equal(sdc_model(model_test_dt, model_2, "id"), res_2)
+    expect_equal(
+      sdc_model(model_test_dt, model_2, "id"),
+      ref_2
     ),
-    "Potential disclosure problem: Not enough distinct entities."
+    paste0(
+      crayon::bold("POTENTIAL DISCLOSURE PROBLEM: "),
+      "Not enough distinct entities."
+    ),
+    fixed = TRUE
   )
 })
 
@@ -110,41 +150,48 @@ model_3 <- lm(y ~ x_1 + x_2 + dummy_1 + dummy_2, data = model_test_dt)
 summary(model_3)
 
 # create ref
-distinct_ref_3 <- structure(
-  data.table(distinct_ids = 10L),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-dummy_ref_3 <- structure(
-  list(
-    structure(
-      data.table(
-        dummy_1 = c("M1", "M2"),
-        distinct_ids = 10L
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame"),
-      sorted = "dummy_1"
-    ),
-    structure(
-      data.table(
-        dummy_2 = factor(paste0("Y", 1:8)),
-        distinct_ids = 5L
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame"),
-      sorted = "dummy_2"
-    )
-  ),
-  names = c("dummy_1", "dummy_2")
-)
-interactions_ref_3 <- structure(list(), names = character())
-
-# create ref. list
-res_3 <- structure(
+ref_3 <- structure(
   list(
     message_options = message_options(),
     message_arguments = message_arguments(id_var = "id"),
-    distinct_ids = distinct_ref_3,
-    dummies = dummy_ref_3,
-    interactions = interactions_ref_3
+    distinct_ids = structure(
+      data.table(distinct_ids = 10L),
+      class = c("sdc_distinct_ids", "data.table", "data.frame")
+    ),
+    terms = list(
+      x_1 = structure(
+        data.table(
+          x_1 = "<non-zero>",
+          distinct_ids = 10L,
+          key = "x_1"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      x_2 = structure(
+        data.table(
+          x_2 = "<non-zero>",
+          distinct_ids = 10L,
+          key = "x_2"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      dummy_1 = structure(
+        data.table(
+          dummy_1 = c("M1", "M2"),
+          distinct_ids = 10L
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame"),
+        sorted = "dummy_1"
+      ),
+      dummy_2 = structure(
+        data.table(
+          dummy_2 = factor(paste0("Y", 1:8)),
+          distinct_ids = 5L
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame"),
+        sorted = "dummy_2"
+      )
+    )
   ),
   class = c("sdc_model", "list")
 )
@@ -155,7 +202,7 @@ res_3 <- structure(
 test_that("sdc_model() returns/works correctly", {
   expect_identical(
     sdc_model(model_test_dt, model_3, "id"),
-    res_3
+    ref_3
   )
 })
 
@@ -167,46 +214,56 @@ model_4 <- lm(y ~ x_1 + x_2 + dummy_3, data = model_test_dt)
 summary(model_4)
 
 # create ref
-distinct_ref_4 <- structure(
-  data.table(distinct_ids = 10L),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-dummy_ref_4 <- structure(
+ref_4 <- structure(
   list(
-    structure(
-      data.table(
-        dummy_3 = c("FR", "BE", "DE", "ES"),
-        distinct_ids = c(4L, rep(10L, 3L))
-      ),
+    message_options = message_options(),
+    message_arguments = message_arguments(id_var = "id"),
+    distinct_ids = structure(
+      data.table(distinct_ids = 10L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
-      # not sorted, because ?
+    ),
+    terms = list(
+      x_1 = structure(
+        data.table(
+          x_1 = "<non-zero>",
+          distinct_ids = 10L,
+          key = "x_1"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      x_2 = structure(
+        data.table(
+          x_2 = "<non-zero>",
+          distinct_ids = 10L,
+          key = "x_2"
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      dummy_3 = structure(
+        data.table(
+          dummy_3 = c("FR", "BE", "DE", "ES"),
+          distinct_ids = c(4L, rep(10L, 3L))
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      )
     )
   ),
-  names = "dummy_3"
+  class = c("sdc_model", "list")
 )
-interactions_ref_4 <- structure(list(), names = character())
-
-# create ref. list
-res_4 <- list(
-  message_options = message_options(),
-  message_arguments = message_arguments(id_var = "id"),
-  distinct_ids = distinct_ref_4,
-  dummies = dummy_ref_4,
-  interactions = interactions_ref_4
-)
-class(res_4) <- c("sdc_model", class(res_4))
 
 # test that sdc_model works correctly
 # check with equivalent (otherwise attributes for dummys would have to be set)
 test_that("sdc_model() returns/works correctly", {
   expect_warning(
-    capture_output(
-      expect_identical(
-        sdc_model(model_test_dt, model_4, "id"),
-        res_4
-      )
+    expect_identical(
+      sdc_model(model_test_dt, model_4, "id"),
+      ref_4
     ),
-    "Potential disclosure problem: Not enough distinct entities."
+    paste0(
+      crayon::bold("POTENTIAL DISCLOSURE PROBLEM: "),
+      "Not enough distinct entities."
+    ),
+    fixed = TRUE
   )
 })
 
@@ -218,63 +275,53 @@ model_5 <- lm(y ~ dummy_1 * dummy_2, data = model_test_dt)
 summary(model_5)
 
 # create ref
-distinct_ref_5 <- structure(
-  data.table(distinct_ids = 10L),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-dummy_ref_5 <- structure(
-  list(
-    structure(
-      data.table(
-        dummy_1 = c("M1", "M2"),
-        distinct_ids = 10L
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame"),
-      sorted = "dummy_1"
-    ),
-    structure(
-      data.table(
-        dummy_2 = factor(paste0("Y", 1:8)),
-        distinct_ids = 5L
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame"),
-      sorted = "dummy_2"
-    )
-  ),
-  names = c("dummy_1", "dummy_2")
-)
-inter_dt <- CJ(dummy_1 = c("M1", "M2"), dummy_2 = paste0("Y", 1:8)
-)[, `:=`(
-  `dummy_1:dummy_2` = paste(dummy_1, dummy_2, sep = ":"),
-  distinct_ids = 5L
-)][, c("dummy_1", "dummy_2") := NULL]
-interactions_ref_5 <- structure(
-  list(structure(
-    inter_dt,
-    class = c("sdc_distinct_ids", "data.table", "data.frame"),
-    sorted = "dummy_1:dummy_2"
-  )),
-  names = "dummy_1:dummy_2"
-)
-
-# create ref. list
-res_5 <- structure(
+ref_5 <- structure(
   list(
     message_options = message_options(),
     message_arguments = message_arguments(id_var = "id"),
-    distinct_ids = distinct_ref_5,
-    dummies = dummy_ref_5,
-    interactions = interactions_ref_5
+    distinct_ids = structure(
+      data.table(distinct_ids = 10L),
+      class = c("sdc_distinct_ids", "data.table", "data.frame")
+    ),
+    terms = list(
+      dummy_1 = structure(
+        data.table(
+          dummy_1 = c("M1", "M2"),
+          distinct_ids = 10L
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame"),
+        sorted = "dummy_1"
+      ),
+      dummy_2 = structure(
+        data.table(
+          dummy_2 = factor(paste0("Y", 1:8)),
+          distinct_ids = 5L
+        ),
+        class = c("sdc_distinct_ids", "data.table", "data.frame"),
+        sorted = "dummy_2"
+      ),
+      `dummy_1:dummy_2` = structure({
+        DT <- CJ(c("M1", "M2"), paste0("Y", 1:8))
+        DT <- DT[, list(
+          `dummy_1:dummy_2` = paste(V1, V2, sep = ":"),
+          distinct_ids = 5L
+        )]
+        setkeyv(DT, "dummy_1:dummy_2")
+      },
+      class = c("sdc_distinct_ids", "data.table", "data.frame")
+      )
+    )
   ),
   class = c("sdc_model", "list")
 )
 
+
 # test that sdc_model works correctly
-# check with equivalent (otherwise attributes for dummys would have to be set)
+# check with equivalent (otherwise attributes for dummies would have to be set)
 test_that("sdc_model() returns/works correctly", {
   expect_identical(
     sdc_model(model_test_dt, model_5, "id"),
-    res_5
+    ref_5
   )
 })
 
@@ -285,56 +332,11 @@ model_6 <- lm(y ~ dummy_1 : dummy_2 : dummy_3, data = model_test_dt)
 summary(model_6)
 
 # create ref
-distinct_ref_6 <- structure(
-  data.table(distinct_ids = 10L),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-dummy_ref_6 <- structure(
-  list(
-    structure(
-      data.table(
-        dummy_1 = c("M1", "M2"),
-        distinct_ids = 10L
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame"),
-      sorted = "dummy_1"
-    ),
-    structure(
-      data.table(
-        dummy_2 = factor(paste0("Y", 1:8)),
-        distinct_ids = 5L
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame"),
-      sorted = "dummy_2"
-    ),
-    structure(
-      data.table(
-        dummy_3 = c("FR", "BE", "DE", "ES"),
-        distinct_ids = c(4L, rep(10L, 3L))
-      ),
-      class = c("sdc_distinct_ids", "data.table", "data.frame")
-      # not sorted, because ?
-    )
-  ),
-  names = paste0("dummy_", 1:3)
-)
-inter_dt <- CJ(
-  dummy_1 = c("M1", "M2"),
-  dummy_2 = paste0("Y", 1:8),
-  dummy_3 = c("BE", "DE", "FR", "ES")
-)
-inter_dt <- merge(
-  inter_dt,
-  model_test_dt[, .(distinct_ids = uniqueN(id)), keyby = .(dummy_1, dummy_2, dummy_3)]
-)
-inter_dt[, `dummy_1:dummy_2:dummy_3` := paste(dummy_1, dummy_2, dummy_3, sep = ":")]
-inter_dt[, paste0("dummy_", 1:3) := NULL]
-setcolorder(inter_dt, "dummy_1:dummy_2:dummy_3")
-setorder(inter_dt, distinct_ids)
+
 interactions_ref_6 <- structure(
   list(
     structure(
-      inter_dt,
+      DT,
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     )
   ),
@@ -342,13 +344,38 @@ interactions_ref_6 <- structure(
 )
 
 # create ref. list
-res_6 <- structure(
+ref_6 <- structure(
   list(
     message_options = message_options(),
     message_arguments = message_arguments(id_var = "id"),
-    distinct_ids = distinct_ref_6,
-    dummies = dummy_ref_6,
-    interactions = interactions_ref_6
+    distinct_ids = structure(
+      data.table(distinct_ids = 10L),
+      class = c("sdc_distinct_ids", "data.table", "data.frame")
+    ),
+    terms = list(
+      `dummy_1:dummy_2:dummy_3` = structure(
+        structure({
+          DT <- CJ(
+            dummy_1 = c("M1", "M2"),
+            dummy_2 = paste0("Y", 1:8),
+            dummy_3 = c("BE", "DE", "FR", "ES")
+          )
+          DT <- merge(
+            DT,
+            model_test_dt[, .(distinct_ids = uniqueN(id)), keyby = .(dummy_1, dummy_2, dummy_3)]
+          )
+          DT <- DT[, list(
+            `dummy_1:dummy_2:dummy_3` = paste(
+              dummy_1, dummy_2, dummy_3, sep = ":"
+            ),
+            distinct_ids
+          )]
+          setorder(DT, distinct_ids)
+        },
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+        )
+      )
+    )
   ),
   class = c("sdc_model", "list")
 )
@@ -357,17 +384,15 @@ res_6 <- structure(
 # check with equivalent (otherwise attributes for dummys would have to be set)
 test_that("sdc_model() returns/works correctly", {
   expect_warning(
-    expect_warning(
-      capture_output(
-        expect_identical(
-          sdc_model(model_test_dt, model_6, "id"),
-          res_6
-        )
-      ),
-      "Potential disclosure problem: Not enough distinct entities.",
-      fixed = TRUE
+    expect_identical(
+      sdc_model(model_test_dt, model_6, "id"),
+      ref_6
     ),
-    "Potential disclosure problem: Not enough distinct entities."
+    paste(
+      crayon::bold("POTENTIAL DISCLOSURE PROBLEM:"),
+      "Not enough distinct entities."
+    ),
+    fixed = TRUE
   )
 })
 
@@ -378,20 +403,22 @@ test_that("sdc_model() returns/works correctly", {
 test_that("sdc_model() returns appropriate error", {
 
   # error für nichtexistierende Elemente
-  expect_warning(
+  warnings <- capture_warnings(
     expect_error(
       sdc_model(model_test_dt, wrong_model, "id"),
-      "object 'wrong_model' not found"
-    ),
-    "restarting interrupted promise evaluation"
+      "object 'wrong_model' not found",
+      fixed = TRUE
+    )
   )
   expect_error(
-    sdc_model(model_test_dt, model_1, wrong_id),
-    "object 'wrong_id' not found"
+    sdc_model(model_test_dt, model_1, "wrong_id"),
+    "Assertion on 'id_var' failed: Must be a subset of {'id','y','x_1','x_2','x_3','dummy_1','dummy_2','dummy_3'}, but is {'wrong_id'}.",
+    fixed = TRUE
   )
   expect_error(
     sdc_model(wrong_model_dt, model_1, "id"),
-    "object 'wrong_model_dt' not found"
+    "object 'wrong_model_dt' not found",
+    fixed = TRUE
   )
 
   # error für id_var unquoted
@@ -400,20 +427,29 @@ test_that("sdc_model() returns appropriate error", {
   # error für data quoted
   expect_error(
     sdc_model("model_test_dt", model_1, "id"),
-    "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'."
+    "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.",
+    fixed = TRUE
   )
 
   # error für missing arguments
   expect_error(
     sdc_model(model_test_dt, model_1),
-    "argument \"id_var\" is missing, with no default"
+    "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
+    fixed = TRUE
   )
   expect_error(
     sdc_model(model_test_dt, id_var = "id"),
-    "argument \"model\" is missing, with no default"
+    'argument "model" is missing, with no default',
+    fixed = TRUE
   )
   expect_error(
     sdc_model(model = model_1, id_var = "id"),
-    "argument \"data\" is missing, with no default"
+    'argument "data" is missing, with no default',
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_model(model = model_1, data = model_test_dt[1:10], id_var = "id"),
+    "'data' is not the data.frame which was used in 'model'.",
+    fixed = TRUE
   )
 })

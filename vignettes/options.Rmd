@@ -1,6 +1,10 @@
 ---
 title: "sdcLog options"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 5
+    number_sections: false
 vignette: >
   %\VignetteIndexEntry{sdcLog options}
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,8 +28,12 @@ options(sdc.n_dominance = 2L)
 options(sdc.share_dominance = 0.85)
 ```
 
-# Example data
-We create a tiny `data.frame` to demonstrate the effects of the options:
+You can set several options to
+
+1. adapt sdcLog to the policies at your research data center
+2. make sdcLog a little more convenient.
+
+First, we create a tiny `data.frame` to demonstrate the effects of the options:
 
 ```{r label, options}
 library(sdcLog)
@@ -33,7 +41,8 @@ df <- data.frame(id = LETTERS[1:3], v1 = 1L:3L, v2 = c(1L, 2L, 4L))
 df
 ```
 
-# sdc.n_ids
+# Options to adapt sdcLog to the policies at your research data center
+## sdc.n_ids
 By default, sdcLog expects at least five different entities behind each
 calculated number. The functions in sdcLog derive this number from
 `getOption("sdc.n_ids", default = 5)`. That is, if the option `sdc.n_ids` is not
@@ -60,7 +69,7 @@ this is reflected in the first line of output from every function of sdcLog:
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
 ```
 
-# sdc.n_ids_dominance
+## sdc.n_ids_dominance
 
 The default value for `sdc.n_ids_dominance` is `2`. In our example, this leads
 to a warning:
@@ -82,7 +91,7 @@ Then, there is no problem in the example:
 sdc_descriptives(data = df, id_var = "id", val_var = "v2")
 ```
 
-# sdc.share_dominance
+## sdc.share_dominance
 
 The last option of sdcLog which affects internal calculations is
 `sdc.share_dominance`. To demonstrate, we first reset `sdc.n_dominance` to it's
@@ -103,7 +112,7 @@ Now, the initial example from `sdc.n_ids` throws a warning:
 sdc_descriptives(data = df, id_var = "id", val_var = "v1")
 ```
 
-# sdc.info_level
+## sdc.info_level
 
 This option differs from the previous ones in the sense that is does not affect
 actual calculations. Instead, it determines the verbosity of the output of
@@ -130,10 +139,24 @@ At level `0`, only options and settings are printed. Level `1` also prints a
 short message about the overall outcome of the checks. Level `2` additionally
 prints the results of the separate checks on distinct entities and dominance.
 
+
+# Option to make sdcLog more convenient
+
+Usually, the ID variable does not change during the course of your analysis.
+Therefore, it is convenient to set
+
+```{r sdc.id_var}
+options(sdc.id_var = "id")
+```
+
+Then you do not have to specify `id_var` every time you use one of the `sdc_*`
+functions:
+
+```{r reset options,echo=-1}
+options(user_options)
+sdc_descriptives(data = df, val_var = "v1")
+```
+
 # General remarks
 Please note that these options affect all functions of sdcLog, not just
 `sdc_descriptives()`.
-
-```{r reset options, include=FALSE}
-options(user_options)
-```

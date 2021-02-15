@@ -19,10 +19,8 @@ message_arguments <- function(
   }
 
   msg_by <- ""
-  by_null <- tryCatch(is.null(by), error = function(error) FALSE)
-  if (!by_null) {
-    by_char <- by_to_char(substitute(by, env = parent.frame()))
-    msg_by <- paste0(" | by: ", by_char)
+  if (!is.null(by)) {
+    msg_by <- paste0(" | by: ", paste0(by, collapse = ", "))
   }
 
   msg_zero_as_NA <- ""

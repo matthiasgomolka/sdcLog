@@ -18,18 +18,25 @@ library(sdcLog)
 user_options <- options()
 ```
 
----
+------------------------------------------------------------------------
 
-1.  **I want to use `sdc_log()` on a `main.R` script which calls several other
-    scripts via `source()` in the order I need in my analysis. But the contents
-    from the other R scripts are not logged. How can I log the outputs from the
-    subordinated scripts as well?**
-    
-    In your `main.R` script, use `sdc_log()` instead of `source()` to run the
-    subordinated scripts. This way, you will end up with a separate log file for
-    each script which is called via `sdc_log()` from `main.R`.
+1.  **I want to use `sdc_log()` on a `main.R` script which calls several other scripts via `source()` in the order I need in my analysis. But the contents from the other R scripts are not logged. How can I log the outputs from the subordinated scripts in the same log file?**
 
----
+    First, replace all calls to `source()` with `sdc_log()`.
+
+    Then, create a file connection:
+
+    ```{r,eval=FALSE}
+    file_connection <- file("path/to/my/log", open = "w")
+    ```
+
+    Specify `destination = file_connection` in all calls to `sdc_log()`.
+
+    Run `sdc_log()` on you `main.R` script.
+
+    Close the file connection via `close(file_connection)`.
+
+------------------------------------------------------------------------
 
 This vignette will be extended as users have more questions.
 

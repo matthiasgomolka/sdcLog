@@ -4,19 +4,27 @@
 \alias{sdc_log}
 \title{Create Stata-like log files from R Scripts}
 \usage{
-sdc_log(r_scripts, log_files, replace = FALSE)
+sdc_log(r_script, destination, replace = FALSE, append = FALSE)
 }
 \arguments{
-\item{r_scripts}{\link{character} vector containing the path(s) of the R script(s)
-which should be run with logging.}
+\item{r_script}{\link{character} Path of the R script to be run with logging.}
 
-\item{log_files}{\link{character} vector containing the path(s) of the text
-file(s) where the log(s) should be stored.}
+\item{destination}{One of:
+\itemize{
+\item \link{character} Path of the log file to be used.
+\item \link{file} connection to which the log should be written. This is especially
+useful, when you have nested calls to \code{sdc_log()} and want to write
+everything into the same log file. Then, create a single \link{file} connection
+and provide this connection to all calls to \code{sdc_log()} (and close it
+afterwards).
+}}
 
-\item{replace}{\link{logical} Indicates whether to replace existing log files.}
+\item{replace}{\link{logical} Indicates whether to replace an existing log file.}
+
+\item{append}{\link{logical} Indicates whether to append an existing log file.}
 }
 \value{
-Invisible \code{NULL}.
+\link{character} vector holding the path(s) of the written log file(s).
 }
 \description{
 This function creates Stata-like log files from R Scripts. It

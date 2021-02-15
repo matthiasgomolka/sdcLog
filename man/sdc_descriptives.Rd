@@ -4,18 +4,24 @@
 \alias{sdc_descriptives}
 \title{Disclosure control for descriptive statistics}
 \usage{
-sdc_descriptives(data, id_var, val_var, by = NULL, zero_as_NA = NULL)
+sdc_descriptives(
+  data,
+  id_var = getOption("sdc.id_var"),
+  val_var = NULL,
+  by = NULL,
+  zero_as_NA = NULL
+)
 }
 \arguments{
 \item{data}{\link{data.frame} from which the descriptive statistics are
 calculated.}
 
-\item{id_var}{\link{character} The name of the id variable.}
+\item{id_var}{\link{character} The name of the id variable. Defaults to \code{ getOption("sdc.id_var")} so that you can provide \code{options(sdc.id_var = "my_id_var")} at the top of your script.}
 
 \item{val_var}{\link{character} vector of value variables on which descriptive
 statistics are computed.}
 
-\item{by}{Grouping variables (or expression) as in \link{data.table}'s \code{by}.}
+\item{by}{\link{character} vector of grouping variables.}
 
 \item{zero_as_NA}{\link{logical} If TRUE, zeros in 'val_var' are treated as NA.}
 }
@@ -39,7 +45,7 @@ sdc_descriptives(
   data = sdc_descriptives_DT,
   id_var = "id",
   val_var = "val_1",
-  by = sector
+  by = "sector"
 )
 
 sdc_descriptives(

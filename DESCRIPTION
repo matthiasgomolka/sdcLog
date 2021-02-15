@@ -1,7 +1,7 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data
     Centers
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     c(person(given = "Matthias",
              family = "Gomolka",
@@ -31,7 +31,6 @@ Imports:
     data.table (>= 1.12.8),
     methods
 Suggests: 
-    callr,
     covr (>= 3.5.0),
     devtools,
     here,
