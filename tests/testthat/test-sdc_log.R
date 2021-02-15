@@ -9,7 +9,7 @@ script_error <- list.files(pattern = "script_error.R", recursive = TRUE)
 log <- list.files(pattern = "test_log.txt", recursive = TRUE)
 
 test_that("sdc_log() works correctly with log files", {
-  tf <- tempfile(fileext = ".txt")
+  tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
   expect_message(
     sdc_log(r_script = script_1, destination = tf),
     paste0("Log file for '.*script_1.R' written to '.*", tf, "'.")
@@ -117,7 +117,7 @@ test_that("error in script is handled correctly", {
   expect_identical(sink.number(), 0L)
   expect_identical(sink.number("message"), 2L)
 
-  tf <- tempfile()
+  tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
   expect_message(
     expect_warning(
       sdc_log(script_error, tf),
