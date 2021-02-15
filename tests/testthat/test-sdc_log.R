@@ -5,6 +5,7 @@ options(data.table.print.class = FALSE)
 script_1 <- list.files(pattern = "script_1.R", recursive = TRUE)
 script_2 <- list.files(pattern = "script_2.R", recursive = TRUE)
 script_main <- list.files(pattern = "script_main.R", recursive = TRUE)
+script_error <- list.files(pattern = "script_error.R", recursive = TRUE)
 log <- list.files(pattern = "test_log.txt", recursive = TRUE)
 
 test_that("sdc_log() works correctly with log files", {
@@ -36,7 +37,7 @@ test_that("sdc_log() works correctly with connections", {
 test_that("sdc_log() handles nested calls to sdc_log()", {
 skip_if_not(
   interactive(),
-  "This somehow does not work (yet) in the temporary test environment."
+  "This somehow does not work (yet) in the temporary test environment. But does interactively!"
 )
   tf_conn <- tempfile(fileext = ".txt")
   conn <- file(tf_conn, encoding = "UTF-8", open = "w")
@@ -112,3 +113,22 @@ test_that("sdc_log() returns appropriate error", {
   )
 })
 
+test_that("error in script is handled correctly", {
+  expect_identical(sink.number(), 0L)
+  expect_identical(sink.number("message"), 2L)
+
+  tf <- tempfile()
+  expect_message(
+    expect_warning(
+      sdc_log(script_error, tf),
+      paste0(
+        "An error occured during the execution of '", script_error, "'. ",
+        "The log file will be incomplete."
+      )
+    ),
+    paste0("Log file for '.*script_error.R' written to '", tf, "'.")
+  )
+
+  expect_identical(sink.number(), 0L)
+  expect_identical(sink.number("message"), 2L)
+})

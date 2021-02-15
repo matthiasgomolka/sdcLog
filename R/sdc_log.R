@@ -89,19 +89,24 @@ sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE) {
         sink(type = "output")
         sink(type = "message")
       })
+      warning(
+        "An error occured during the execution of '", r_script, "'. ",
+        "The log file will be incomplete.",
+        call. = FALSE
+      )
     }
   )
 
 
   if (isFALSE(sink_output_active)) {
-    sink(type = "output")
+    suppressWarnings(sink(type = "output"))
   }
   if (isFALSE(sink_message_active)) {
-    sink(type = "message")
+    suppressWarnings(sink(type = "message"))
   }
 
   # close connection if it was open within the function call
-  if (isFALSE(conn)) {
+  if (isFALSE(is_conn)) {
     close(conn)
   }
 
