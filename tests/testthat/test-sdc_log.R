@@ -10,11 +10,15 @@ log <- list.files(pattern = "test_log.txt", recursive = TRUE)
 
 test_that("sdc_log() works correctly with log files", {
   tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
-  message(tf)
-  message(paste0("Log file for '.*script_1.R' written to '.*", tf, "'."))
+
+  msg <- ifelse(
+    Sys.info()[['sysname']] == "Windows",
+    "Log file for",
+    paste0("Log file for '.*script_1.R' written to '.*", tf, "'.")
+  )
   expect_message(
     sdc_log(r_script = script_1, destination = tf),
-    paste0("Log file for '.*script_1.R' written to '.*", tf, "'.")
+    msg
   )
   expect_identical(readLines(tf), readLines(log))
 })
@@ -37,10 +41,10 @@ test_that("sdc_log() works correctly with connections", {
 })
 
 test_that("sdc_log() handles nested calls to sdc_log()", {
-skip_if_not(
-  interactive(),
-  "This somehow does not work (yet) in the temporary test environment. But does interactively!"
-)
+  skip_if_not(
+    interactive(),
+    "This somehow does not work (yet) in the temporary test environment. But does interactively!"
+  )
   tf_conn <- tempfile(fileext = ".txt")
   conn <- file(tf_conn, encoding = "UTF-8", open = "w")
 
@@ -120,6 +124,13 @@ test_that("error in script is handled correctly", {
   expect_identical(sink.number("message"), 2L)
 
   tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
+
+  msg <- ifelse(
+    Sys.info()[['sysname']] == "Windows",
+    "Log file for",
+    paste0("Log file for '.*script_error.R' written to '.*", tf, "'.")
+  )
+
   expect_message(
     expect_warning(
       sdc_log(script_error, tf),
@@ -128,7 +139,7 @@ test_that("error in script is handled correctly", {
         "The log file will be incomplete."
       )
     ),
-    paste0("Log file for '.*script_error.R' written to '.*", tf, "'.")
+    msg
   )
 
   expect_identical(sink.number(), 0L)
