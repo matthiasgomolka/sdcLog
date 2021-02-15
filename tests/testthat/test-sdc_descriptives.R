@@ -223,7 +223,7 @@ test_that("sdc_descriptives() returns appropriate error", {
   expect_error(
     sdc_descriptives(test_dt, "id", "wrong_val"),
     paste0(
-      "Assertion on 'val_var' failed: Must be a subset of {'id','sector',",
+      "Assertion on 'val_var' failed: Must be a subset of {'sector',",
       "'year','val'}, but is {'wrong_val'}."
     ),
     fixed = TRUE
@@ -231,8 +231,8 @@ test_that("sdc_descriptives() returns appropriate error", {
   expect_error(
     sdc_descriptives(test_dt, "id", "val", "wrong_by"),
     paste0(
-      "Assertion on 'by' failed: Must be a subset of {'id','sector','year',",
-      "'val'}, but is {'wrong_by'}."
+      "Assertion on 'by' failed: Must be a subset of {'sector','year'}, but is",
+      " {'wrong_by'}."
     ),
     fixed = TRUE
   )

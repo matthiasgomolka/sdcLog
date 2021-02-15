@@ -102,13 +102,6 @@ print.sdc_model <- function(x, ...) {
 print.sdc_extreme <- function(x, ...) {
   message(x[["message_options"]])
   message(x[["message_arguments"]])
-  if (!is.na(x[["min_max"]][[1, "min"]])) {
-    print(x[["min_max"]])
-  } else {
-    message(
-      "It is impossible to compute extreme values for variable '",
-      x[["min_max"]][[1L, "val_var"]], "' that comply to RDC rules."
-    )
-  }
+  print(x[["min_max"]])
 }
 

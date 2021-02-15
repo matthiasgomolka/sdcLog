@@ -1,80 +1,114 @@
 # settings that make it easier to write tests
-if (interactive()) {
-  script <- file.path(here::here(), "tests", "testthat", "sdc_log.R")
-  log <- file.path(here::here(), "tests", "testthat", "sdc_log.txt")
-} else {
-  script <- "sdc_log.R"
-  log <- "sdc_log.txt"
-}
+options(sdc.info_level = 1L)
+options(data.table.print.class = FALSE)
 
-tf <- tempfile(fileext = ".txt")
+script_1 <- list.files(pattern = "script_1.R", recursive = TRUE)
+script_2 <- list.files(pattern = "script_2.R", recursive = TRUE)
+script_main <- list.files(pattern = "script_main.R", recursive = TRUE)
+log <- list.files(pattern = "test_log.txt", recursive = TRUE)
 
-invisible(
-  callr::r(
-    function(...) {
-      library(sdcLog)
-      sdc_log(...)
-    },
-    args = list(r_scripts = script, log_files = tf)
+test_that("sdc_log() works correctly with log files", {
+  tf <- tempfile(fileext = ".txt")
+  expect_message(
+    sdc_log(r_script = script_1, destination = tf),
+    paste0("Log file for '.*script_1.R' written to '", tf, "'.")
   )
-)
-
-test_that("sdc_log() works correctly", {
   expect_identical(readLines(tf), readLines(log))
 })
 
+test_that("sdc_log() works correctly with connections", {
+  expect_identical(sink.number(), 0L)
+
+  tf_conn <- tempfile(fileext = ".txt")
+
+  conn <- file(tf_conn, encoding = "UTF-8", open = "w")
+
+  expect_message(
+    sdc_log(r_script = script_1, destination = conn),
+    paste0("Log file for '.*script_1.R' written to 'file connection'.")
+  )
+  expect_identical(sink.number(), 0L)
+
+  close(conn)
+  expect_identical(readLines(tf_conn), readLines(log))
+})
+
+test_that("sdc_log() handles nested calls to sdc_log()", {
+skip_if_not(
+  interactive(),
+  "This somehow does not work (yet) in the temporary test environment."
+)
+  tf_conn <- tempfile(fileext = ".txt")
+  conn <- file(tf_conn, encoding = "UTF-8", open = "w")
+
+  expect_message(
+    sdc_log(r_script = script_main, destination = conn),
+    paste0("Log file for '.*script_main.R' written to 'file connection'.")
+  )
+
+  close(conn)
+  log_main_1 <- c(
+    "",
+    "> # First script",
+    '> sdc_log(script_1, conn, append = TRUE)'
+  )
+  log_main_2 <- c(
+    "",
+    "> # random content",
+    "> 1 + 1",
+    "[1] 2",
+    "",
+    "> # Second script",
+    '> sdc_log(script_2, conn, append = TRUE)'
+  )
+
+  actual <- readLines(tf_conn)
+
+  expected <- c(
+    log_main_1,
+    readLines(log),
+    log_main_2,
+    readLines(log)
+  )
+
+  expect_identical(actual, expected)
+})
 
 test_that("sdc_log() returns appropriate error", {
 
   # error for existing log_file
   expect_error(
-    sdc_log(r_scripts = script, log_files = log),
+    sdc_log(r_script = script_1, destination = log),
     paste0(
-      "The following 'log_files' already exist:\n",
-      log,
-      "\nPlease check 'log_files' argument or use 'replace = TRUE' in case ",
-      "you want to replace existing files."
+      "'destination' already exists. Please check 'destination' or use ",
+      "'replace = TRUE' / append = TRUE in case you want to replace / append ",
+      "the existing file."
     ),
     fixed = TRUE
   )
 
-  # error for duplicate script
-  expect_error(
-    sdc_log(r_scripts = c(script, script), log_files = c(log, tempfile())),
-    "Assertion on 'r_scripts' failed: Contains duplicated values, position 2.",
-    fixed = TRUE
-  )
-
-  # error for duplicate log
-  tfR <- tempfile(fileext = ".R")
-  file.copy(from = script, to = tfR)
-  expect_error(
-    sdc_log(r_scripts = c(script, tfR), log_files = c(log, log)),
-    "Assertion on 'log_files' failed: Contains duplicated values, position 2.",
-    fixed = TRUE
-  )
-
-
   # error for non-existing / wrong scripts
   expect_error(
-    sdc_log(r_scripts = "doesnotexist.R", log_files = log),
-    "Assertion on 'r_scripts' failed: File does not exist: 'doesnotexist.R'.",
+    sdc_log(r_script = "doesnotexist.R", destination = log),
+    "Assertion on 'r_script' failed: File does not exist: 'doesnotexist.R'.",
     fixed = TRUE
   )
 
   tf <- tempfile(fileext = ".RScript")
-  file.copy(from = script, to = tf)
+  file.copy(from = script_1, to = tf)
   expect_error(
-    sdc_log(r_scripts = tf, log_files = log),
-    "Assertion on 'r_scripts' failed: File extension must be in {'R'}.",
+    sdc_log(r_script = tf, destination = log),
+    "Assertion on 'r_script' failed: File extension must be in {'R'}.",
     fixed = TRUE
   )
 
-
-  # error for different number of scripts and logs
+  # error for inactive connection
+  conn <- file(tempfile(), encoding = "UTF-8", open = "w")
+  close(conn)
   expect_error(
-    sdc_log(r_scripts = c(script, tfR), log_files = log),
-    "Assertion on 'log_files' failed: Must have length 2, but has length 1.",
+    sdc_log(r_script = script_1, destination = conn),
+    "The connection provided in 'destination' is not active.",
     fixed = TRUE
   )
 })
+

@@ -47,20 +47,20 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
 
   # input checks ----
   checkmate::assert_data_frame(data)
+  data <- data.table::as.data.table(data)
   col_names <- names(data)
 
   checkmate::assert_string(id_var)
   checkmate::assert_subset(id_var, choices = col_names)
 
   checkmate::assert_string(val_var, null.ok = TRUE)
-  checkmate::assert_subset(val_var, choices = col_names)
+  checkmate::assert_subset(val_var, choices = setdiff(col_names, id_var))
 
   checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
-  checkmate::assert_subset(by, choices = col_names)
+  checkmate::assert_subset(by, choices = setdiff(col_names, c(id_var, val_var)))
 
   checkmate::assert_logical(zero_as_NA, len = 1L, null.ok = TRUE)
 
-  data <- data.table::as.data.table(data)
 
   # handling 0's ----
   if (!is.null(val_var)) {
@@ -98,13 +98,6 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
 
   # warn about distinct_ids if necessary
   warn_distinct_ids(list(distinct_ids = distinct_ids))
-
-  # if (nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
-  #   warning(
-  #     crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities.",
-  #     call. = FALSE
-  #   )
-  # }
 
   # check dominance ----
   dominance <- check_dominance(data, id_var, val_var, by)

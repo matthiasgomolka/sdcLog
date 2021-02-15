@@ -12,10 +12,12 @@
 #'   statistics are computed.
 #' @param by [character] vector of grouping variables.
 #' @param zero_as_NA [logical] If TRUE, zeros in 'val_var' are treated as NA.
-#' @param model The estimated model object. Can be a model type like lm, glm and
-#'   various others (anything which can be handled by [broom::augment()]).
-#' @param n_min [integer] The number of values used to calculate the minimum, by
-#'   default 5.
-#' @param n_max [integer] The number of values used to calculate the maximum, by
-#'   default 5.
+#' @param model The estimated model object. Can be a model type like [lm], [glm]
+#'   and various others (anything which can be handled by [broom::augment()]).
+#' @param min_obs [integer] The minimum number of observations used to calculate
+#'   the minimum and maximum. Defaults to `getOption("sdc.n_ids", 5L)`. *This is
+#'   not the number of distinct entities.*
+#' @param max_obs [integer] The maximum number of observations used to calculate
+#'   the minimum and maximum. Defaults to `nrow(data)`. *This is not the number
+#'   of distinct entities.*
 NULL

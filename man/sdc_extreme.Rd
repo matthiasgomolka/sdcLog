@@ -9,8 +9,7 @@ sdc_extreme(
   id_var = getOption("sdc.id_var"),
   val_var,
   by = NULL,
-  n_min = getOption("sdc.n_ids", 5L),
-  n_max = n_min
+  max_obs = nrow(data)
 )
 }
 \arguments{
@@ -24,11 +23,9 @@ statistics are computed.}
 
 \item{by}{\link{character} vector of grouping variables.}
 
-\item{n_min}{\link{integer} The number of values used to calculate the minimum, by
-default 5.}
-
-\item{n_max}{\link{integer} The number of values used to calculate the maximum, by
-default 5.}
+\item{max_obs}{\link{integer} The maximum number of observations used to calculate
+the minimum and maximum. Defaults to \code{nrow(data)}. \emph{This is not the number
+of distinct entities.}}
 }
 \value{
 A list \link{list} of class \code{sdc_extreme} with detailed information about
@@ -41,16 +38,8 @@ so, function returns average min and max values according to RDC rules.
 \examples{
 sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1")
 sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2")
-sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2", n_min = 7)
-sdc_extreme(
-  sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 10, n_max = 10
-)
-sdc_extreme(
-  sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 8, n_max = 8
-)
-sdc_extreme(
-  sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year"
-)
+sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_3", max_obs = 10)
+sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year")
 sdc_extreme(
   sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
 )

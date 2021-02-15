@@ -9,16 +9,8 @@
 #' @examples
 #' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1")
 #' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2")
-#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2", n_min = 7)
-#' sdc_extreme(
-#'   sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 10, n_max = 10
-#' )
-#' sdc_extreme(
-#'   sdc_extreme_DT, id_var = "id", val_var = "val_3", n_min = 8, n_max = 8
-#' )
-#' sdc_extreme(
-#'   sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year"
-#' )
+#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_3", max_obs = 10)
+#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year")
 #' sdc_extreme(
 #'   sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
 #' )
@@ -29,26 +21,25 @@ sdc_extreme <- function(
   id_var = getOption("sdc.id_var"),
   val_var,
   by = NULL,
-  n_min = getOption("sdc.n_ids", 5L),
-  n_max = n_min
+  max_obs = nrow(data)
 ) {
   # input checks ----
   checkmate::assert_data_frame(data)
+  data <- data.table::as.data.table(data)
   col_names <- names(data)
 
   checkmate::assert_string(id_var)
-  checkmate::assert_subset(id_var, choices = names(data))
+  checkmate::assert_subset(id_var, choices = col_names)
 
   checkmate::assert_string(val_var, null.ok = TRUE)
-  checkmate::assert_subset(val_var, choices = names(data))
+  checkmate::assert_subset(val_var, choices = setdiff(col_names, id_var))
 
   checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
-  checkmate::assert_subset(by, choices = names(data))
+  checkmate::assert_subset(by, choices = setdiff(col_names, c(id_var, val_var)))
 
-  checkmate::assert_int(n_max)
-  checkmate::assert_int(n_min)
+  min_obs <- getOption("sdc.n_ids", 5L)
+  checkmate::assert_int(max_obs, lower = min_obs, upper = nrow(data))
 
-  data <- data.table::as.data.table(data)
 
   # na.omit.data.table call to prevent NA values being counted
   data <- na.omit(data, cols = val_var)
@@ -57,7 +48,7 @@ sdc_extreme <- function(
   data.table::setorderv(data, cols = val_var, order = -1L)
 
   # find SD's for min and max
-  SD_min <- find_SD(data, "min", n_min, id_var, val_var, by)
+  SD_min <- find_SD(data, "min", min_obs, max_obs, id_var, val_var, by)
   res_min <- SD_min[
     j = list(
       min = mean(get(val_var)),
@@ -66,7 +57,7 @@ sdc_extreme <- function(
     keyby = by
   ]
 
-  SD_max <- find_SD(data, "max", n_max, id_var, val_var, by)
+  SD_max <- find_SD(data, "max", min_obs, max_obs, id_var, val_var, by)
   res_max <- SD_max[
     j = list(
       max = mean(get(val_var)),
@@ -94,6 +85,13 @@ sdc_extreme <- function(
     }
   }
 
+  if (is.na(res[[1L, "min"]])) {
+    message(
+      "It is impossible to compute extreme values for variable '",
+      res[[1L, "val_var"]], "' that comply to RDC rules."
+    )
+  }
+
   structure(
     list(
       message_options = message_options(),
@@ -106,7 +104,7 @@ sdc_extreme <- function(
 
 
 #' @importFrom utils tail head
-find_SD <- function(data, type, n_obs, id_var, val_var, by) {
+find_SD <- function(data, type, n_obs, max_obs, id_var, val_var, by) {
   SD_fun <- switch(type, min = utils::tail, max = utils::head)
 
   SD_results <- find_SD_problems(data, SD_fun, n_obs, id_var, val_var, by)
@@ -115,11 +113,12 @@ find_SD <- function(data, type, n_obs, id_var, val_var, by) {
     n_obs <- n_obs + 1L
     SD_results <- find_SD_problems(data, SD_fun, n_obs, id_var, val_var, by)
 
-    # this assures that this is no infinite loop; problems will be caught
-    # during the check for overlaps
-    if (n_obs >= nrow(data)) {
-      return(SD_results[["SD"]])
+    # this assures that if n_obs >= max_obs, the loop will break; problems will
+    # be caught during the check for overlaps
+    if (n_obs >= max_obs) {
+      return(data)
     }
+
   }
 
   return(SD_results[["SD"]])
@@ -131,21 +130,15 @@ find_SD_problems <- function(data, SD_fun, n_obs, id_var, val_var, by) {
 
   SD <- data[order(-get(val_var)), SD_fun(.SD, n_obs), by = by]
 
-  results_distinct_ids <- structure(
-    eval(check_distinct_ids(SD, id_var, val_var, by)),
-    class = c("sdc_distinct_ids", "data.table", "data.frame")
-  )
+  distinct_ids <- check_distinct_ids(SD, id_var, val_var, by)
 
-  results_dominance <- structure(
-    check_dominance(SD, id_var, val_var, by),
-    class =  c("sdc_dominance", "data.table", "data.frame")
-  )
+  dominance <- check_dominance(SD, id_var, val_var, by)
 
   list(
     SD = SD,
     problems = sum(
-      nrow(results_distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]),
-      nrow(results_dominance[value_share >= getOption("sdc.share_dominance", 0.85)])
+      nrow(distinct_ids[distinct_ids < getOption("sdc.n_ids", 5L)]),
+      nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)])
     ) != 0L
   )
 }

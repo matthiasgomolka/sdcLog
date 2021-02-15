@@ -55,9 +55,13 @@ extreme_ref_2 <- structure(
 )
 
 test_that("sdc_extreme() produces no result in case of sd_overlap due to dominance", {
-  expect_equal(
-    sdc_extreme(extreme_test_dt, "id", "val_2"),
-    extreme_ref_2
+  expect_message(
+    expect_equal(
+      sdc_extreme(extreme_test_dt, "id", "val_2"),
+      extreme_ref_2
+    ),
+    "It is impossible to compute extreme values for variable 'val_2' that comply to RDC rules.",
+    fixed = TRUE
   )
 })
 
@@ -81,9 +85,13 @@ extreme_ref_3 <- structure(
 
 # actual test
 test_that("sdc_extreme() produces no result in case of sd_overlap", {
-  expect_identical(
-    sdc_extreme(extreme_test_dt, "id", "val_3"),
-    extreme_ref_3
+  expect_message(
+    expect_identical(
+      sdc_extreme(extreme_test_dt, "id", "val_3"),
+      extreme_ref_3
+    ),
+    "It is impossible to compute extreme values for variable 'val_3' that comply to RDC rules.",
+    fixed = TRUE
   )
 })
 
@@ -164,18 +172,14 @@ extreme_ref_5 <- structure(
 
 # actual tests
 test_that("sdc_extreme() gives no result in by cases", {
-  # expect_identical(
-  #   sdc_extreme(extreme_test_dt_by, "id", "val_2", by = sector),
-  #   extreme_ref_5
-  # )
-  expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
-    extreme_ref_5
+  expect_message(
+    expect_identical(
+      sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
+      extreme_ref_5
+    ),
+    "It is impossible to compute extreme values for variable 'val_2' that comply to RDC rules.",
+    fixed = TRUE
   )
-  # expect_identical(
-  #   sdc_extreme(extreme_test_dt_by, "id", "val_2", by = c("sector")),
-  #   extreme_ref_5
-  # )
 })
 
 
@@ -214,7 +218,7 @@ test_that("sdc_extreme() returns appropriate error", {
   expect_error(
     sdc_extreme(extreme_test_dt, "id", "wrong_val"),
     paste0(
-      "Assertion on 'val_var' failed: Must be a subset of {'id','val_1',",
+      "Assertion on 'val_var' failed: Must be a subset of {'val_1',",
       "'val_2','val_3'}, but is {'wrong_val'}."
     ),
     fixed = TRUE
@@ -222,7 +226,7 @@ test_that("sdc_extreme() returns appropriate error", {
   expect_error(
     sdc_extreme(extreme_test_dt_by, "id", "val_1", "wrong_by"),
     paste0(
-      "Assertion on 'by' failed: Must be a subset of {'id','sector','val_1',",
+      "Assertion on 'by' failed: Must be a subset of {'sector',",
       "'val_2','val_3','val_4'}, but is {'wrong_by'}."
     ),
     fixed = TRUE
@@ -254,14 +258,33 @@ test_that("sdc_extreme() returns appropriate error", {
     "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
     fixed = TRUE
   )
+  expect_error(
+    sdc_extreme(extreme_test_dt, "id_var", val_var = "val_1"),
+    "Assertion on 'id_var' failed: Must be a subset of {'id','val_1','val_2','val_3'}, but is {'id_var'}.",
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt, "id", val_var = "val_"),
+    "Assertion on 'val_var' failed: Must be a subset of {'val_1','val_2','val_3'}, but is {'val_'}.",
+    fixed = TRUE
+  )
+  expect_error(
+    sdc_extreme(extreme_test_dt, "id", val_var = "val_1", by = "by_var"),
+    "Assertion on 'by' failed: Must be a subset of {'val_2','val_3'}, but is {'by_var'}.",
+    fixed = TRUE
+  )
 })
 
 # no infinite loop ----
 
 test_that("sdc_extreme() does not enter an infinite loop", {
-  expect_identical(
-    sdc_extreme(extreme_test_dt[1:5], "id", "val_2"),
-    extreme_ref_2
+  expect_message(
+    expect_identical(
+      sdc_extreme(extreme_test_dt[1:5], "id", "val_2"),
+      extreme_ref_2
+    ),
+    "It is impossible to compute extreme values for variable 'val_2' that comply to RDC rules.",
+    fixed = TRUE
   )
 })
 

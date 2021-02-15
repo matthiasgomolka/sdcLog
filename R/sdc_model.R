@@ -27,8 +27,11 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # input checks ----
   checkmate::assert_data_frame(data)
   data <- data.table::as.data.table(data)
+  col_names <- names(data)
+
   checkmate::assert_string(id_var)
-  checkmate::assert_subset(id_var, choices = names(data))
+  checkmate::assert_subset(id_var, choices = col_names)
+
   checkmate::assert_true(exists("model"))
 
   # Extract model_frame (if possible) to check if 'data' is the same data which

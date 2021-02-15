@@ -1,74 +1,112 @@
 #' Create Stata-like log files from R Scripts
 #' @description This function creates Stata-like log files from R Scripts. It
 #'   can handle several files (in a [character] vector) at once.
-#' @param r_scripts [character] vector containing the path(s) of the R script(s)
-#'   which should be run with logging.
-#' @param log_files [character] vector containing the path(s) of the text
-#'   file(s) where the log(s) should be stored.
-#' @param replace [logical] Indicates whether to replace existing log files.
+#' @param r_script [character] Path of the R script to be run with logging.
+#' @param destination One of:
+#'
+#'   - [character] Path of the log file to be used.
+#'   - [file] connection to which the log should be written. This is especially
+#'   useful, when you have nested calls to `sdc_log()` and want to write
+#'   everything into the same log file. Then, create a single [file] connection
+#'   and provide this connection to all calls to `sdc_log()` (and close it
+#'   afterwards).
+#' @param replace [logical] Indicates whether to replace an existing log file.
+#' @param append [logical] Indicates whether to append an existing log file.
 #' @return [character] vector holding the path(s) of the written log file(s).
 #' @importFrom checkmate assert_character assert_logical assert_file
 #'   test_file_exists
 #' @export
-sdc_log <- function(r_scripts, log_files, replace = FALSE) {
+sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE) {
+
   # check inputs
-  checkmate::assert_character(r_scripts, unique = TRUE)
-  checkmate::assert_character(log_files, unique = TRUE, len = length(r_scripts))
-  checkmate::assert_file(r_scripts, extension = "R")
+  checkmate::assert_string(r_script)
+  checkmate::assert_file(r_script, extension = "R")
+  is_conn <- inherits(destination, c("file", "connection"))
+  checkmate::assert_true(any(
+    checkmate::test_string(destination),
+    is_conn
+  ))
+  if (is_conn) {
+    conn <- tryCatch(
+      getConnection(destination),
+      error = function(error) stop(
+        "The connection provided in 'destination' is not active.",
+        call. = FALSE
+      )
+    )
+  }
+  checkmate::assert_logical(replace, len = 1L)
+  checkmate::assert_logical(append, len = 1L)
 
   if (isFALSE(replace)) {
-    exist <- checkmate::test_file_exists(log_files)
-    if (any(exist)) {
-      existing_files <- paste0(log_files[exist], collapse = "\n")
-      stop(
-        "The following 'log_files' already exist:\n",
-        existing_files, "\n",
-        "Please check 'log_files' argument or use 'replace = TRUE' in case ",
-        "you want to replace existing files."
-      )
-    }
+    dest_exists <- checkmate::test_file_exists(destination)
+
+    if (dest_exists & isFALSE(append)) stop(
+      "'destination' already exists. Please check 'destination' or use ",
+      "'replace = TRUE' / append = TRUE in case you want to replace / ",
+      "append the existing file."
+    )
   }
 
-  # write log
-  # TODO: Option for running scripts in parallel
-  invisible(mapply(generate_log, r_scripts, log_files, USE.NAMES = FALSE))
-}
+  # get connection to write to
+  # Case: destination is a file path
+  if (isFALSE(is_conn)) {
+    file.create(destination)
+    conn <- file(destination, open = "w", encoding = "UTF-8")
+    dest_name <- destination
+
+    # Case: destination is a file connection
+  } else {
+    dest_name <- "file connection"
+  }
 
 
-#' Source a single R script and generate a log file
-#' @param r_script R script to be run and logged
-#' @param log_file destination file of the log file to be generated
-#' @return [character] vector holding the path(s) of the written log file(s).
+  # check and eventually set sink status
+  sink_output_active <- sink.number() > 0L
+  if (isFALSE(sink_output_active)) {
+    sink(file = conn, append = TRUE)
+  }
 
-generate_log <- function(r_script, log_file) {
-  file.create(log_file)
-  conn <- file(log_file, open = "w", encoding = "UTF-8")
-  sink(file = conn, append = TRUE)
-  sink(file = conn, append = TRUE, type = "message")
+  sink_message_active <- sink.number(type = "message") > 2L
+  if (isFALSE(sink_message_active)) {
+    sink(file = conn, append = TRUE, type = "message")
+  }
 
-  # make sure that outputs is printed to console, even if this function stopped
-  on.exit({
-    suppressWarnings({
-      sink(type = "output")
-      sink(type = "message")
-    })
-    close(conn)
-  })
-
-  source(
-    r_script,
-    echo = TRUE,
-    continue.echo = "+ ",
-    skip.echo = 0,
-    max.deparse.length = Inf,
-    width.cutoff = 80,
-    chdir = FALSE
+  # actually source r_script (and sink everything to 'conn')
+  tryCatch(
+    source(
+      r_script,
+      echo = TRUE,
+      continue.echo = "+ ",
+      skip.echo = 0,
+      max.deparse.length = Inf,
+      width.cutoff = 80,
+      chdir = FALSE
+    ),
+    # on error, redirect output to console
+    error = function(error) {
+      suppressWarnings({
+        sink(type = "output")
+        sink(type = "message")
+      })
+    }
   )
 
 
-  sink(type = "output")
-  sink(type = "message")
+  if (isFALSE(sink_output_active)) {
+    sink(type = "output")
+  }
+  if (isFALSE(sink_message_active)) {
+    sink(type = "message")
+  }
 
-  message("Log file for '", r_script, "' written to '", log_file, "'.\n\n")
-  return(log_file)
+  # close connection if it was open within the function call
+  if (isFALSE(conn)) {
+    close(conn)
+  }
+
+  if (isFALSE(sink_message_active)) {
+    message("Log file for '", r_script, "' written to '", dest_name, "'.")
+  }
+  return(invisible(NULL))
 }

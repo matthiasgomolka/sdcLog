@@ -16,14 +16,16 @@ statistics are computed.}
 
 \item{zero_as_NA}{\link{logical} If TRUE, zeros in 'val_var' are treated as NA.}
 
-\item{model}{The estimated model object. Can be a model type like lm, glm and
-various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
+\item{model}{The estimated model object. Can be a model type like \link{lm}, \link{glm}
+and various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 
-\item{n_min}{\link{integer} The number of values used to calculate the minimum, by
-default 5.}
+\item{min_obs}{\link{integer} The minimum number of observations used to calculate
+the minimum and maximum. Defaults to \code{getOption("sdc.n_ids", 5L)}. \emph{This is
+not the number of distinct entities.}}
 
-\item{n_max}{\link{integer} The number of values used to calculate the maximum, by
-default 5.}
+\item{max_obs}{\link{integer} The maximum number of observations used to calculate
+the minimum and maximum. Defaults to \code{nrow(data)}. \emph{This is not the number
+of distinct entities.}}
 }
 \description{
 arguments
