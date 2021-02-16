@@ -7,8 +7,7 @@
 sdc_model(data, model, id_var = getOption("sdc.id_var"))
 }
 \arguments{
-\item{data}{\link{data.frame} from which the descriptive statistics are
-calculated.}
+\item{data}{\link{data.frame} which was used to build the model.}
 
 \item{model}{The estimated model object. Can be a model type like \link{lm}, \link{glm}
 and various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}

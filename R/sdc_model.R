@@ -3,6 +3,7 @@
 #'   number of entities and number of entities for each level of dummy
 #'   variables.
 #' @inheritParams common_arguments
+#' @param data [data.frame] which was used to build the model.
 #' @importFrom data.table as.data.table fsetequal rbindlist := %flike%
 #' @importFrom broom augment tidy
 #' @importFrom stats model.frame na.omit
