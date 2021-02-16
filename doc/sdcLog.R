@@ -69,26 +69,26 @@ sdc_descriptives(
 )
 
 ## ----test_data_extreme-----------------------------------------------------------------------
-data("sdc_extreme_DT")
-sdc_extreme_DT
+data("sdc_min_max_DT")
+sdc_min_max_DT
 
 ## ----extreme_simple--------------------------------------------------------------------------
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1")
 
 ## ----extreme_n1------------------------------------------------------------------------------
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_2")
 
 ## ----extreme_n2------------------------------------------------------------------------------
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2", max_obs = 5)
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_2", max_obs = 5)
 
 ## ----exterme_by1-----------------------------------------------------------------------------
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1", by = "year")
 
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "sector")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1", by = "sector")
 
 ## --------------------------------------------------------------------------------------------
-res <- sdc_extreme(
-  data = sdc_extreme_DT,
+res <- sdc_min_max(
+  data = sdc_min_max_DT,
   id_var = "id",
   val_var = "val_1",
   by = c("sector", "year")

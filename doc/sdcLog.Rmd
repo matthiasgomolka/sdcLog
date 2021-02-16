@@ -51,9 +51,9 @@ The package includes four main functions:
     The calculation of simple extreme values such as minimum and maximum is
     usually not allowed according to RDC rules, so `sdc_descriptives()` cannot
     be used to check them. Extreme values can only be used if they are
-    calculated with `sdc_extreme()`.
+    calculated with `sdc_min_max()`.
 
--   `sdc_extreme()`: This function is used for the automatic calculation of
+-   `sdc_min_max()`: This function is used for the automatic calculation of
     extreme values according to the rules of the RDC (if possible). It uses the
     available data and calculates the values for desired variables and groupings
     in compliance with the rules. The values are calculated as averages of a
@@ -240,7 +240,7 @@ released (assuming it is actually correct to treat `0`s as usual numeric
 values).
 
 
-# sdc_extreme()
+# sdc_min_max()
 
 This function automatically calculates extreme values that comply with the rules
 of the RDC. It checks the criteria of distinct entities and dominance. The
@@ -263,25 +263,25 @@ printed and the result is filled with `NA`.
 
 ## Data
 
-To introduce `sdc_extreme()`, another simple dataset is used. We have 20
+To introduce `sdc_min_max()`, another simple dataset is used. We have 20
 observations of 10 different entities, for which the corresponding sector is
 given and values for the variables `val_1`, `val_2`, `val_3` in the years 2019
 and 2020, respectively.
 
 ```{r test_data_extreme}
-data("sdc_extreme_DT")
-sdc_extreme_DT
+data("sdc_min_max_DT")
+sdc_min_max_DT
 ```
 
 ## Simple cases
 
 In this simple case, extreme values should be calculated for variable `val_1`.
-This can be done with `sdc_extreme()` by specifying the dataset (`data`), the id
+This can be done with `sdc_min_max()` by specifying the dataset (`data`), the id
 variable (`id_var`) and the variable for which extreme values are to be
 calculated (`val_var`).
 
 ```{r extreme_simple}
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1")
 ```
 
 Since no problems occur, the function (invisibly) returns a list with the
@@ -292,7 +292,7 @@ included in the calculation.
 
 <!-- ### Advanced cases -->
 
-<!-- In this section some advanced cases are presented to introduce more arguments and functionalities of the function `sdc_extreme()`. -->
+<!-- In this section some advanced cases are presented to introduce more arguments and functionalities of the function `sdc_min_max()`. -->
 
 ## Limiting the number of observations included in minimum and maximum using max_obs
 
@@ -300,7 +300,7 @@ In this case minimum and maximum values are to be calculated for variable
 `val_2`:
 
 ```{r extreme_n1}
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_2")
 ```
 
 When we look at the output, we see that values from 5 distinct entities were
@@ -312,7 +312,7 @@ automatically taken into account.
 If you specify `max_obs = 5`, there is no feasible solution:
 
 ```{r extreme_n2}
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_2", max_obs = 5)
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_2", max_obs = 5)
 ```
 
 Note that `max_obs` controls the maximum number of observations, not distinct
@@ -324,9 +324,9 @@ It is also possible to calculate minimum and maximum values by groups. In the
 following, these are calculated by `year` and `sector`, separately.
 
 ```{r exterme_by1}
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1", by = "year")
 
-sdc_extreme(data = sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "sector")
+sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1", by = "sector")
 ```
 
 No problems occur, so minimum and maximum values are calculated and shown for
@@ -336,8 +336,8 @@ This can also be done for several grouping variables. In the following, extreme
 values for variable `val_1` are to be calculated by `year` and `sector`.
 
 ```{r}
-res <- sdc_extreme(
-  data = sdc_extreme_DT,
+res <- sdc_min_max(
+  data = sdc_min_max_DT,
   id_var = "id",
   val_var = "val_1",
   by = c("sector", "year")

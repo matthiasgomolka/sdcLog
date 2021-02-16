@@ -11,7 +11,7 @@ extreme_test_dt <- data.table(
 )
 
 
-# test sdc_extreme ----
+# test sdc_min_max ----
 # simple case ----
 # calculate extreme values for val_var = val_1
 extreme_ref_1 <- structure(
@@ -26,12 +26,12 @@ extreme_ref_1 <- structure(
       distinct_ids_max = 5L
     )
   ),
-  class = c("sdc_extreme", "list")
+  class = c("sdc_min_max", "list")
 )
 
-test_that("sdc_extreme() works in simple case", {
+test_that("sdc_min_max() works in simple case", {
   expect_identical(
-    sdc_extreme(extreme_test_dt, "id", "val_1"),
+    sdc_min_max(extreme_test_dt, "id", "val_1"),
     extreme_ref_1
   )
 })
@@ -51,13 +51,13 @@ extreme_ref_2 <- structure(
       distinct_ids_max = NA_integer_
     )
   ),
-  class = c("sdc_extreme", "list")
+  class = c("sdc_min_max", "list")
 )
 
-test_that("sdc_extreme() produces no result in case of sd_overlap due to dominance", {
+test_that("sdc_min_max() produces no result in case of sd_overlap due to dominance", {
   expect_message(
     expect_equal(
-      sdc_extreme(extreme_test_dt, "id", "val_2"),
+      sdc_min_max(extreme_test_dt, "id", "val_2"),
       extreme_ref_2
     ),
     "It is impossible to compute extreme values for variable 'val_2' that comply to RDC rules.",
@@ -80,14 +80,14 @@ extreme_ref_3 <- structure(
       distinct_ids_max = NA_integer_
     )
   ),
-  class = c("sdc_extreme", "list")
+  class = c("sdc_min_max", "list")
 )
 
 # actual test
-test_that("sdc_extreme() produces no result in case of sd_overlap", {
+test_that("sdc_min_max() produces no result in case of sd_overlap", {
   expect_message(
     expect_identical(
-      sdc_extreme(extreme_test_dt, "id", "val_3"),
+      sdc_min_max(extreme_test_dt, "id", "val_3"),
       extreme_ref_3
     ),
     "It is impossible to compute extreme values for variable 'val_3' that comply to RDC rules.",
@@ -131,21 +131,21 @@ extreme_ref_4 <- structure(
       key = "sector"
     )
   ),
-  class = c("sdc_extreme", "list")
+  class = c("sdc_min_max", "list")
 )
 
 # actual tests
-test_that("sdc_extreme() works in simple cases with by", {
+test_that("sdc_min_max() works in simple cases with by", {
   # expect_identical(
-  #   sdc_extreme(extreme_test_dt_by, "id", "val_1", by = sector),
+  #   sdc_min_max(extreme_test_dt_by, "id", "val_1", by = sector),
   #   extreme_ref_4
   # )
   expect_identical(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", by = "sector"),
+    sdc_min_max(extreme_test_dt_by, "id", "val_1", by = "sector"),
     extreme_ref_4
   )
   # expect_identical(
-  #   sdc_extreme(extreme_test_dt_by, "id", "val_1", by = .(sector)),
+  #   sdc_min_max(extreme_test_dt_by, "id", "val_1", by = .(sector)),
   #   extreme_ref_4
   # )
 })
@@ -167,14 +167,14 @@ extreme_ref_5 <- structure(
       key = "sector"
     )
   ),
-  class = c("sdc_extreme", "list")
+  class = c("sdc_min_max", "list")
 )
 
 # actual tests
-test_that("sdc_extreme() gives no result in by cases", {
+test_that("sdc_min_max() gives no result in by cases", {
   expect_message(
     expect_identical(
-      sdc_extreme(extreme_test_dt_by, "id", "val_2", by = "sector"),
+      sdc_min_max(extreme_test_dt_by, "id", "val_2", by = "sector"),
       extreme_ref_5
     ),
     "It is impossible to compute extreme values for variable 'val_2' that comply to RDC rules.",
@@ -188,27 +188,27 @@ test_that("sdc_extreme() gives no result in by cases", {
 # tests for internal functions (removed, since not necessary) ----
 
 
-# test arguments in sdc_extreme ----
+# test arguments in sdc_min_max ----
 
-# test that sdc_extreme returns appropriate error
-test_that("sdc_extreme() returns appropriate error", {
+# test that sdc_min_max returns appropriate error
+test_that("sdc_min_max() returns appropriate error", {
 
   # throw error if data is not a data.frame
   expect_error(
-    sdc_extreme(wrong_test_dt, "id", "val_1"),
+    sdc_min_max(wrong_test_dt, "id", "val_1"),
     "object 'wrong_test_dt' not found",
     fixed = TRUE
   )
 
   expect_error(
-    sdc_extreme("wrong_test_dt", "id", "val_1"),
+    sdc_min_max("wrong_test_dt", "id", "val_1"),
     "Assertion on 'data' failed: Must be of type 'data.frame', not 'character'.",
     fixed = TRUE
   )
 
   # throw error if specified variables are not in data
   expect_error(
-    sdc_extreme(extreme_test_dt, "wrong_id", "val_1"),
+    sdc_min_max(extreme_test_dt, "wrong_id", "val_1"),
     paste0(
       "Assertion on 'id_var' failed: Must be a subset of {'id','val_1',",
       "'val_2','val_3'}, but is {'wrong_id'}."
@@ -216,7 +216,7 @@ test_that("sdc_extreme() returns appropriate error", {
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, "id", "wrong_val"),
+    sdc_min_max(extreme_test_dt, "id", "wrong_val"),
     paste0(
       "Assertion on 'val_var' failed: Must be a subset of {'val_1',",
       "'val_2','val_3'}, but is {'wrong_val'}."
@@ -224,7 +224,7 @@ test_that("sdc_extreme() returns appropriate error", {
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt_by, "id", "val_1", "wrong_by"),
+    sdc_min_max(extreme_test_dt_by, "id", "val_1", "wrong_by"),
     paste0(
       "Assertion on 'by' failed: Must be a subset of {'sector',",
       "'val_2','val_3','val_4'}, but is {'wrong_by'}."
@@ -234,42 +234,42 @@ test_that("sdc_extreme() returns appropriate error", {
 
   # error for elements unquoted
   expect_error(
-    sdc_extreme(extreme_test_dt, id, "val_1"),
+    sdc_min_max(extreme_test_dt, id, "val_1"),
     "object 'id' not found"
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, "id", val_1),
+    sdc_min_max(extreme_test_dt, "id", val_1),
     "object 'val_1' not found"
   )
 
   # error for missing arguments
   expect_error(
-    sdc_extreme(id_var = "id", val_var = "val_1"),
+    sdc_min_max(id_var = "id", val_var = "val_1"),
     'argument "data" is missing, with no default',
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, "id"),
+    sdc_min_max(extreme_test_dt, "id"),
     'argument "val_var" is missing, with no default',
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, val_var = "val_1"),
+    sdc_min_max(extreme_test_dt, val_var = "val_1"),
     "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, "id_var", val_var = "val_1"),
+    sdc_min_max(extreme_test_dt, "id_var", val_var = "val_1"),
     "Assertion on 'id_var' failed: Must be a subset of {'id','val_1','val_2','val_3'}, but is {'id_var'}.",
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, "id", val_var = "val_"),
+    sdc_min_max(extreme_test_dt, "id", val_var = "val_"),
     "Assertion on 'val_var' failed: Must be a subset of {'val_1','val_2','val_3'}, but is {'val_'}.",
     fixed = TRUE
   )
   expect_error(
-    sdc_extreme(extreme_test_dt, "id", val_var = "val_1", by = "by_var"),
+    sdc_min_max(extreme_test_dt, "id", val_var = "val_1", by = "by_var"),
     "Assertion on 'by' failed: Must be a subset of {'val_2','val_3'}, but is {'by_var'}.",
     fixed = TRUE
   )
@@ -277,10 +277,10 @@ test_that("sdc_extreme() returns appropriate error", {
 
 # no infinite loop ----
 
-test_that("sdc_extreme() does not enter an infinite loop", {
+test_that("sdc_min_max() does not enter an infinite loop", {
   expect_message(
     expect_identical(
-      sdc_extreme(extreme_test_dt[1:5], "id", "val_2"),
+      sdc_min_max(extreme_test_dt[1:5], "id", "val_2"),
       extreme_ref_2
     ),
     "It is impossible to compute extreme values for variable 'val_2' that comply to RDC rules.",

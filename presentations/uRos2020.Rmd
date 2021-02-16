@@ -163,7 +163,7 @@ sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 
 `sdc_model()` for disclosure control of models
 
-`sdc_extreme()` for non-confidential min/max values
+`sdc_min_max()` for non-confidential min/max values
 
 ---
 
@@ -179,7 +179,7 @@ digraph boxes_and_circles {
   
   # several 'node' statements
   node [shape = box, fontname = 'Fira Sans', width = 5.5]
-  script [label = 'R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()'];
+  script [label = 'R Script\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()'];
   
   node [width = 1] 
   'log file'
@@ -213,7 +213,7 @@ digraph boxes_and_circles {
   
   # several 'node' statements
   node [shape = box, fontname = 'Fira Sans', width = 5.5]
-  script [label = 'R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()'];
+  script [label = 'R Script\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()'];
   
   node [width = 1] 
   'log file'
@@ -247,7 +247,7 @@ digraph boxes_and_circles {
   
   # several 'node' statements
   node [shape = box, fontname = 'Fira Sans', width = 5.5]
-  script [label = 'R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()'];
+  script [label = 'R Script\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()'];
   
   node [width = 1] 
   'log file'

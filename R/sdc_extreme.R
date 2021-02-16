@@ -7,16 +7,16 @@
 #' @importFrom checkmate assert_int
 #' @export
 #' @examples
-#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1")
-#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_2")
-#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_3", max_obs = 10)
-#' sdc_extreme(sdc_extreme_DT, id_var = "id", val_var = "val_1", by = "year")
-#' sdc_extreme(
-#'   sdc_extreme_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
+#' sdc_min_max(sdc_min_max_DT, id_var = "id", val_var = "val_1")
+#' sdc_min_max(sdc_min_max_DT, id_var = "id", val_var = "val_2")
+#' sdc_min_max(sdc_min_max_DT, id_var = "id", val_var = "val_3", max_obs = 10)
+#' sdc_min_max(sdc_min_max_DT, id_var = "id", val_var = "val_1", by = "year")
+#' sdc_min_max(
+#'   sdc_min_max_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
 #' )
-#' @return A list [list] of class `sdc_extreme` with detailed information about
+#' @return A list [list] of class `sdc_min_max` with detailed information about
 #'   options, settings and the calculated extreme values (if possible).
-sdc_extreme <- function(
+sdc_min_max <- function(
   data,
   id_var = getOption("sdc.id_var"),
   val_var,
@@ -98,7 +98,7 @@ sdc_extreme <- function(
       message_arguments = message_arguments(id_var, val_var, by),
       min_max = res
     ),
-    class = c("sdc_extreme", "list")
+    class = c("sdc_min_max", "list")
   )
 }
 

@@ -25,11 +25,11 @@
 #' @keywords datasets
 "sdc_model_DT"
 
-#' Example data for `sdc_extreme()`
+#' Example data for `sdc_min_max()`
 #' @description Utilized in the vignette
-#' @name sdc_extreme_DT
+#' @name sdc_min_max_DT
 #' @docType data
-#' @usage data("sdc_extreme_DT")
+#' @usage data("sdc_min_max_DT")
 #' @format A data.table with 20 rows and 6 columns.
 #' @details The data.table contains the following columns:
 #' - id [factor] random identifier
@@ -37,4 +37,4 @@
 #' - year [integer] time variable
 #' - val_1 - val_3 [numeric] value variables
 #' @keywords datasets
-"sdc_extreme_DT"
+"sdc_min_max_DT"

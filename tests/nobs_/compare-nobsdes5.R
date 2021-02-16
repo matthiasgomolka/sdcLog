@@ -59,7 +59,7 @@
 #
 #
 # ## MAXIMUM and MINIMUM
-# sdc_extreme(dt, "id", "x")
+# sdc_min_max(dt, "id", "x")
 #
 # ## PERCENTILES
 # # sdc_percentiles() would be helpful suppress percentile labels

@@ -99,7 +99,7 @@ print.sdc_model <- function(x, ...) {
 }
 
 #' @export
-print.sdc_extreme <- function(x, ...) {
+print.sdc_min_max <- function(x, ...) {
   message(x[["message_options"]])
   message(x[["message_arguments"]])
   print(x[["min_max"]])
