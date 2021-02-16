@@ -38,8 +38,7 @@ Suggests:
     rmarkdown,
     skimr,
     spelling,
-    testthat (>= 3.0.0),
-    urlchecker
+    testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
