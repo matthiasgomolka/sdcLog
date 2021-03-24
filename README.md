@@ -11,7 +11,7 @@ status](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.sv
 statistical disclosure control in the context of research data centers.
 
 For an introduction, see the [introductory
-vignette](https://cran.r-project.org/package=sdcLog/vignettes/sdcLog.html).
+vignette](https://cran.r-project.org/web/packages/sdcLog/vignettes/intro.html).
 
 Please note that the **sdcLog** project is released with a [Contributor
 Code of
