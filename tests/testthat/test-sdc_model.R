@@ -44,8 +44,8 @@ summary(model_1)
 # create ref
 ref_1 <- structure(
   list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = "id"),
+    options = list_options(),
+    settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
       data.table(distinct_ids = 10L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
@@ -91,8 +91,8 @@ interactions_ref_2 <- structure(list(), names = character())
 # create ref. list
 ref_2 <- structure(
   list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = "id"),
+    options = list_options(),
+    settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
       data.table(distinct_ids = 4L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
@@ -152,8 +152,8 @@ summary(model_3)
 # create ref
 ref_3 <- structure(
   list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = "id"),
+    options = list_options(),
+    settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
       data.table(distinct_ids = 10L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
@@ -216,8 +216,8 @@ summary(model_4)
 # create ref
 ref_4 <- structure(
   list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = "id"),
+    options = list_options(),
+    settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
       data.table(distinct_ids = 10L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
@@ -277,8 +277,8 @@ summary(model_5)
 # create ref
 ref_5 <- structure(
   list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = "id"),
+    options = list_options(),
+    settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
       data.table(distinct_ids = 10L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
@@ -346,8 +346,8 @@ interactions_ref_6 <- structure(
 # create ref. list
 ref_6 <- structure(
   list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var = "id"),
+    options = list_options(),
+    settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
       data.table(distinct_ids = 10L),
       class = c("sdc_distinct_ids", "data.table", "data.frame")

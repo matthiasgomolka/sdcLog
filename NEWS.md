@@ -1,6 +1,14 @@
+# sdcLog 0.3.0
+
+### Possibly Breaking Changes
+
+* The objects returned by sdc_* functions now contain options and settings in a
+  much better structure. Before, it was a bunch of strings which could be pasted
+  together. Now, it's a list holding only the relevant values.
+
 # sdcLog 0.2.0
 
-### Breaking Changes
+### Possibly Breaking Changes
 
 * The `by` argument in `sdc_descriptives()` and `sdc_extreme()` now only accepts
   character input. This makes the code more robust and easier to maintain.

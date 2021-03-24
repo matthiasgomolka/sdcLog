@@ -171,8 +171,8 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # return list with all messages and results
   structure(
     list(
-      message_options = message_options(),
-      message_arguments = message_arguments(id_var = id_var),
+      options = list_options(),
+      settings = list_arguments(id_var = id_var),
       distinct_ids = distinct_ids,
       terms = term_list
     ),

@@ -52,11 +52,33 @@ print.sdc_dominance <- function(x, ...) {
 }
 
 
+#' @importFrom crayon bold underline
+#' @export
+print.sdc_options <- function(x, ...) {
+  message(
+    crayon::bold("OPTIONS: "),
+    paste(names(x), crayon::underline(x), sep = ": ", collapse = " | ")
+  )
+}
+
+
+#' @importFrom crayon bold underline
+#' @export
+print.sdc_settings <- function(x, ...) {
+  x <- x[!vapply(x, is.null, FUN.VALUE = logical(1L))]
+
+  message(
+    crayon::bold("SETTINGS: "),
+    paste(names(x), crayon::underline(x), sep = ": ", collapse = " | ")
+  )
+}
+
 #' @export
 print.sdc_descriptives <- function(x, ...) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
-  message(x[["message_options"]])
-  message(x[["message_arguments"]])
+
+  print(x[["options"]])
+  print(x[["settings"]])
 
   print(x[["distinct_ids"]])
   print(x[["dominance"]])
@@ -72,8 +94,9 @@ print.sdc_descriptives <- function(x, ...) {
 #' @export
 print.sdc_model <- function(x, ...) {
   distinct_ids <- NULL # removes NSE notes in R CMD check
-  message(x[["message_options"]])
-  message(x[["message_arguments"]])
+
+  print(x[["options"]])
+  print(x[["settings"]])
 
   print(x[["distinct_ids"]])
   if (getOption("sdc.info_level", 1L) <= 1L) {
@@ -100,8 +123,7 @@ print.sdc_model <- function(x, ...) {
 
 #' @export
 print.sdc_min_max <- function(x, ...) {
-  message(x[["message_options"]])
-  message(x[["message_arguments"]])
+  print(x[["options"]])
+  print(x[["settings"]])
   print(x[["min_max"]])
 }
-

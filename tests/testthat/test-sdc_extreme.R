@@ -16,8 +16,8 @@ extreme_test_dt <- data.table(
 # calculate extreme values for val_var = val_1
 extreme_ref_1 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_1"),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id", "val_1"),
     min_max = data.table(
       val_var = "val_1",
       min = extreme_test_dt[6L:10L, mean(val_1)],
@@ -41,8 +41,8 @@ test_that("sdc_min_max() works in simple case", {
 # all extreme values NA
 extreme_ref_2 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_2"),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id", "val_2"),
     min_max = data.table(
       val_var = "val_2",
       min = NA_real_,
@@ -70,8 +70,8 @@ test_that("sdc_min_max() produces no result in case of sd_overlap due to dominan
 # extreme values NA
 extreme_ref_3 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_3"),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id", "val_3"),
     min_max = data.table(
       val_var = "val_3",
       min = NA_real_,
@@ -113,8 +113,8 @@ setorder(extreme_test_dt_by, -val_1)
 # setup test extreme values for val_var = val, by = sector
 extreme_ref_4 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_1", "sector"),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id", "val_1", "sector"),
     min_max = data.table(
       val_var = "val_1",
       sector = c("S1", "S2"),
@@ -155,8 +155,8 @@ test_that("sdc_min_max() works in simple cases with by", {
 # setup test extreme values for val_var = val_2, by = sector
 extreme_ref_5 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val_2", "sector"),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id", "val_2", "sector"),
     min_max = data.table(
       val_var = "val_2",
       sector = c("S1", "S2"),
