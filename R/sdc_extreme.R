@@ -2,7 +2,8 @@
 #' @description Checks if calculation of extreme values comply to RDC rules. If
 #'   so, function returns average min and max values according to RDC rules.
 #' @inheritParams common_arguments
-#' @importFrom data.table as.data.table data.table setorderv fintersect uniqueN
+#' @importFrom data.table is.data.table as.data.table data.table setorderv
+#'   fintersect uniqueN
 #'   .N set
 #' @importFrom checkmate assert_int
 #' @export
@@ -25,7 +26,9 @@ sdc_min_max <- function(
 ) {
   # input checks ----
   checkmate::assert_data_frame(data)
-  data <- data.table::as.data.table(data)
+  if (!data.table::is.data.table(data)) {
+    data <- data.table::as.data.table(data)
+  }
   col_names <- names(data)
 
   checkmate::assert_string(id_var)

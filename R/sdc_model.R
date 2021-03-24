@@ -4,7 +4,8 @@
 #'   variables.
 #' @inheritParams common_arguments
 #' @param data [data.frame] which was used to build the model.
-#' @importFrom data.table as.data.table fsetequal rbindlist := %flike%
+#' @importFrom data.table is.data.table as.data.table fsetequal rbindlist :=
+#'   %flike%
 #' @importFrom broom augment tidy
 #' @importFrom stats model.frame na.omit
 #' @importFrom checkmate assert_data_frame assert_string
@@ -27,7 +28,9 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # check inputs
   # input checks ----
   checkmate::assert_data_frame(data)
-  data <- data.table::as.data.table(data)
+  if (!data.table::is.data.table(data)) {
+    data <- data.table::as.data.table(data)
+  }
   col_names <- names(data)
 
   checkmate::assert_string(id_var)

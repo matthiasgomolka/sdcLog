@@ -2,7 +2,7 @@
 #' @description Checks if your descriptive statistics comply to statistical
 #'   disclosure control. Checks for number of distinct entities and dominance.
 #' @inheritParams common_arguments
-#' @importFrom data.table as.data.table set
+#' @importFrom data.table is.data.table as.data.table set
 #' @export
 #' @examples
 #' sdc_descriptives(
@@ -47,7 +47,9 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
 
   # input checks ----
   checkmate::assert_data_frame(data)
-  data <- data.table::as.data.table(data)
+  if (!data.table::is.data.table(data)) {
+    data <- data.table::as.data.table(data)
+  }
   col_names <- names(data)
 
   checkmate::assert_string(id_var)
