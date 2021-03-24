@@ -2,15 +2,15 @@
 > data("sdc_descriptives_DT")
 
 > sdc_descriptives(data = sdc_descriptives_DT, id_var = "id", val_var = "val_1")
-[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-[ SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE ]
+OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+SETTINGS: id_var: id | val_var: val_1 | zero_as_NA: FALSE
 Output complies to RDC rules.
 
 > data("sdc_min_max_DT")
 
 > sdc_min_max(data = sdc_min_max_DT, id_var = "id", val_var = "val_1")
-[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-[ SETTINGS: id_var: id | val_var: val_1 ]
+OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+SETTINGS: id_var: id | val_var: val_1
    val_var min distinct_ids_min max distinct_ids_max
 1:   val_1   3                5  18                5
 
@@ -19,6 +19,6 @@ Output complies to RDC rules.
 > model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
 
 > sdc_model(data = sdc_model_DT, model = model_1, id_var = "id")
-[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-[ SETTINGS: id_var: id ]
+OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+SETTINGS: id_var: id
 Output complies to RDC rules.

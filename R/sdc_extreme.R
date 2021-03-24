@@ -94,8 +94,8 @@ sdc_min_max <- function(
 
   structure(
     list(
-      message_options = message_options(),
-      message_arguments = message_arguments(id_var, val_var, by),
+      options = list_options(),
+      settings = list_arguments(id_var, val_var, by),
       min_max = res
     ),
     class = c("sdc_min_max", "list")

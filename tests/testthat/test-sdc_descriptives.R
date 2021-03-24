@@ -66,8 +66,8 @@ dominance_ref_3 <- structure(
 # descriptives setup 1 ####
 descriptives_ref_1 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id", "val", zero_as_NA = FALSE),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id", "val", zero_as_NA = FALSE),
     distinct_ids = distinct_ids_ref_1,
     dominance = dominance_ref_1
   ),
@@ -82,15 +82,8 @@ expect_equal(
 # descriptives setup 2 ####
 descriptives_ref_2 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = c(
-      "[ SETTINGS: ",
-      "id_var: id",
-      " | val_var: val",
-      " | by: sector",
-      " | zero_as_NA: FALSE",
-      " ]"
-    ),
+    options = list_options(),
+    settings = list_arguments(id_var = "id", val_var = "val", by = "sector", zero_as_NA = FALSE),
     distinct_ids = distinct_ids_ref_2,
     dominance = dominance_ref_2
   ),
@@ -113,15 +106,8 @@ test_that("sdc_descriptives works in medium cases", {
 # descriptives setup 3 ####
 descriptives_ref_3 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = c(
-      "[ SETTINGS: ",
-      "id_var: id",
-      " | val_var: val",
-      " | by: sector, year",
-      " | zero_as_NA: FALSE",
-      " ]"
-    ),
+    options = sdcLog:::list_options(),
+    settings = list_arguments(id_var = "id", val_var = "val", by = c("sector", "year"), zero_as_NA = FALSE),
     distinct_ids = distinct_ids_ref_3,
     dominance = dominance_ref_3
   ),
@@ -145,8 +131,8 @@ test_that("sdc_descriptives works in complex cases", {
 options(sdc.info_level = 2)
 descriptives_ref_4 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments("id"),
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments("id"),
     distinct_ids = distinct_ids_ref_1,
     dominance = structure(
       data.table(value_share = NA_real_),
@@ -165,8 +151,8 @@ test_that("sdc_descriptives() works without 'val_var'", {
 # handling zeros ----
 descriptives_ref_5 <- structure(
   list(
-    message_options = sdcLog:::message_options(),
-    message_arguments = sdcLog:::message_arguments(
+    options = sdcLog:::list_options(),
+    settings = sdcLog:::list_arguments(
       "id", "val", zero_as_NA = TRUE
     ),
     distinct_ids = distinct_ids_ref_1,

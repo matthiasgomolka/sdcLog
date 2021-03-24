@@ -111,8 +111,8 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
   }
 
   res <- list(
-    message_options = message_options(),
-    message_arguments = message_arguments(id_var, val_var, by, zero_as_NA),
+    options = list_options(),
+    settings = list_arguments(id_var, val_var, by, zero_as_NA),
     distinct_ids = distinct_ids,
     dominance = dominance
   )

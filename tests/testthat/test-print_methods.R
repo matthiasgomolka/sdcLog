@@ -123,8 +123,8 @@ test_that("print.sdc_dominance works for val_var = NULL", {
 # test print.sdc_descriptives ----
 descriptives_1 <- structure(
     list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var = "id", val_var = "val"),
+        options = list_options(),
+        settings = list_arguments(id_var = "id", val_var = "val"),
         distinct_ids = distinct_ids_1,
         dominance = dominance_1
     ),
@@ -134,49 +134,37 @@ descriptives_1 <- structure(
 test_that("print.sdc_descriptives works for most simple case", {
     options(sdc.info_level = 0L)
     messages <- capture_messages(print(descriptives_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n")
     )
 
     options(sdc.info_level = 1L)
     messages <- capture_messages(print(descriptives_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               "Output complies to RDC rules.",
-               collapse = ""
-        ),
-        fixed = TRUE
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n",
+          "Output complies to RDC rules.\n")
     )
 
     options(sdc.info_level = 2L)
     messages <- capture_messages(print(descriptives_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               "No problem with number of distinct entities (10).\n",
-               "No problem with dominance.\n",
-               "Output complies to RDC rules.",
-               collapse = ""
-        ),
-        fixed = TRUE
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n",
+          "No problem with number of distinct entities (10).\n",
+          "No problem with dominance.\n",
+          "Output complies to RDC rules.\n")
     )
 })
 
 descriptives_2 <- structure(
     list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var = "id", val_var = "val"),
+        options = list_options(),
+        settings = list_arguments(id_var = "id", val_var = "val"),
         distinct_ids = distinct_ids_2,
         dominance = dominance_2
     ),
@@ -185,17 +173,13 @@ descriptives_2 <- structure(
 
 expect_print.sdc_descriptives_2 <- function(x) {
     output <- capture_output_lines({
-        message <- capture_messages(x)
+        message <- capture_messages(print(x))
     })
 
-    expect_match(
-        paste0(message, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+    expect_identical(
+        crayon::strip_style(message),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n")
     )
 
     expect_match(
@@ -226,14 +210,8 @@ test_that("print.sdc_descriptives works for problematic case", {
 
 descriptives_3 <- structure(
     list(
-        message_options = message_options(),
-        message_arguments = c(
-            "[ SETTINGS: ",
-            paste0("id_var: ", "id"),
-            paste0(" | val_var: ", "val"),
-            paste0(" | by: ", "sector"),
-            " ]"
-        ),
+        options = list_options(),
+        settings = list_arguments(id_var = "id", val_var = "val", by = "sector"),
         distinct_ids = distinct_ids_3,
         dominance = dominance_3
     ),
@@ -245,14 +223,10 @@ expect_print.sdc_descriptives_3 <- function(x) {
         message <- capture_messages(x)
     })
 
-    expect_match(
-        paste0(message, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val | by: sector ]\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+    expect_identical(
+        crayon::strip_style(message),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val | by: sector\n")
     )
 
     expect_match(
@@ -283,8 +257,8 @@ test_that("print.sdc_descriptives works for problematic by case", {
 
 descriptives_4 <- structure(
     list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var = "id"),
+        options = list_options(),
+        settings = list_arguments(id_var = "id"),
         distinct_ids = distinct_ids_1,
         dominance = structure(
             data.table::data.table(value_share = NA_real_),
@@ -297,50 +271,41 @@ descriptives_4 <- structure(
 test_that("print.sdc_descriptives works for most simple case", {
     options(sdc.info_level = 0L)
     messages <- capture_messages(print.sdc_descriptives(descriptives_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n")
     )
 
     options(sdc.info_level = 1L)
     messages <- capture_messages(print.sdc_descriptives(descriptives_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               "Output complies to RDC rules.",
-               collapse = ""
-        ),
-        fixed = TRUE
+
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n",
+          "Output complies to RDC rules.\n")
     )
 
     options(sdc.info_level = 2L)
     messages <- capture_messages(print.sdc_descriptives(descriptives_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id | val_var: val ]\n",
-               "No problem with number of distinct entities (10).\n",
-               "No problem with dominance.\n",
-               "Output complies to RDC rules.",
-               collapse = ""
-        ),
-        fixed = TRUE
+
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id | val_var: val\n",
+          "No problem with number of distinct entities (10).\n",
+          "No problem with dominance.\n",
+          "Output complies to RDC rules.\n")
     )
 })
 
 ### create model ref
 model_ref_1 <- structure(
     list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var = "id"),
+        options = list_options(),
+        settings = list_arguments(id_var = "id"),
         distinct_ids = distinct_ids_1,
         terms = list(
             y = structure(
@@ -363,54 +328,41 @@ model_ref_1 <- structure(
 test_that("print.sdc_model works for most simple case", {
     options(sdc.info_level = 0L)
     messages <- capture_messages(print(model_ref_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id\n")
     )
 
     options(sdc.info_level = 1L)
     messages <- capture_messages(print(model_ref_1))
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               "Output complies to RDC rules.\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id\n",
+          "Output complies to RDC rules.\n")
     )
 
     options(sdc.info_level = 2L)
     output <- capture_output({
         messages <- capture_messages(print(model_ref_1))
     })
-    expect_match(
-        paste0(messages, collapse = ""),
-        paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-               "sdc.share_dominance: 0.85 ]\n",
-               "[ SETTINGS: id_var: id ]\n",
-               "No problem with number of distinct entities (10).\n",
-               "No problem with number of distinct entities (10).\n",
-               "No problem with number of distinct entities (10).\n",
-               "No problem with number of distinct entities (10).\n",
-               "Output complies to RDC rules.\n",
-               collapse = ""
-        ),
-        fixed = TRUE
+
+    expect_identical(
+        crayon::strip_style(messages),
+        c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+          "SETTINGS: id_var: id\n",
+          rep("No problem with number of distinct entities (10).\n", 4),
+          "Output complies to RDC rules.\n")
     )
 })
 
 
 model_ref_2 <- structure(
     list(
-        message_options = message_options(),
-        message_arguments = message_arguments(id_var = "id"),
+        options = list_options(),
+        settings = list_arguments(id_var = "id"),
         distinct_ids = structure(
             data.table(distinct_ids = 4L),
             class = c("sdc_distinct_ids", "data.table", "data.frame")
@@ -440,14 +392,11 @@ test_that("print.sdc_model works for errors", {
         output <- capture_output_lines({
             messages <- capture_messages(print(model_ref_2))
         })
-        expect_match(
-            paste0(messages, collapse = ""),
-            paste0("[ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | ",
-                   "sdc.share_dominance: 0.85 ]\n",
-                   "[ SETTINGS: id_var: id ]\n",
-                   collapse = ""
-            ),
-            fixed = TRUE
+
+        expect_identical(
+            crayon::strip_style(messages),
+            c("OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85\n",
+              "SETTINGS: id_var: id\n")
         )
 
         lapply(c(1, 5, 10, 15), function(x) {
