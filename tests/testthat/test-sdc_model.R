@@ -22,7 +22,6 @@ model_test_dt <- data.table(
   key = "id"
 )
 
-
 # create problems id's for x_3
 model_test_dt[id %chin% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
 
@@ -75,7 +74,10 @@ ref_1 <- structure(
 
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
-  expect_equal(sdc_model(model_test_dt, model_1, "id"), ref_1)
+  expect_equal(
+    sdc_model(as.data.frame(model_test_dt, stringsAsFactors = FALSE), model_1, "id"),
+    ref_1
+  )
 })
 
 # model 2 ----

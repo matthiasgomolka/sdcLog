@@ -14,6 +14,7 @@ test_dt[, sector := sort(rep_len(paste0("S", 1L:2L), n))]
 test_dt[id == "A" & year == 2019L, val := NA_real_]
 test_dt[id %chin% c("A", "F") & year == 2020L, val := val * 50]
 setcolorder(test_dt, c("id", "sector", "year"))
+test_dt <- as.data.frame(test_dt, stringsAsFactors = FALSE)
 
 # test check_distinct_ids ----
 
@@ -161,6 +162,7 @@ descriptives_ref_5 <- structure(
   class = c("sdc_descriptives", "list")
 )
 
+test_dt <- as.data.table(test_dt)
 test_dt[is.na(val), val := 0]
 
 test_that("zeros are handles correctly" , {

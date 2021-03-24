@@ -31,7 +31,7 @@ extreme_ref_1 <- structure(
 
 test_that("sdc_min_max() works in simple case", {
   expect_identical(
-    sdc_min_max(extreme_test_dt, "id", "val_1"),
+    sdc_min_max(as.data.frame(extreme_test_dt, stringsAsFactors = FALSE), "id", "val_1"),
     extreme_ref_1
   )
 })
