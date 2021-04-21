@@ -137,7 +137,7 @@ test_that("sdc_model() returns/works correctly", {
       ref_2
     ),
     paste0(
-      crayon::bold("POTENTIAL DISCLOSURE PROBLEM: "),
+      crayon::bold("DISCLOSURE PROBLEM: "),
       "Not enough distinct entities."
     ),
     fixed = TRUE
@@ -262,7 +262,7 @@ test_that("sdc_model() returns/works correctly", {
       ref_4
     ),
     paste0(
-      crayon::bold("POTENTIAL DISCLOSURE PROBLEM: "),
+      crayon::bold("DISCLOSURE PROBLEM: "),
       "Not enough distinct entities."
     ),
     fixed = TRUE
@@ -391,7 +391,7 @@ test_that("sdc_model() returns/works correctly", {
       ref_6
     ),
     paste(
-      crayon::bold("POTENTIAL DISCLOSURE PROBLEM:"),
+      crayon::bold("DISCLOSURE PROBLEM:"),
       "Not enough distinct entities."
     ),
     fixed = TRUE
@@ -455,3 +455,4 @@ test_that("sdc_model() returns appropriate error", {
     fixed = TRUE
   )
 })
+
