@@ -13,7 +13,7 @@ output:
       highlightLines: yes
       highlightSpans: yes
       countIncrementalSlides: no
-      slideNumberFormat: "Slides available at https://tinyurl.com/sdcLog-uRos2020 | Twitter: @matthiasgomolka"
+      slideNumberFormat: "Präsentation verfügbar unter https://tinyurl.com/sdcLog-uRos2020 | %current% / %total%"
 lang: de-de
 editor_options: 
   chunk_output_type: console
@@ -24,7 +24,7 @@ library(xaringanthemer)
 library(sdcLog)
 library(DiagrammeR)
 style_mono_accent(
-  # base_color = "#C85D79",
+  base_color = "#1d3557",
   header_font_google = google_font("Fira Sans"),
   text_font_google   = google_font("Fira Sans", "300", "300i"),
   code_font_google   = google_font("Fira Mono")
@@ -59,27 +59,53 @@ Inhaltliche Schwerpunkte:
 
 ---
 
+# Motivation
+
+#### Problem
+
+- Forschende stehen in der Pflicht, zu zeigen, dass ihr Output den Regeln des FDSZ
+entspricht.
+
+--
+
+- Das kann schnell sehr komplex werden.
+
+--
+
+- Außerdem ist der Aufwand für das FDSZ sehr hoch, wenn zusätzlich geprüft werden
+muss, wie die Forschenden die Nachweise für Ihren Output erbringen.
+
+--
+
+#### Lösung
+
+- FDSZ stellt Forschenden Werkzeuge zur Verfügung, um die Konformität mit den Outputregeln nachzuweisen: **sdcLog**
+
+---
+
 # Theorie
 
 Zwei einfache Regeln:
 
 --
 
-**1. Jedes Ergebnis muss auf mindestens 5 unterschiedlichen Entitäten basieren
-(distinct ID's).**
+1. Jedes Ergebnis muss auf mindestens 5 unterschiedlichen Entitäten basieren
+(distinct ID's).
 
 --
 
-**2. Die beiden größten Entitäten dürfen nicht mehr als 85% eines Ergebnisses
-ausmachen (dominance).**
+2. Die beiden größten Entitäten dürfen nicht mehr als 85% eines Ergebnisses
+ausmachen (dominance).
 
 
 ---
 
 # Ein Beispiel
 
-Forschende möchten das arithmetische Mittel einer Variable berechnen und das Ergebnis in ihrer Publikation zeigen. 
-Dazu müssen sie vorab zeigen, dass das Ergebnis den Output-Regeln entspricht.
+Forschende möchten das arithmetische Mittel einer Variable berechnen und das
+Ergebnis in ihrer Publikation zeigen.
+Dazu müssen sie vorab mit `sdc_descriptives()` zeigen, dass das Ergebnis den
+Output-Regeln entspricht.
 
 --
 
@@ -129,11 +155,15 @@ und Maximum einer Variablen zeigen.
 
 --
 
-**Problem:** Minimum und Maximum sind vertrauliche Einzeldaten.
+#### Problem
+
+Minimum und Maximum sind vertrauliche Einzeldaten.
 
 --
 
-**Lösung:** "Minumum" und "Maximum" als arithmetisches Mittel der kleinsten bzw.
+#### Lösung
+
+"Minumum" und "Maximum" als arithmetisches Mittel der kleinsten bzw.
 größten Werte mit `sdc_min_max()`:
 
 --
@@ -196,12 +226,22 @@ digraph boxes_and_circles {
 
 ---
 
-# Get in touch!
+# Installation und Kontakt
+
+#### CRAN
 
 ```{r install, eval=FALSE}
-# CRAN
 install.packages("sdcLog")
-
-# GitHub
-remotes::install_github("https://github.com/matthiasgomolka/sdcLog")
 ```
+
+#### GitHub
+
+https://github.com/matthiasgomolka/sdcLog/issues
+
+#### E-Mail
+
+[matthias.gomolka@bundesbank.de](mailto:matthias.gomolka@bundesbank.de)
+
+#### Telefon
+
+069 9556-4991
