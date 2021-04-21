@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="de-de" xml:lang="de-de">
+  <head>
+    <title>sdcLog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Matthias Gomolka" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <script src="libs/viz/viz.js"></script>
+    <link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
+    <script src="libs/grViz-binding/grViz.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# sdcLog
+## Werkzeuge für Outputkontrolle in Forschungsdatenzentrem
+### Matthias Gomolka
+### Deutsche Bundesbank, Forschungsdaten- und Servicezentrum
+
+---
+
+
+
+
+
+# Wer bin ich?
+
+Ich arbeite im Forschungsdaten- und Servicezentrum (FDSZ) der Deutschen Bundesbank.
+
+--
+
+Inhaltliche Schwerpunkte: 
+
+--
+
+- Wertpapiertransaktionsdaten
+- Data Production Pipelines
+- **R-Tools, die das FDSZ-Leben einfacher machen**
+
+---
+
+# Theorie
+
+Zwei einfache Regeln:
+
+--
+
+**1. Jedes Ergebnis muss auf mindestens 5 unterschiedlichen Entitäten basieren (distinct ID's).**
+
+--
+
+**2. Die beiden größten Entitäten dürfen nicht mehr als 85% eines Ergebnisses ausmachen (dominance).**
+
+
+---
+
+# Ein Beispiel
+
+Forschende möchten das arithmetische Mittel einer Variable berechnen und das Ergebnis in ihrer Publikation zeigen. 
+Dazu müssen sie vorab zeigen, dass das Ergebnis den Output-Regeln entspricht.
+
+--
+
+.pull-left[
+
+```r
+head(DT)
+##    id sector year     val_1    val_2
+## 1:  A     S1 2019        NA 9.477642
+## 2:  A     S1 2020 94.174449 5.856641
+## 3:  B     S1 2019  4.349115 3.697140
+## 4:  B     S1 2020  2.589011 6.796527
+## 5:  C     S1 2019  6.155680 7.213390
+## 6:  C     S1 2020  7.183206 5.948330
+```
+]
+
+--
+
+.pull-right[
+
+```r
+# gesuchtes Ergebnis
+DT[, .(mean = mean(val_1, na.rm = TRUE)),
+   by = "sector"]
+##    sector     mean
+## 1:     S1 15.42511
+## 2:     S2 24.43726
+```
+]
+
+--
+
+
+```r
+# Nachweis, dass das Ergebnis den Regeln entspricht
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE
+## Output complies to RDC rules.
+```
+
+---
+
+# Noch ein Beispiel
+
+Diesmal berechnen die Forschenden das arithmetische Mittel gruppiert nach `sector` und `year`.
+
+--
+
+
+```r
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+## Warning: POTENTIAL DISCLOSURE PROBLEM: Not enough distinct entities.
+## Warning: DISCLOSURE PROBLEM: Dominant entities.
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA: FALSE
+## Not enough distinct entities:
+##    sector year distinct_ids
+## 1:     S1 2019            4
+## 2:     S1 2020            5
+## 3:     S2 2019            5
+## 4:     S2 2020            5
+## Dominant entities:
+##    sector year value_share
+## 1:     S2 2020   0.9056314
+## 2:     S1 2020   0.8776852
+## 3:     S1 2019   0.6815011
+## 4:     S2 2019   0.5506965
+```
+
+---
+
+# Minimum und Maximum
+
+Jetzt möchten Forschende neben dem arithmetischen Mittel auch noch das Minimum
+und Maximum einer Variablen zeigen. 
+
+--
+
+**Problem:** Minimum und Maximum sind vertrauliche Einzeldaten.
+
+--
+
+**Lösung:** "Minumum" und "Maximum" als arithmetisches Mittel der kleinsten bzw.
+größten Werte mit `sdc_min_max()`:
+
+--
+
+
+```r
+sdc_min_max(DT, id_var = "id", val_var = "val_1")
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## SETTINGS: id_var: id | val_var: val_1
+##    val_var      min distinct_ids_min      max distinct_ids_max
+## 1:   val_1 3.364432                5 37.34043                7
+```
+
+---
+
+# Outputkontrolle bei statistischen Modellen
+
+Jetzt möchten Forschende die Ergebnisse einer linearen Regression veröffentlichen.
+
+--
+
+
+```r
+# Modell berechnen
+mod &lt;- lm(val_1 ~ sector + year + val_2, data = DT)
+
+# Prüfen, ob Ergebnise freigegeben werden können
+sdc_model(DT, model = mod, id_var = "id")
+## Warning: POTENTIAL DISCLOSURE PROBLEM: Not enough distinct entities.
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## SETTINGS: id_var: id
+## $val_2
+## Not enough distinct entities:
+##         val_2 distinct_ids
+## 1:     &lt;zero&gt;            4
+## 2: &lt;non-zero&gt;           10
+```
+
+---
+
+# Warum heißt es sdcLog?
+
+&lt;center&gt;
+<div id="htmlwidget-0bb8a57b46ca12ec47e1" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0bb8a57b46ca12ec47e1">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\nenthält sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log Datei\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Prüfung durch FDSZ\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+&lt;/center&gt;
+
+---
+
+# Get in touch!
+
+
+```r
+# CRAN
+install.packages("sdcLog")
+
+# GitHub
+remotes::install_github("https://github.com/matthiasgomolka/sdcLog")
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "Slides available at https://tinyurl.com/sdcLog-uRos2020 | Twitter: @matthiasgomolka"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

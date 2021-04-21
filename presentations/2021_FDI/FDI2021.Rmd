@@ -1,0 +1,207 @@
+---
+title: "sdcLog"
+subtitle: "Werkzeuge für Outputkontrolle in Forschungsdatenzentrem"
+author: "Matthias Gomolka"
+institute: "Deutsche Bundesbank, Forschungsdaten- und Servicezentrum"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: yes
+      highlightSpans: yes
+      countIncrementalSlides: no
+      slideNumberFormat: "Slides available at https://tinyurl.com/sdcLog-uRos2020 | Twitter: @matthiasgomolka"
+lang: de-de
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+library(sdcLog)
+library(DiagrammeR)
+style_mono_accent(
+  # base_color = "#C85D79",
+  header_font_google = google_font("Fira Sans"),
+  text_font_google   = google_font("Fira Sans", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+options(datatable.print.keys = FALSE)
+options(datatable.print.class = FALSE)
+
+knitr::opts_chunk$set(
+  # prompt = TRUE,
+  # comment = "#>",
+  collapse = TRUE,
+  background = "#FAFAFA"
+)
+```
+
+# Wer bin ich?
+
+Ich arbeite im Forschungsdaten- und Servicezentrum (FDSZ) der Deutschen Bundesbank.
+
+--
+
+Inhaltliche Schwerpunkte: 
+
+--
+
+- Wertpapiertransaktionsdaten
+- Data Production Pipelines
+- **R-Tools, die das FDSZ-Leben einfacher machen**
+
+---
+
+# Theorie
+
+Zwei einfache Regeln:
+
+--
+
+**1. Jedes Ergebnis muss auf mindestens 5 unterschiedlichen Entitäten basieren
+(distinct ID's).**
+
+--
+
+**2. Die beiden größten Entitäten dürfen nicht mehr als 85% eines Ergebnisses
+ausmachen (dominance).**
+
+
+---
+
+# Ein Beispiel
+
+Forschende möchten das arithmetische Mittel einer Variable berechnen und das Ergebnis in ihrer Publikation zeigen. 
+Dazu müssen sie vorab zeigen, dass das Ergebnis den Output-Regeln entspricht.
+
+--
+
+.pull-left[
+```{r sdc_descriptives_1, echo=3}
+data("sdc_descriptives_DT")
+DT <- sdc_descriptives_DT
+head(DT)
+```
+]
+
+--
+
+.pull-right[
+```{r sdc_descriptives_3}
+# gesuchtes Ergebnis
+DT[, .(mean = mean(val_1, na.rm = TRUE)),
+   by = "sector"]
+```
+]
+
+--
+
+```{r sdc_descriptives_6}
+# Nachweis, dass das Ergebnis den Regeln entspricht
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
+```
+
+---
+
+# Noch ein Beispiel
+
+Diesmal berechnen die Forschenden das arithmetische Mittel gruppiert nach `sector` und `year`.
+
+--
+
+```{r sdc_descriptives_7}
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+```
+
+---
+
+# Minimum und Maximum
+
+Jetzt möchten Forschende neben dem arithmetischen Mittel auch noch das Minimum
+und Maximum einer Variablen zeigen. 
+
+--
+
+**Problem:** Minimum und Maximum sind vertrauliche Einzeldaten.
+
+--
+
+**Lösung:** "Minumum" und "Maximum" als arithmetisches Mittel der kleinsten bzw.
+größten Werte mit `sdc_min_max()`:
+
+--
+
+```{r sdc_min_max_1}
+sdc_min_max(DT, id_var = "id", val_var = "val_1")
+```
+
+---
+
+# Outputkontrolle bei statistischen Modellen
+
+Jetzt möchten Forschende die Ergebnisse einer linearen Regression veröffentlichen.
+
+--
+
+```{r sdc_model_1}
+# Modell berechnen
+mod <- lm(val_1 ~ sector + year + val_2, data = DT)
+
+# Prüfen, ob Ergebnise freigegeben werden können
+sdc_model(DT, model = mod, id_var = "id")
+```
+
+---
+
+# Warum heißt es sdcLog?
+
+<center>
+```{r diagrammer_1, echo=FALSE, fig.align='center', out.width='60%'}
+grViz("
+digraph boxes_and_circles {
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 30]
+  
+  # several 'node' statements
+  node [shape = box, fontname = 'Fira Sans', width = 5.5]
+  script [label = 'analysis.R\nenthält sdc_descriptives() / sdc_min_max() / sdc_model()'];
+  
+  node [width = 1] 
+  log [label = 'Log Datei']
+  
+  node [shape = box, width = 3]
+  checks [label = 'Prüfung durch FDSZ']
+
+  node [shape = oval, width = 1] 
+  sdc_log [label = '@@1']
+
+  # several 'edge' statements
+  script -> sdc_log
+  sdc_log -> log
+  log -> checks
+}
+
+[1]: 'sdc_log(analysis.R)'
+")
+```
+</center>
+
+---
+
+# Get in touch!
+
+```{r install, eval=FALSE}
+# CRAN
+install.packages("sdcLog")
+
+# GitHub
+remotes::install_github("https://github.com/matthiasgomolka/sdcLog")
+```
