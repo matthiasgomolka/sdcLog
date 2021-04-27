@@ -180,8 +180,9 @@ Jetzt möchten Forschende die Ergebnisse einer linearen Regression veröffentlic
 
 --
 
-```{r sdc_model_1, echo=-1}
+```{r sdc_model_1}
 options(sdc.n_ids = 3)
+
 # Modell berechnen
 mod <- lm(val_1 ~ sector + year + val_2, data = DT)
 

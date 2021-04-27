@@ -201,6 +201,8 @@ Jetzt möchten Forschende die Ergebnisse einer linearen Regression veröffentlic
 
 
 ```r
+options(sdc.n_ids = 3)
+
 # Modell berechnen
 mod &lt;- lm(val_1 ~ sector + year + val_2, data = DT)
 
@@ -216,8 +218,8 @@ sdc_model(DT, model = mod, id_var = "id")
 # Warum heißt es sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-42869e3897cbbc7aa171" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-42869e3897cbbc7aa171">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\nenthält sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log Datei\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Prüfung durch FDSZ\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ff97e75e0a119f10a8aa" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ff97e75e0a119f10a8aa">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\nenthält sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log Datei\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Prüfung durch FDSZ\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
