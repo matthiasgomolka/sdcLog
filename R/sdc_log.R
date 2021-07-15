@@ -12,11 +12,16 @@
 #'   afterwards).
 #' @param replace [logical] Indicates whether to replace an existing log file.
 #' @param append [logical] Indicates whether to append an existing log file.
+#' @param local [logical|environment] Determines the evaluation environment.
+#'   Useful whenever `sdc_log()` is called from within a function, or for
+#'   nested `sdc_log` calls. By default (FALSE) evaluation occurs in the
+#'   global environment. See also \link[base]{source}.
 #' @return [character] vector holding the path(s) of the written log file(s).
 #' @importFrom checkmate assert_character assert_logical assert_file
 #'   test_file_exists
 #' @export
-sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE) {
+sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE,
+                    local = FALSE) {
 
   # check inputs
   checkmate::assert_string(r_script)
@@ -81,7 +86,8 @@ sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE) {
       skip.echo = 0,
       max.deparse.length = Inf,
       width.cutoff = 80,
-      chdir = FALSE
+      chdir = FALSE,
+      local = local
     ),
     # on error, redirect output to console
     error = function(error) {

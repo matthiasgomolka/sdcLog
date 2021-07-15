@@ -8,7 +8,11 @@ Authors@R:
              email = "matthias.gomolka@posteo.de"),
       person(given = "Tim",
              family = "Becker",
-             role = "aut"))
+             role = "aut"),
+      person(given = "Pantelis",
+             family = "Karapanagiotis",
+             role = c("ctb"),
+             email = "pikappa.devel@gmail.com"))
 Description: Tools for researchers to explicitly show that their
     results comply to rules for statistical disclosure control imposed by
     research data centers. These tools help in checking descriptive

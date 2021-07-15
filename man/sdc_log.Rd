@@ -4,7 +4,7 @@
 \alias{sdc_log}
 \title{Create Stata-like log files from R Scripts}
 \usage{
-sdc_log(r_script, destination, replace = FALSE, append = FALSE)
+sdc_log(r_script, destination, replace = FALSE, append = FALSE, local = FALSE)
 }
 \arguments{
 \item{r_script}{\link{character} Path of the R script to be run with logging.}
@@ -22,6 +22,11 @@ afterwards).
 \item{replace}{\link{logical} Indicates whether to replace an existing log file.}
 
 \item{append}{\link{logical} Indicates whether to append an existing log file.}
+
+\item{local}{\link{logical|environment} Determines the evaluation environment.
+Useful whenever \code{sdc_log()} is called from within a function, or for
+nested \code{sdc_log} calls. By default (FALSE) evaluation occurs in the
+global environment. See also \link[base]{source}.}
 }
 \value{
 \link{character} vector holding the path(s) of the written log file(s).
