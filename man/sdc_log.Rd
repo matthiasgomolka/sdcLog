@@ -23,10 +23,16 @@ afterwards).
 
 \item{append}{\link{logical} Indicates whether to append an existing log file.}
 
-\item{local}{\link{logical|environment} Determines the evaluation environment.
-Useful whenever \code{sdc_log()} is called from within a function, or for
-nested \code{sdc_log} calls. By default (FALSE) evaluation occurs in the
-global environment. See also \link[base]{source}.}
+\item{local}{One of:
+\itemize{
+\item \link{logical} Indicates whether to evaluate within the global environment
+(FALSE) or the calling environment (TRUE).
+\item \link{environment} A specific evaluation environment.
+Determines the evaluation environment. Useful whenever \code{sdc_log()} is
+called from within a function, or for nested \code{sdc_log} calls. By default
+(FALSE) evaluation occurs in the global environment. See also
+\link[base]{source}.
+}}
 }
 \value{
 \link{character} vector holding the path(s) of the written log file(s).

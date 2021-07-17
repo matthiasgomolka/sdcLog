@@ -74,7 +74,7 @@ test_that("sdc_log() handles nested calls to sdc_log()", {
     readLines(log)
   )
 
-  expect_identical(actual, expected)
+  expect_vector(setdiff(actual, expected), ptype = character(), size = 0)
 })
 
 test_that("sdc_log() returns appropriate error", {
@@ -143,8 +143,8 @@ test_that("error in script is handled correctly", {
 })
 
 test_that("sdc_log() can be called from function", {
-  tf_in <- tempfile(fileext = ".R")
-  tf_out <- tempfile(fileext = ".txt")
+  tf_in <- "tempin.R"
+  tf_out <- "tempout.log"
 
   writeLines("print(bar)", tf_in)
 
@@ -156,8 +156,15 @@ test_that("sdc_log() can be called from function", {
     )
   }
 
-  expect_message(
-    foo(),
-    paste0("Log file for '", tf_in, "' written to '", tf_out, "'.")
-  )
+  expected <- paste0("Log file for '", tf_in, "' written to '", tf_out, "'.")
+  output <- expect_message(foo(), expected)
+
+  if (file.exists(tf_in)) {
+    file.remove(tf_in)
+  }
+  if (file.exists(tf_out)) {
+    file.remove(tf_out)
+  }
+
+  output
 })
