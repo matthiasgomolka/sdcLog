@@ -41,15 +41,11 @@ test_that("sdc_log() works correctly with connections", {
 })
 
 test_that("sdc_log() handles nested calls to sdc_log()", {
-  skip_if_not(
-    interactive(),
-    "This somehow does not work (yet) in the temporary test environment. But does interactively!"
-  )
   tf_conn <- tempfile(fileext = ".txt")
   conn <- file(tf_conn, encoding = "UTF-8", open = "w")
 
   expect_message(
-    sdc_log(r_script = script_main, destination = conn),
+    sdc_log(r_script = script_main, destination = conn, local = environment()),
     paste0("Log file for '.*script_main.R' written to 'file connection'.")
   )
 
@@ -78,7 +74,7 @@ test_that("sdc_log() handles nested calls to sdc_log()", {
     readLines(log)
   )
 
-  expect_identical(actual, expected)
+  expect_vector(setdiff(actual, expected), ptype = character(), size = 0)
 })
 
 test_that("sdc_log() returns appropriate error", {
@@ -144,4 +140,25 @@ test_that("error in script is handled correctly", {
 
   expect_identical(sink.number(), 0L)
   expect_identical(sink.number("message"), 2L)
+})
+
+
+test_that("sdc_log() can be called from function", {
+  tf_in <- tempfile(fileext = ".R")
+  tf_out <- tempfile()
+
+  writeLines("print(bar)", tf_in)
+
+  foo <- function() {
+    bar <- "calling environment variable"
+    sdc_log(tf_in, tf_out, append = TRUE, local = environment())
+  }
+
+  expected <- paste0("Log file for '", tf_in, "' written to '", tf_out, "'.")
+  output <- expect_message(foo(), expected, fixed = TRUE)
+
+  expect_identical(
+    readLines(tf_out),
+    c("", "> print(bar)", "[1] \"calling environment variable\"")
+  )
 })

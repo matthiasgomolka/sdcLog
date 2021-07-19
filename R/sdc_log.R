@@ -6,17 +6,27 @@
 #'
 #'   - [character] Path of the log file to be used.
 #'   - [file] connection to which the log should be written. This is especially
-#'   useful, when you have nested calls to `sdc_log()` and want to write
-#'   everything into the same log file. Then, create a single [file] connection
-#'   and provide this connection to all calls to `sdc_log()` (and close it
-#'   afterwards).
+#'     useful, when you have nested calls to `sdc_log()` and want to write
+#'     everything into the same log file. Then, create a single [file]
+#'     connection and provide this connection to all calls to `sdc_log()` (and
+#'     close it afterwards).
 #' @param replace [logical] Indicates whether to replace an existing log file.
 #' @param append [logical] Indicates whether to append an existing log file.
+#' @param local One of:
+#'
+#'   - [logical] Indicates whether to evaluate within the global environment
+#'     (`FALSE`) or the calling environment (`TRUE`).
+#'   - [environment] A specific evaluation environment. Determines the
+#'     evaluation environment. Useful whenever `sdc_log()` is called from within
+#'     a function, or for nested `sdc_log()` calls. By default (`FALSE`)
+#'     evaluation occurs in the global environment. See also [source].
 #' @return [character] vector holding the path(s) of the written log file(s).
 #' @importFrom checkmate assert_character assert_logical assert_file
 #'   test_file_exists
 #' @export
-sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE) {
+sdc_log <- function(
+  r_script, destination, replace = FALSE, append = FALSE, local = FALSE
+) {
 
   # check inputs
   checkmate::assert_string(r_script)
@@ -81,7 +91,8 @@ sdc_log <- function(r_script, destination, replace = FALSE, append = FALSE) {
       skip.echo = 0,
       max.deparse.length = Inf,
       width.cutoff = 80,
-      chdir = FALSE
+      chdir = FALSE,
+      local = local
     ),
     # on error, redirect output to console
     error = function(error) {
