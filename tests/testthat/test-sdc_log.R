@@ -142,29 +142,23 @@ test_that("error in script is handled correctly", {
   expect_identical(sink.number("message"), 2L)
 })
 
+
 test_that("sdc_log() can be called from function", {
-  tf_in <- "tempin.R"
-  tf_out <- "tempout.log"
+  tf_in <- tempfile(fileext = ".R")
+  tf_out <- tempfile()
 
   writeLines("print(bar)", tf_in)
 
   foo <- function() {
     bar <- "calling environment variable"
-    sdc_log(tf_in, tf_out,
-      append = TRUE,
-      local = environment()
-    )
+    sdc_log(tf_in, tf_out, append = TRUE, local = environment())
   }
 
   expected <- paste0("Log file for '", tf_in, "' written to '", tf_out, "'.")
-  output <- expect_message(foo(), expected)
+  output <- expect_message(foo(), expected, fixed = TRUE)
 
-  if (file.exists(tf_in)) {
-    file.remove(tf_in)
-  }
-  if (file.exists(tf_out)) {
-    file.remove(tf_out)
-  }
-
-  output
+  expect_identical(
+    readLines(tf_out),
+    c("", "> print(bar)", "[1] \"calling environment variable\"")
+  )
 })
