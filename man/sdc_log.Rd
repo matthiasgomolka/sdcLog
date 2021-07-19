@@ -4,7 +4,7 @@
 \alias{sdc_log}
 \title{Create Stata-like log files from R Scripts}
 \usage{
-sdc_log(r_script, destination, replace = FALSE, append = FALSE)
+sdc_log(r_script, destination, replace = FALSE, append = FALSE, local = FALSE)
 }
 \arguments{
 \item{r_script}{\link{character} Path of the R script to be run with logging.}
@@ -14,14 +14,24 @@ sdc_log(r_script, destination, replace = FALSE, append = FALSE)
 \item \link{character} Path of the log file to be used.
 \item \link{file} connection to which the log should be written. This is especially
 useful, when you have nested calls to \code{sdc_log()} and want to write
-everything into the same log file. Then, create a single \link{file} connection
-and provide this connection to all calls to \code{sdc_log()} (and close it
-afterwards).
+everything into the same log file. Then, create a single \link{file}
+connection and provide this connection to all calls to \code{sdc_log()} (and
+close it afterwards).
 }}
 
 \item{replace}{\link{logical} Indicates whether to replace an existing log file.}
 
 \item{append}{\link{logical} Indicates whether to append an existing log file.}
+
+\item{local}{One of:
+\itemize{
+\item \link{logical} Indicates whether to evaluate within the global environment
+(\code{FALSE}) or the calling environment (\code{TRUE}).
+\item \link{environment} A specific evaluation environment. Determines the
+evaluation environment. Useful whenever \code{sdc_log()} is called from within
+a function, or for nested \code{sdc_log()} calls. By default (\code{FALSE})
+evaluation occurs in the global environment. See also \link{source}.
+}}
 }
 \value{
 \link{character} vector holding the path(s) of the written log file(s).
