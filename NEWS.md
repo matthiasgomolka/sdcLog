@@ -11,6 +11,8 @@
 * `as.data.table()` in `sdc_*()` functions is now conditional so that it's only
   called when `data` is not a `data.table` yet. This can save memory and improve
   performance.
+* `sdc_model()` gained the new argument `local` (like in `source()`), which
+  allows new use cases. Thanks to Pantelis Karapanagiotis for the PR!
 
 # sdcLog 0.2.0
 
