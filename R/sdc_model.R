@@ -64,8 +64,13 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # ... and extract the model_frame / model_dt
   model_vars <- setdiff(
     names(data_model),
-    c(".fitted", ".se.fit", ".resid", ".hat", ".sigma", ".cooksd", ".std.resid",
-      ".rownames", ".cluster")
+    c(
+      ".fitted", ".se.fit", ".resid", ".hat", ".sigma", ".cooksd", ".std.resid",
+      ".rownames", ".cluster",
+      id_var
+      # exclude id_var because it will will be added below anyway. It might be
+      # listed here, if it's used for clustering in felm() for example.
+    )
   )
   names(model_vars) <- model_vars
 
