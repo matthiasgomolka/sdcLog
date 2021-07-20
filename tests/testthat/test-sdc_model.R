@@ -1,4 +1,5 @@
 library(data.table)
+library(lfe)
 
 # create dt for model tests ----
 set.seed(1)
@@ -401,7 +402,6 @@ test_that("sdc_model() returns/works correctly", {
 
 # test arguments in sdc_model ----
 
-# test that sdc_model returns appropriate error
 test_that("sdc_model() returns appropriate error", {
 
   # error für nichtexistierende Elemente
@@ -456,3 +456,23 @@ test_that("sdc_model() returns appropriate error", {
   )
 })
 
+
+# test support for felm ----
+# simple case (lm)
+options(sdc.id_var = "id")
+felm_1 <- felm(y ~ x_1 + x_2 | 0 | 0 | 0, data = model_test_dt)
+test_that("sdc_model() returns/works correctly for simple felm", {
+  expect_equal(
+    sdc_model(model_test_dt, felm_1, "id"),
+    ref_1
+  )
+})
+
+# case where id_var is used for clustering
+felm_2 <- felm(y ~ x_1 + x_2 | id | 0 | id, data = model_test_dt)
+test_that("sdc_model() returns/works correctly for simple felm", {
+  expect_equal(
+    sdc_model(model_test_dt, felm_2, "id"),
+    ref_1
+  )
+})

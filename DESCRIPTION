@@ -1,6 +1,6 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data Centers
-Version: 0.2.0.3
+Version: 0.2.0.4
 Authors@R: 
     c(person(given = "Matthias",
              family = "Gomolka",
@@ -38,6 +38,7 @@ Suggests:
     devtools,
     here,
     knitr,
+    lfe,
     rmarkdown,
     skimr,
     spelling,

@@ -13,6 +13,10 @@
   performance.
 * `sdc_model()` gained the new argument `local` (like in `source()`), which
   allows new use cases. Thanks to Pantelis Karapanagiotis for the PR!
+  
+### Bug Fixes
+* `sdc_model()` no longer returns wrong results for `felm` models when the
+  `id_var` is used for clustering.
 
 # sdcLog 0.2.0
 
