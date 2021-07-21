@@ -14,3 +14,4 @@
 ^CRAN-RELEASE$
 ^cran-comments\.md$
 ^presentations$
+^prepare_for_cran.R$

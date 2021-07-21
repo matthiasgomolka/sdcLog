@@ -1,6 +1,6 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data Centers
-Version: 0.2.0.4
+Version: 0.3.0
 Authors@R: 
     c(person(given = "Matthias",
              family = "Gomolka",
@@ -11,16 +11,15 @@ Authors@R:
              role = "aut"),
       person(given = "Pantelis",
              family = "Karapanagiotis",
-             role = c("ctb"),
+             role = "ctb",
              email = "pikappa.devel@gmail.com"))
-Description: Tools for researchers to explicitly show that their
-    results comply to rules for statistical disclosure control imposed by
-    research data centers. These tools help in checking descriptive
-    statistics and models and in calculating extreme values that are not
-    individual data. Also included is a simple function to create log
-    files. The methods used here are described in the "Guidelines for the
-    checking of output based on microdata research" by Bond, Brandt, and
-    de Wolf (2015)
+Description: Tools for researchers to explicitly show that their results
+    comply to rules for statistical disclosure control imposed by research
+    data centers. These tools help in checking descriptive statistics and
+    models and in calculating extreme values that are not individual data.
+    Also included is a simple function to create log files. The methods
+    used here are described in the "Guidelines for the checking of output
+    based on microdata research" by Bond, Brandt, and de Wolf (2015)
     <https://ec.europa.eu/eurostat/cros/system/files/dwb_standalone-document_output-checking-guidelines.pdf>.
 License: GPL-3
 URL: https://github.com/matthiasgomolka/sdcLog
@@ -32,11 +31,9 @@ Imports:
     checkmate (>= 2.0.0),
     crayon (>= 1.3.4),
     data.table (>= 1.12.8),
-    methods
+    stats,
+    utils
 Suggests: 
-    covr (>= 3.5.0),
-    devtools,
-    here,
     knitr,
     lfe,
     rmarkdown,

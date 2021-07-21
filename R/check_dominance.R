@@ -1,5 +1,6 @@
 #' Internal function which creates cross-tables with number of distinct id's
 #' @inheritParams common_arguments
+#' @noRd
 check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
   agg_val_var <- value_share <- NULL # removes NSE notes in R CMD check
 

@@ -1,7 +1,7 @@
 #' Internal function which creates cross-tables with number of distinct id's
 #' @inheritParams common_arguments
 #' @importFrom data.table uniqueN
-
+#' @noRd
 check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
   distinct_ids <- NULL # to silence NSE notes in RCDM check
 

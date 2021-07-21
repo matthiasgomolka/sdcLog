@@ -107,6 +107,7 @@ sdc_min_max <- function(
 
 
 #' @importFrom utils tail head
+#' @noRd
 find_SD <- function(data, type, n_obs, max_obs, id_var, val_var, by) {
   SD_fun <- switch(type, min = utils::tail, max = utils::head)
 
@@ -128,6 +129,7 @@ find_SD <- function(data, type, n_obs, max_obs, id_var, val_var, by) {
 }
 
 #' @importFrom data.table .SD
+#' @noRd
 find_SD_problems <- function(data, SD_fun, n_obs, id_var, val_var, by) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
