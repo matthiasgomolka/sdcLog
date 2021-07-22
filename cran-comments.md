@@ -10,7 +10,10 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 notes
+
+Package suggested but not available for checking: ‘lfe’
 
 ## Comments
-* Package update containing bug fixes and other improvements.
+* Resubmission of release 0.3.0. Only change: Package ‘lfe’ is now used 
+  conditionally.
