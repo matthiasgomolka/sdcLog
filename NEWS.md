@@ -2,10 +2,11 @@
 
 ### Possibly Breaking Changes
 
-* The objects returned by sdc_* functions now contain options and settings in a
-  much better structure. Before, it was a bunch of strings which could be pasted
-  together. Now, it's a list holding only the relevant values. The print output
-  remained almost identical (minor improvements) due to new print methods.
+* The objects returned by `sdc_*()` functions now contain options and settings
+  in a much better structure. Before, it was a bunch of strings which could be
+  pasted together. Now, it's a list holding only the relevant values. The print
+  output remained almost identical (minor improvements) due to new print 
+  methods.
 
 ### Improvements
 * `as.data.table()` in `sdc_*()` functions is now conditional so that it's only
