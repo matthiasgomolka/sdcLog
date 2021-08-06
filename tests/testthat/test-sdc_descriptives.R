@@ -147,6 +147,7 @@ test_that("sdc_descriptives() works without 'val_var'", {
 # handling zeros ----
 test_that("zeros are handles correctly" , {
   data("sdc_descriptives_DT")
+  sdc_descriptives_DT_copy <- sdc_descriptives_DT
 
   descriptives_ref_5 <- structure(
     list(
@@ -177,6 +178,9 @@ test_that("zeros are handles correctly" , {
     descriptives_ref_5,
     ignore_attr = TRUE
   ) |> expect_silent()
+
+  # assert that input data remained unchanged
+  expect_identical(sdc_descriptives_DT, sdc_descriptives_DT_copy)
 })
 
 
@@ -397,4 +401,11 @@ test_that("missing ID's are handled correctly (by case)", {
     paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
     fixed = TRUE
   )
+})
+
+
+# data remains unchanged ----
+test_that("data remains unchanged"{
+  data("sdc_descriptives_DT")
+
 })
