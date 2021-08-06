@@ -179,7 +179,7 @@ test_that("zeros are handles correctly" , {
     ignore_attr = TRUE
   ) |> expect_silent()
 
-  # assert that input data remained unchanged
+  # assert that input data remains unchanged
   expect_identical(sdc_descriptives_DT, sdc_descriptives_DT_copy)
 })
 
@@ -401,11 +401,4 @@ test_that("missing ID's are handled correctly (by case)", {
     paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
     fixed = TRUE
   )
-})
-
-
-# data remains unchanged ----
-test_that("data remains unchanged"{
-  data("sdc_descriptives_DT")
-
 })
