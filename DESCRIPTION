@@ -1,6 +1,6 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data Centers
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: 
     c(person(given = "Matthias",
              family = "Gomolka",

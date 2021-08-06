@@ -1,130 +1,115 @@
 # test setup ####
 library(data.table)
-library(sdcLog)
 
-set.seed(1)
-n <- 20L
-test_dt <- data.table(
-  id = rep_len(LETTERS[1L:10L], n),
-  year = sort(rep_len(2019L:2020L, n)),
-  val = runif(n, min = 1, max = 10),
-  key = "id"
-)
-test_dt[, sector := sort(rep_len(paste0("S", 1L:2L), n))]
-test_dt[id == "A" & year == 2019L, val := NA_real_]
-test_dt[id %chin% c("A", "F") & year == 2020L, val := val * 50]
-setcolorder(test_dt, c("id", "sector", "year"))
-test_dt <- as.data.frame(test_dt, stringsAsFactors = FALSE)
-
-# test check_distinct_ids ----
-
-## functionality tests
+# simple cases ----
 distinct_ids_ref_1 <- structure(
-  setindexv(data.table(distinct_ids = 10L), "distinct_ids"),
+  data.table(distinct_ids = 10L),
   class = c("sdc_distinct_ids", "data.table", "data.frame")
 )
-distinct_ids_ref_2 <- structure(
-  setindexv(data.table(
-    sector = c("S1", "S2"), distinct_ids = 5L, key = "sector"
-  ),
-  "distinct_ids"
-  ),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-distinct_ids_ref_3 <- structure(
-  setindexv(data.table(
-    sector = c("S1", "S1", "S2", "S2"),
-    year = rep(2019L:2020L, 2L),
-    distinct_ids = c(4L, rep(5L, 3L)),
-    key = c("sector", "year")
-  ),
-  "distinct_ids"
-  ),
-  class = c("sdc_distinct_ids", "data.table", "data.frame")
-)
-
-# test check_dominance ----
-
-## functionality tests
 dominance_ref_1 <- structure(
-  data.table(value_share = 0.8111461969431633),
+  data.table(value_share = 0.7413301),
   class = c("sdc_dominance", "data.table", "data.frame")
 )
-dominance_ref_2 <- structure(
-  data.table(
-    sector = c("S2", "S1"),
-    value_share = c(0.8888667400230709, 0.8344149248582274)
-  ),
-  class = c("sdc_dominance", "data.table", "data.frame")
-)
-dominance_ref_3 <- structure(
-  data.table(
-    sector = c("S2", "S1", "S1", "S2"),
-    year = c(rep(2020L, 2L), rep(2019L, 2L)),
-    value_share = c(0.9345687842347639, 0.9136823121466332, 0.6815010551185098, 0.5506964573607419)
-  ),
-  class = c("sdc_dominance", "data.table", "data.frame")
-)
-
-
-# test sdc_descriptives ####
-# descriptives setup 1 ####
 descriptives_ref_1 <- structure(
   list(
     options = sdcLog:::list_options(),
-    settings = sdcLog:::list_arguments("id", "val", zero_as_NA = FALSE),
+    settings = sdcLog:::list_arguments("id", "val_1", zero_as_NA = FALSE),
     distinct_ids = distinct_ids_ref_1,
     dominance = dominance_ref_1
   ),
   class = c("sdc_descriptives", "list")
 )
 
-expect_identical(
-  sdc_descriptives(test_dt, "id", "val"),
-  descriptives_ref_1
-)
-
-# descriptives setup 2 ####
-descriptives_ref_2 <- structure(
-  list(
-    options = list_options(),
-    settings = list_arguments(id_var = "id", val_var = "val", by = "sector", zero_as_NA = FALSE),
-    distinct_ids = distinct_ids_ref_2,
-    dominance = dominance_ref_2
-  ),
-  class = c("sdc_descriptives", "list")
-)
+test_that("sdc_descriptives works in simple cases", {
+  data("sdc_descriptives_DT")
 
 
-# descriptives tests 2 ####
+
+  expect_equal(
+    sdc_descriptives(sdc_descriptives_DT, "id", "val_1"),
+    descriptives_ref_1,
+    ignore_attr = TRUE
+  )
+})
+
+
+# medium cases ----
 test_that("sdc_descriptives works in medium cases", {
-  expect_warning(
-    expect_identical(
-      sdc_descriptives(test_dt, "id", "val", by = "sector"),
-      descriptives_ref_2
+  data("sdc_descriptives_DT")
+
+  distinct_ids_ref_2 <- structure(
+    data.table(
+      sector = c("S1", "S2") |> factor(),
+      distinct_ids = 4L:5L,
+      key = "sector"
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_2 <- structure(
+    data.table(
+      sector = c("S2", "S1") |> factor(),
+      value_share = c(0.84650585, 0.60400376)
+    ),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+  descriptives_ref_2 <- structure(
+    list(
+      options = list_options(),
+      settings = list_arguments(id_var = "id", val_var = "val_1", by = "sector", zero_as_NA = FALSE),
+      distinct_ids = distinct_ids_ref_2,
+      dominance = dominance_ref_2
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+  expect_warning(
+    expect_equal(
+      sdc_descriptives(sdc_descriptives_DT[!(id == "A")], "id", "val_1", by = "sector"),
+      descriptives_ref_2,
+      ignore_attr = TRUE
+    ),
+    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
     fixed = TRUE
   )
 })
 
-# descriptives setup 3 ####
-descriptives_ref_3 <- structure(
-  list(
-    options = sdcLog:::list_options(),
-    settings = list_arguments(id_var = "id", val_var = "val", by = c("sector", "year"), zero_as_NA = FALSE),
-    distinct_ids = distinct_ids_ref_3,
-    dominance = dominance_ref_3
-  ),
-  class = c("sdc_descriptives", "list")
-)
 
-# descriptives tests 3 ####
+# complex cases ----
 test_that("sdc_descriptives works in complex cases", {
+  data("sdc_descriptives_DT")
+
+  distinct_ids_ref_3 <- structure(
+    data.table(
+      sector = c("S1", "S1", "S2", "S2") |> factor(),
+      year = rep(2019L:2020L, 2L),
+      distinct_ids = c(4L, rep(5L, 3L)),
+      key = c("sector", "year")
+    ),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_3 <- structure(
+    data.table(
+      sector = c("S2", "S1", "S1", "S2") |> factor(),
+      year = c(rep(2020L, 2L), rep(2019L, 2L)),
+      value_share = c(0.90563139, 0.87768517, 0.6815010551185098, 0.5506964573607419)
+    ),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+
+  descriptives_ref_3 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = list_arguments(id_var = "id", val_var = "val_1", by = c("sector", "year"), zero_as_NA = FALSE),
+      distinct_ids = distinct_ids_ref_3,
+      dominance = dominance_ref_3
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
   warnings <- capture_warnings(
-    expect_identical(
-      sdc_descriptives(test_dt, "id", "val", by = c("sector", "year")),
-      descriptives_ref_3
+    expect_equal(
+      sdc_descriptives(sdc_descriptives_DT, "id", "val_1", by = c("sector", "year")),
+      descriptives_ref_3,
+      ignore_attr = TRUE
     )
   )
   expect_match(
@@ -133,62 +118,71 @@ test_that("sdc_descriptives works in complex cases", {
   )
 })
 
-options(sdc.info_level = 2)
-descriptives_ref_4 <- structure(
-  list(
-    options = sdcLog:::list_options(),
-    settings = sdcLog:::list_arguments("id"),
-    distinct_ids = distinct_ids_ref_1,
-    dominance = structure(
-      data.table(value_share = NA_real_),
-      class = c("sdc_dominance", "data.table", "data.frame")
-    )
-  ),
-  class = c("sdc_descriptives", "list")
-)
+
+# no val_var ----
 test_that("sdc_descriptives() works without 'val_var'", {
-  expect_identical(
-    sdc_descriptives(test_dt, "id"),
-    descriptives_ref_4
+  data("sdc_descriptives_DT")
+  options(sdc.info_level = 2)
+
+  descriptives_ref_4 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments("id"),
+      distinct_ids = distinct_ids_ref_1,
+      dominance = structure(
+        data.table(value_share = NA_real_),
+        class = c("sdc_dominance", "data.table", "data.frame")
+      )
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+  expect_equal(
+    sdc_descriptives(sdc_descriptives_DT, "id"),
+    descriptives_ref_4,
+    ignore_attr = TRUE
   )
 })
+
 
 # handling zeros ----
-descriptives_ref_5 <- structure(
-  list(
-    options = sdcLog:::list_options(),
-    settings = sdcLog:::list_arguments(
-      "id", "val", zero_as_NA = TRUE
-    ),
-    distinct_ids = distinct_ids_ref_1,
-    dominance = dominance_ref_1
-  ),
-  class = c("sdc_descriptives", "list")
-)
-
-test_dt <- as.data.table(test_dt)
-test_dt[is.na(val), val := 0]
-
 test_that("zeros are handles correctly" , {
-  expect_message(
-    expect_equal(
-      sdc_descriptives(test_dt, "id", "val"),
-      descriptives_ref_5
+  data("sdc_descriptives_DT")
+
+  descriptives_ref_5 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments(
+        "id", "val_2", zero_as_NA = TRUE
+      ),
+      distinct_ids = distinct_ids_ref_1,
+      dominance = structure(
+        data.table(value_share = 0.35958732),
+        class = c("sdc_dominance", "data.table", "data.frame")
+      )
     ),
-    "A share of 0.05 of 'val_var' are zero. These will be treated as 'NA'.",
+    class = c("sdc_descriptives", "list")
+  )
+
+  expect_equal(
+    sdc_descriptives(sdc_descriptives_DT, "id", "val_2"),
+    descriptives_ref_5,
+    ignore_attr = TRUE
+  ) |> expect_message(
+    "A share of 0.2 of 'val_var' are zero. These will be treated as 'NA'.",
     fixed = TRUE
   )
-  expect_silent(
-    expect_equal(
-      sdc_descriptives(test_dt, "id", "val", zero_as_NA = TRUE),
-      descriptives_ref_5
-    )
-  )
+
+  expect_equal(
+    sdc_descriptives(sdc_descriptives_DT, "id", "val_2", zero_as_NA = TRUE),
+    descriptives_ref_5,
+    ignore_attr = TRUE
+  ) |> expect_silent()
 })
 
 
-# test that sdc_descriptives returns appropriate error
+# errors ----
 test_that("sdc_descriptives() returns appropriate error", {
+  data("sdc_descriptives_DT")
 
   # throw error if data is not a data.frame
   expect_error(
@@ -205,37 +199,37 @@ test_that("sdc_descriptives() returns appropriate error", {
 
   # throw error if specified variables are not in data
   expect_error(
-    sdc_descriptives(test_dt, "wrong_id", "val_1"),
+    sdc_descriptives(sdc_descriptives_DT, "wrong_id", "val_1"),
     paste0(
-      "Assertion on 'id_var' failed: Must be a subset of {'id','sector',",
-      "'year','val'}, but is {'wrong_id'}."
+      "Assertion on 'id_var' failed: Must be a subset of {'id','id_na',",
+      "'sector','year','val_1','val_2'}, but is {'wrong_id'}."
     ),
     fixed = TRUE
   )
   expect_error(
-    sdc_descriptives(test_dt, "id", "wrong_val"),
+    sdc_descriptives(sdc_descriptives_DT, "id", "wrong_val"),
     paste0(
-      "Assertion on 'val_var' failed: Must be a subset of {'sector',",
-      "'year','val'}, but is {'wrong_val'}."
+      "Assertion on 'val_var' failed: Must be a subset of {'id_na',",
+      "'sector','year','val_1','val_2'}, but is {'wrong_val'}."
     ),
     fixed = TRUE
   )
   expect_error(
-    sdc_descriptives(test_dt, "id", "val", "wrong_by"),
+    sdc_descriptives(sdc_descriptives_DT, "id", "val_1", "wrong_by"),
     paste0(
-      "Assertion on 'by' failed: Must be a subset of {'sector','year'}, but is",
-      " {'wrong_by'}."
+      "Assertion on 'by' failed: Must be a subset of {'id_na','sector','year',",
+      "'val_2'}, but is {'wrong_by'}."
     ),
     fixed = TRUE
   )
 
   # error for elements unquoted
   expect_error(
-    sdc_descriptives(test_dt, id, "val_1"),
+    sdc_descriptives(sdc_descriptives_DT, id, "val_1"),
     "object 'id' not found"
   )
   expect_error(
-    sdc_descriptives(test_dt, "id", val_1),
+    sdc_descriptives(sdc_descriptives_DT, "id", val_1),
     "object 'val_1' not found"
   )
 
@@ -246,13 +240,161 @@ test_that("sdc_descriptives() returns appropriate error", {
     fixed = TRUE
   )
   expect_silent(
-    sdc_descriptives(test_dt, "id")
+    sdc_descriptives(sdc_descriptives_DT, "id")
   )
 
   options(sdc.id_var = NULL)
   expect_error(
-    sdc_descriptives(test_dt, val_var = "val"),
+    sdc_descriptives(sdc_descriptives_DT, val_var = "val_1"),
     "Assertion on 'id_var' failed: Must be of type 'string', not 'NULL'.",
+    fixed = TRUE
+  )
+})
+
+
+# missing ID's ----
+test_that("missing ID's are handled correctly (simple case)", {
+  data("sdc_descriptives_DT")
+  options(sdc.info_level = NULL)
+
+  distinct_ids_ref_6 <- structure(
+    data.table(distinct_ids = 8L),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_6 <- structure(
+    data.table(value_share = 0.054822016086913394),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+  descriptives_ref_6 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments("id_na", "val_1", zero_as_NA = FALSE),
+      distinct_ids = distinct_ids_ref_6,
+      dominance = dominance_ref_6
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
+  expect_equal(
+    sdc_descriptives(sdc_descriptives_DT[seq(2, 20, 2)], "id_na", "val_1"),
+    descriptives_ref_6,
+    ignore_attr = TRUE
+  )
+
+
+  distinct_ids_ref_7 <- structure(
+    data.table(distinct_ids = 9L),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_7 <- structure(
+    data.table(value_share = 0.8714379273090671),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+  descriptives_ref_7 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments("id_na", "val_1", zero_as_NA = FALSE),
+      distinct_ids = distinct_ids_ref_7,
+      dominance = dominance_ref_7
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+  DT_filled <- copy(sdc_descriptives_DT)
+  DT_filled[is.na(id_na), id_na := "X"]
+
+
+  expect_equal(
+    sdc_descriptives(DT_filled[seq(2, 20, 2)], "id_na", "val_1"),
+    descriptives_ref_7,
+    ignore_attr = TRUE
+  ) |> expect_warning(
+    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
+    fixed = TRUE
+  )
+})
+
+test_that("missing ID's are handled correctly (by case)", {
+  data("sdc_descriptives_DT")
+  options(sdc.info_level = 2)
+
+  distinct_ids_ref_8 <- structure(
+    data.table(
+      sector = factor(c("S1", "S2")),
+      distinct_ids = rep(4L, 2L)
+    ),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_8 <- structure(
+    data.table(
+      sector = factor(c("S1", "S2")),
+      value_share = c(0.12990197140157855, 0.08510201158264474)
+    ),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+  descriptives_ref_8 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments(
+        "id_na", "val_1", by = "sector", zero_as_NA = FALSE
+      ),
+      distinct_ids = distinct_ids_ref_8,
+      dominance = dominance_ref_8
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
+
+  expect_equal(
+    sdc_descriptives(
+      sdc_descriptives_DT[seq(2, 20, 2)],
+      "id_na",
+      "val_1",
+      by = "sector"
+    ),
+    descriptives_ref_8,
+    ignore_attr = TRUE
+  ) |> expect_warning(
+    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
+    fixed = TRUE
+  )
+
+
+  distinct_ids_ref_9 <- structure(
+    data.table(
+      sector = factor(c("S1", "S2")),
+      distinct_ids = rep(5L, 2L)
+    ),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_9 <- structure(
+    data.table(
+      sector = factor(c("S2", "S1")),
+      value_share = c(0.905631390, 0.877685169)
+    ),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+  descriptives_ref_9 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments(
+        "id_na", "val_1", by = "sector", zero_as_NA = FALSE
+      ),
+      distinct_ids = distinct_ids_ref_9,
+      dominance = dominance_ref_9
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
+  DT_filled <- copy(sdc_descriptives_DT)
+  DT_filled[is.na(id_na), id_na := "X"]
+
+
+  expect_equal(
+    sdc_descriptives(DT_filled[seq(2, 20, 2)], "id_na", "val_1", by = "sector"),
+    descriptives_ref_9,
+    ignore_attr = TRUE
+  ) |> expect_warning(
+    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
     fixed = TRUE
   )
 })

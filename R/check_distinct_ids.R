@@ -3,7 +3,7 @@
 #' @importFrom data.table uniqueN
 #' @noRd
 check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
-  distinct_ids <- NULL # to silence NSE notes in RCDM check
+  distinct_ids <- NULL # to silence NSE notes in RCMD check
 
   # handle the case where no val_var is provided
   if (is.null(val_var)) {
