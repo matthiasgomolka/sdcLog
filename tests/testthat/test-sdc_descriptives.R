@@ -51,7 +51,7 @@ test_that("sdc_descriptives works in medium cases", {
 
   distinct_ids_ref_2 <- structure(
     data.table(
-      sector = c("S1", "S2") |> factor(),
+      sector = factor(c("S1", "S2")),
       distinct_ids = 4L:5L,
       key = "sector"
     ),
@@ -59,7 +59,7 @@ test_that("sdc_descriptives works in medium cases", {
   )
   dominance_ref_2 <- structure(
     data.table(
-      sector = c("S2", "S1") |> factor(),
+      sector = factor(c("S2", "S1")),
       value_share = c(0.84650585, 0.60400376)
     ),
     class = c("sdc_dominance", "data.table", "data.frame")
@@ -91,7 +91,7 @@ test_that("sdc_descriptives works in complex cases", {
 
   distinct_ids_ref_3 <- structure(
     data.table(
-      sector = c("S1", "S1", "S2", "S2") |> factor(),
+      sector = factor(c("S1", "S1", "S2", "S2")),
       year = rep(2019L:2020L, 2L),
       distinct_ids = c(4L, rep(5L, 3L)),
       key = c("sector", "year")
@@ -100,7 +100,7 @@ test_that("sdc_descriptives works in complex cases", {
   )
   dominance_ref_3 <- structure(
     data.table(
-      sector = c("S2", "S1", "S1", "S2") |> factor(),
+      sector = factor(c("S2", "S1", "S1", "S2")),
       year = c(rep(2020L, 2L), rep(2019L, 2L)),
       value_share = c(0.90563139, 0.87768517, 0.6815010551185098, 0.5506964573607419)
     ),
@@ -176,20 +176,22 @@ test_that("zeros are handles correctly" , {
     class = c("sdc_descriptives", "list")
   )
 
-  expect_equal(
-    sdc_descriptives(sdc_descriptives_DT, "id", "val_2"),
-    descriptives_ref_5,
-    ignore_attr = TRUE
-  ) |> expect_message(
+  expect_message(
+    expect_equal(
+      sdc_descriptives(sdc_descriptives_DT, "id", "val_2"),
+      descriptives_ref_5,
+      ignore_attr = TRUE
+    ),
     "A share of 0.2 of 'val_var' are zero. These will be treated as 'NA'.",
     fixed = TRUE
   )
 
-  expect_equal(
-    sdc_descriptives(sdc_descriptives_DT, "id", "val_2", zero_as_NA = TRUE),
-    descriptives_ref_5,
-    ignore_attr = TRUE
-  ) |> expect_silent()
+  expect_silent(
+    expect_equal(
+      sdc_descriptives(sdc_descriptives_DT, "id", "val_2", zero_as_NA = TRUE),
+      descriptives_ref_5,
+      ignore_attr = TRUE
+    ))
 
   # assert that input data remains unchanged
   expect_identical(sdc_descriptives_DT, sdc_descriptives_DT_copy)
@@ -319,11 +321,12 @@ test_that("missing ID's are handled correctly (simple case)", {
   DT_filled[is.na(id_na), id_na := "X"]
 
 
-  expect_equal(
-    sdc_descriptives(DT_filled[seq(2, 20, 2)], "id_na", "val_1"),
-    descriptives_ref_7,
-    ignore_attr = TRUE
-  ) |> expect_warning(
+  expect_warning(
+    expect_equal(
+      sdc_descriptives(DT_filled[seq(2, 20, 2)], "id_na", "val_1"),
+      descriptives_ref_7,
+      ignore_attr = TRUE
+    ),
     paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
     fixed = TRUE
   )
@@ -360,16 +363,17 @@ test_that("missing ID's are handled correctly (by case)", {
   )
 
 
-  expect_equal(
-    sdc_descriptives(
-      sdc_descriptives_DT[seq(2, 20, 2)],
-      "id_na",
-      "val_1",
-      by = "sector"
+  expect_warning(
+    expect_equal(
+      sdc_descriptives(
+        sdc_descriptives_DT[seq(2, 20, 2)],
+        "id_na",
+        "val_1",
+        by = "sector"
+      ),
+      descriptives_ref_8,
+      ignore_attr = TRUE
     ),
-    descriptives_ref_8,
-    ignore_attr = TRUE
-  ) |> expect_warning(
     paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
     fixed = TRUE
   )
@@ -405,11 +409,12 @@ test_that("missing ID's are handled correctly (by case)", {
   DT_filled[is.na(id_na), id_na := "X"]
 
 
-  expect_equal(
-    sdc_descriptives(DT_filled[seq(2, 20, 2)], "id_na", "val_1", by = "sector"),
-    descriptives_ref_9,
-    ignore_attr = TRUE
-  ) |> expect_warning(
+  expect_warning(
+    expect_equal(
+      sdc_descriptives(DT_filled[seq(2, 20, 2)], "id_na", "val_1", by = "sector"),
+      descriptives_ref_9,
+      ignore_attr = TRUE
+    ),
     paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
     fixed = TRUE
   )

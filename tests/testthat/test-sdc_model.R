@@ -113,11 +113,13 @@ test_that("too few distinct id's are handled correctly", {
     class = c("sdc_model", "list")
   )
 
-  expect_equal(
-    sdc_model(sdc_model_DT, model_2, "id"),
-    ref_2,
-    ignore_attr = TRUE
-  ) |> expect_warning(
+
+  expect_warning(
+    expect_equal(
+      sdc_model(sdc_model_DT, model_2, "id"),
+      ref_2,
+      ignore_attr = TRUE
+    ),
     paste0(crayon::bold("DISCLOSURE PROBLEM: "),
            "Not enough distinct entities."
     ),
@@ -210,11 +212,13 @@ test_that("dummy problems are handled correctly", {
     class = c("sdc_model", "list")
   )
 
-  expect_identical(
-    sdc_model(sdc_model_DT, model_4, "id"),
-    ref_4,
-    ignore_attr = TRUE
-  ) |> expect_warning(
+
+  expect_warning(
+    expect_identical(
+      sdc_model(sdc_model_DT, model_4, "id"),
+      ref_4,
+      ignore_attr = TRUE
+    ),
     paste0(
       crayon::bold("DISCLOSURE PROBLEM: "),
       "Not enough distinct entities."
@@ -316,11 +320,13 @@ test_that("interaction with problems is handled correctly", {
     class = c("sdc_model", "list")
   )
 
-  expect_equal(
-    sdc_model(sdc_model_DT, model_6, "id"),
-    ref_6,
-    ignore_attr = TRUE
-  ) |> expect_warning(
+
+  expect_warning(
+    expect_equal(
+      sdc_model(sdc_model_DT, model_6, "id"),
+      ref_6,
+      ignore_attr = TRUE
+    ),
     paste(
       crayon::bold("DISCLOSURE PROBLEM:"),
       "Not enough distinct entities."
