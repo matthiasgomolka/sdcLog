@@ -86,11 +86,11 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
   }
 
   if (isTRUE(zero_as_NA)) {
-    data.table::set(
-      data,
-      i = which(data[[val_var]] == 0),
-      j = val_var,
-      value = NA
+    na_idx <- which(data[[val_var]] == 0)
+    data.table::set(data, i = na_idx, j = val_var, value = NA)
+
+    on.exit( # reset to zero in order to leave the data unchanged
+      data.table::set(data, i = na_idx, j = val_var, value = 0)
     )
   }
 

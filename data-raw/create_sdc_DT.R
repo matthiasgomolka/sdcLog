@@ -13,7 +13,8 @@ sdc_descriptives_DT <- data.table::data.table(
 sdc_descriptives_DT[, sector := as.factor(sort(rep_len(paste0("S", 1L:2L), n)))]
 sdc_descriptives_DT[id == "A" & year == 2019L, val_1 := NA_real_]
 sdc_descriptives_DT[id %in% c("A", "F") & year == 2020L, val_1 := val_1 * 33]
-data.table::setcolorder(sdc_descriptives_DT, c("id", "sector", "year"))
+sdc_descriptives_DT[!(id %in% c("A", "F")), id_na := id]
+data.table::setcolorder(sdc_descriptives_DT, c("id", "id_na", "sector", "year"))
 
 usethis::use_data(sdc_descriptives_DT, overwrite = TRUE)
 
