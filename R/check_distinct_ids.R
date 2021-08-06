@@ -11,15 +11,18 @@ check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
   }
 
   distinct_ids <- data[
-    i = !is.na(get(val_var)),
+    i = !is.na(get(id_var)) & !is.na(get(val_var)),
     j = list(distinct_ids = data.table::uniqueN(get(id_var))),
     keyby = by
   ][
     order(distinct_ids)
   ]
 
+  distinct_ids[distinct_ids == 0, distinct_ids := NA_integer_]
+
   structure(
     distinct_ids,
     class = c("sdc_distinct_ids", "data.table", "data.frame")
   )
 }
+
