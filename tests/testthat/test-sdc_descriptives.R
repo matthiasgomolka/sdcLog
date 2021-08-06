@@ -20,21 +20,25 @@ test_dt <- as.data.frame(test_dt, stringsAsFactors = FALSE)
 
 ## functionality tests
 distinct_ids_ref_1 <- structure(
-  data.table(distinct_ids = 10L),
+  setindexv(data.table(distinct_ids = 10L), "distinct_ids"),
   class = c("sdc_distinct_ids", "data.table", "data.frame")
 )
 distinct_ids_ref_2 <- structure(
-  data.table(
+  setindexv(data.table(
     sector = c("S1", "S2"), distinct_ids = 5L, key = "sector"
+  ),
+  "distinct_ids"
   ),
   class = c("sdc_distinct_ids", "data.table", "data.frame")
 )
 distinct_ids_ref_3 <- structure(
-  data.table(
+  setindexv(data.table(
     sector = c("S1", "S1", "S2", "S2"),
     year = rep(2019L:2020L, 2L),
     distinct_ids = c(4L, rep(5L, 3L)),
     key = c("sector", "year")
+  ),
+  "distinct_ids"
   ),
   class = c("sdc_distinct_ids", "data.table", "data.frame")
 )
@@ -43,13 +47,13 @@ distinct_ids_ref_3 <- structure(
 
 ## functionality tests
 dominance_ref_1 <- structure(
-  data.table(value_share = 0.811146196943163),
+  data.table(value_share = 0.8111461969431633),
   class = c("sdc_dominance", "data.table", "data.frame")
 )
 dominance_ref_2 <- structure(
   data.table(
     sector = c("S2", "S1"),
-    value_share = c(0.888866740023071, 0.834414924858227)
+    value_share = c(0.8888667400230709, 0.8344149248582274)
   ),
   class = c("sdc_dominance", "data.table", "data.frame")
 )
@@ -57,7 +61,7 @@ dominance_ref_3 <- structure(
   data.table(
     sector = c("S2", "S1", "S1", "S2"),
     year = c(rep(2020L, 2L), rep(2019L, 2L)),
-    value_share = c(0.934568784234764, 0.913682312146633, 0.68150105511851, 0.550696457360742)
+    value_share = c(0.9345687842347639, 0.9136823121466332, 0.6815010551185098, 0.5506964573607419)
   ),
   class = c("sdc_dominance", "data.table", "data.frame")
 )
@@ -75,7 +79,7 @@ descriptives_ref_1 <- structure(
   class = c("sdc_descriptives", "list")
 )
 
-expect_equal(
+expect_identical(
   sdc_descriptives(test_dt, "id", "val"),
   descriptives_ref_1
 )
@@ -95,7 +99,7 @@ descriptives_ref_2 <- structure(
 # descriptives tests 2 ####
 test_that("sdc_descriptives works in medium cases", {
   expect_warning(
-    expect_equal(
+    expect_identical(
       sdc_descriptives(test_dt, "id", "val", by = "sector"),
       descriptives_ref_2
     ),
@@ -118,7 +122,7 @@ descriptives_ref_3 <- structure(
 # descriptives tests 3 ####
 test_that("sdc_descriptives works in complex cases", {
   warnings <- capture_warnings(
-    expect_equal(
+    expect_identical(
       sdc_descriptives(test_dt, "id", "val", by = c("sector", "year")),
       descriptives_ref_3
     )

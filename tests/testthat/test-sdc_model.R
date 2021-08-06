@@ -46,24 +46,24 @@ ref_1 <- structure(
     options = list_options(),
     settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
-      data.table(distinct_ids = 10L),
+      setindexv(cols = "distinct_ids", data.table(distinct_ids = 10L)),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     ),
     terms = list(
       x_1 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_1 = "<non-zero>",
           distinct_ids = 10L,
           key = "x_1"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       x_2 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_2 = "<non-zero>",
           distinct_ids = 10L,
           key = "x_2"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       )
     )
@@ -74,7 +74,7 @@ ref_1 <- structure(
 
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
-  expect_equal(
+  expect_identical(
     sdc_model(as.data.frame(model_test_dt, stringsAsFactors = FALSE), model_1, "id"),
     ref_1
   )
@@ -96,32 +96,32 @@ ref_2 <- structure(
     options = list_options(),
     settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
-      data.table(distinct_ids = 4L),
+      setindexv(cols = "distinct_ids", data.table(distinct_ids = 4L)),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     ),
     terms = list(
       x_1 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_1 = "<non-zero>",
           distinct_ids = 4L,
           key = "x_1"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       x_2 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_2 = "<non-zero>",
           distinct_ids = 4L,
           key = "x_2"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       x_3 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_3 = "<non-zero>",
           distinct_ids = 4L,
           key = "x_3"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       )
     )
@@ -132,7 +132,7 @@ ref_2 <- structure(
 # test that sdc_model works correctly
 test_that("sdc_model() returns/works correctly", {
   expect_warning(
-    expect_equal(
+    expect_identical(
       sdc_model(model_test_dt, model_2, "id"),
       ref_2
     ),
@@ -157,39 +157,39 @@ ref_3 <- structure(
     options = list_options(),
     settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
-      data.table(distinct_ids = 10L),
+      setindexv(cols = "distinct_ids", data.table(distinct_ids = 10L)),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     ),
     terms = list(
       x_1 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_1 = "<non-zero>",
           distinct_ids = 10L,
           key = "x_1"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       x_2 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_2 = "<non-zero>",
           distinct_ids = 10L,
           key = "x_2"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       dummy_1 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           dummy_1 = c("M1", "M2"),
           distinct_ids = 10L
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame"),
         sorted = "dummy_1"
       ),
       dummy_2 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           dummy_2 = factor(paste0("Y", 1:8)),
           distinct_ids = 5L
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame"),
         sorted = "dummy_2"
       )
@@ -221,31 +221,31 @@ ref_4 <- structure(
     options = list_options(),
     settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
-      data.table(distinct_ids = 10L),
+      setindexv(cols = "distinct_ids", data.table(distinct_ids = 10L)),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     ),
     terms = list(
       x_1 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_1 = "<non-zero>",
           distinct_ids = 10L,
           key = "x_1"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       x_2 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           x_2 = "<non-zero>",
           distinct_ids = 10L,
           key = "x_2"
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       ),
       dummy_3 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           dummy_3 = c("FR", "BE", "DE", "ES"),
           distinct_ids = c(4L, rep(10L, 3L))
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame")
       )
     )
@@ -282,23 +282,23 @@ ref_5 <- structure(
     options = list_options(),
     settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
-      data.table(distinct_ids = 10L),
+      setindexv(cols = "distinct_ids", data.table(distinct_ids = 10L)),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     ),
     terms = list(
       dummy_1 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           dummy_1 = c("M1", "M2"),
           distinct_ids = 10L
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame"),
         sorted = "dummy_1"
       ),
       dummy_2 = structure(
-        data.table(
+        setindexv(cols = "distinct_ids", data.table(
           dummy_2 = factor(paste0("Y", 1:8)),
           distinct_ids = 5L
-        ),
+        )),
         class = c("sdc_distinct_ids", "data.table", "data.frame"),
         sorted = "dummy_2"
       ),
@@ -309,6 +309,7 @@ ref_5 <- structure(
           distinct_ids = 5L
         )]
         setkeyv(DT, "dummy_1:dummy_2")
+        setindexv(DT, "distinct_ids")
       },
       class = c("sdc_distinct_ids", "data.table", "data.frame")
       )
@@ -351,7 +352,7 @@ ref_6 <- structure(
     options = list_options(),
     settings = list_arguments(id_var = "id"),
     distinct_ids = structure(
-      data.table(distinct_ids = 10L),
+      setindexv(cols = "distinct_ids", data.table(distinct_ids = 10L)),
       class = c("sdc_distinct_ids", "data.table", "data.frame")
     ),
     terms = list(
@@ -373,6 +374,7 @@ ref_6 <- structure(
             distinct_ids
           )]
           setorder(DT, distinct_ids)
+          setindexv(DT, "distinct_ids")
         },
         class = c("sdc_distinct_ids", "data.table", "data.frame")
         )
@@ -463,7 +465,7 @@ if (requireNamespace("lfe", quietly = TRUE)) {
 
   felm_1 <- lfe::felm(y ~ x_1 + x_2 | 0 | 0 | 0, data = model_test_dt)
   test_that("sdc_model() returns/works correctly for simple felm", {
-    expect_equal(
+    expect_identical(
       sdc_model(model_test_dt, felm_1, "id"),
       ref_1
     )
@@ -471,7 +473,7 @@ if (requireNamespace("lfe", quietly = TRUE)) {
 
   # case where id_var is used for clustering
   felm_2 <- lfe::felm(y ~ x_1 + x_2 | id | 0 | id, data = model_test_dt)
-  test_that("sdc_model() returns/works correctly for simple felm", {
+  test_that("sdc_model() returns/works correctly for clustered felm", {
     expect_equal(
       sdc_model(model_test_dt, felm_2, "id"),
       ref_1
