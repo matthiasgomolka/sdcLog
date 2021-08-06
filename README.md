@@ -2,8 +2,7 @@
 [![CRAN
 release](https://www.r-pkg.org/badges/version/sdcLog)](https://CRAN.R-project.org/package=sdcLog)
 [![Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![R build
-status](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions)
+[![R-CMD-check](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions)
 [![](https://codecov.io/gh/matthiasgomolka/sdcLog/branch/main/graph/badge.svg)](https://codecov.io/gh/matthiasgomolka/sdcLog)
 [![Dependencies](https://tinyverse.netlify.com/badge/sdcLog)](https://cran.r-project.org/package=sdcLog)
 
