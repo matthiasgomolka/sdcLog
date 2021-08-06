@@ -419,3 +419,40 @@ test_that("missing ID's are handled correctly (by case)", {
     fixed = TRUE
   )
 })
+
+# no id's ----
+test_that("all ID's NA are handled correctly", {
+  data("sdc_descriptives_DT")
+  sdc_descriptives_DT[, id_all_na := NA_character_]
+  distinct_ids_ref_10 <- structure(
+    data.table(
+      sector = factor(character()),
+      distinct_ids = integer()
+    ),
+    class = c("sdc_distinct_ids", "data.table", "data.frame")
+  )
+  dominance_ref_10 <- structure(
+    data.table(
+      sector = factor(character()),
+      value_share = double()
+    ),
+    class = c("sdc_dominance", "data.table", "data.frame")
+  )
+  descriptives_ref_10 <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments(
+        "id_all_na", "val_1", by = "sector", zero_as_NA = FALSE
+      ),
+      distinct_ids = distinct_ids_ref_10,
+      dominance = dominance_ref_10
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
+  expect_equal(
+    sdc_descriptives(sdc_descriptives_DT, "id_all_na", "val_1", by = "sector"),
+    descriptives_ref_10,
+    ignore_attr = TRUE
+  )
+})
