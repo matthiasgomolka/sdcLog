@@ -23,13 +23,25 @@ descriptives_ref_1 <- structure(
 test_that("sdc_descriptives works in simple cases", {
   data("sdc_descriptives_DT")
 
-
-
   expect_equal(
     sdc_descriptives(sdc_descriptives_DT, "id", "val_1"),
     descriptives_ref_1,
     ignore_attr = TRUE
   )
+
+  expect_equal(
+    sdc_descriptives(as.data.frame(sdc_descriptives_DT), "id", "val_1"),
+    descriptives_ref_1,
+    ignore_attr = TRUE
+  )
+
+  if (requireNamespace("tibble", quietly = TRUE)) {
+    expect_equal(
+      sdc_descriptives(tibble::as.tibble(sdc_descriptives_DT), "id", "val_1"),
+      descriptives_ref_1,
+      ignore_attr = TRUE
+    )
+  }
 })
 
 
