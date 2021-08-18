@@ -10,7 +10,9 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
   class <- c("sdc_dominance", "data.table", "data.frame")
   # handle the case where no val_var is provided
   if (is.null(val_var)) {
-    return(structure(data.table(value_share = NA_real_), class = class))
+    return(
+      structure(data.table::data.table(value_share = NA_real_), class = class)
+    )
   }
 
   # missing_id_var = "structural" ----
@@ -56,7 +58,7 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
     .SDcols = c(value_share = "cum_value_share")
   ]
   data.table::setnames(dominance, old = "cum_value_share", new = "value_share")
-  setorderv(dominance, "value_share", order = -1L)
+  data.table::setorderv(dominance, "value_share", order = -1L)
 
   structure(dominance, class = class)
 }
