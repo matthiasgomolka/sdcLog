@@ -37,7 +37,7 @@ test_that("sdc_descriptives works in simple cases", {
 
   if (requireNamespace("tibble", quietly = TRUE)) {
     expect_equal(
-      sdc_descriptives(tibble::as.tibble(sdc_descriptives_DT), "id", "val_1"),
+      sdc_descriptives(tibble::as_tibble(sdc_descriptives_DT), "id", "val_1"),
       descriptives_ref_1,
       ignore_attr = TRUE
     )
