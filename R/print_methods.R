@@ -3,8 +3,12 @@
 #' @export
 print.sdc_distinct_ids <- function(x, ...) {
   distinct_ids <- NULL # removes NSE notes in R CMD check
+
+  var_names <- setdiff(names(x), "distinct_ids")
+  x_non_zero <- subset_zero(x, var_names)
+
   # with problems
-  if (nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
+  if (nrow(x_non_zero[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
     cat(crayon::red("Not enough distinct entities:\n"))
     print(data.table::as.data.table(x))
 
@@ -111,7 +115,11 @@ print.sdc_model <- function(x, ...) {
 
   n_problems <- vapply(
     append(list(distinct_ids = x[["distinct_ids"]]), x[["terms"]]),
-    function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]),
+    function(x) {
+      var_names <- setdiff(names(x), "distinct_ids")
+      x_non_zero <- subset_zero(x, var_names)
+      nrow(x_non_zero[distinct_ids < getOption("sdc.n_ids", 5L)])
+    },
     FUN.VALUE = integer(1L)
   )
   no_problems <- sum(n_problems) == 0L

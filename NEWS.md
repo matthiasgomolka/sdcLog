@@ -1,3 +1,9 @@
+# sdcLog 0.4.0
+
+### Bug Fixes
+
+* Fixed https://github.com/matthiasgomolka/sdcLog/issues/79.
+
 # sdcLog 0.3.0
 
 ### Possibly Breaking Changes

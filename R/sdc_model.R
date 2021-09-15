@@ -5,7 +5,7 @@
 #' @inheritParams common_arguments
 #' @param data [data.frame] which was used to build the model.
 #' @importFrom data.table is.data.table as.data.table fsetequal rbindlist :=
-#'   %flike%
+#'   %flike% set
 #' @importFrom broom augment tidy
 #' @importFrom stats model.frame na.omit
 #' @importFrom checkmate assert_data_frame assert_string
@@ -100,11 +100,12 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # This makes it possible to check the number of distinct id's for continuous
   # variables.
   for (var in other_vars) {
-    set(
+    data.table::set(
       model_dt,
       j = var,
       value = data.table::fifelse(model_dt[[var]] == 0L, "<zero>", "<non-zero>")
     )
+    attr(model_dt[[var]], "was_continuous") <- TRUE
   }
 
 
@@ -194,7 +195,11 @@ conditional_print <- function(list) {
 
   problems <- vapply(
     list,
-    function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L,
+    function(x) {
+      var_names <- setdiff(names(x), "distinct_ids")
+      x_non_zero <- subset_zero(x, var_names)
+      nrow(x_non_zero[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L
+    },
     FUN.VALUE = logical(1L)
   )
   for (i in seq_along(problems)) {
