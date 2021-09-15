@@ -1,39 +1,4 @@
 library(data.table)
-
-# create dt for model tests ----
-# set.seed(1)
-# n <- 80
-#
-# y <- rnorm(n, mean = 120, sd = 8)
-# model_test_dt <- data.table(
-#   id = rep_len(LETTERS[1L:10L], n),
-#   y = y,
-#   x_1 = jitter(y, factor = 10000),
-#   x_2 = jitter(y, factor = 15000),
-#   x_3 = jitter(y, factor = 50000),
-#   dummy_1 = sort(rep_len(paste0("M", 1L:2L), n)),
-#   dummy_2 = as.factor(rep_len(paste0("Y", 1L:8L), n)),
-#   dummy_3 = c(
-#     rep(rawToChar(as.raw(c(66, 69))), n / 4),
-#     rep(rawToChar(as.raw(68:69)), n / 4),
-#     rep(rawToChar(as.raw(c(69, 83))), 36),
-#     rep(rawToChar(as.raw(c(70, 82))), 4)
-#   ),
-#   key = "id"
-# )
-#
-# # create problems id's for x_3
-# model_test_dt[id %chin% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
-
-# characteristics variables:
-# id: id variable
-# y: dependent variable
-# independent variables:
-# x_1 & x_2: should lead to no problems at all in model
-# x_3: leads in model to problems with distinct id's
-# dummy_1 & dummy_2: lead in model to no problems at all
-# dummy_3: leads in model to problems with dummy variable
-
 data("sdc_model_DT")
 
 # create ref_1 and model_1 for reuse
@@ -412,7 +377,7 @@ if (requireNamespace("lfe", quietly = TRUE)) {
 
   # case where id_var is used for clustering
   test_that("sdc_model() returns/works correctly for clustered felm", {
-    data("sdc_model_DT")
+
 
     felm_2 <- lfe::felm(y ~ x_1 + x_2 | id | 0 | id, data = sdc_model_DT)
     expect_equal(
@@ -422,3 +387,61 @@ if (requireNamespace("lfe", quietly = TRUE)) {
     )
   })
 }
+
+test_that("Bug from #79 is solved", {
+  # x_id identifies an id
+  data("sdc_model_DT")
+  sdc_model_DT[id == "A", x_id := rnorm(.N)]
+  sdc_model_DT[id != "A", x_id := 0L]
+  model_all_but_one_zero <- lm(y ~ x_id, data = sdc_model_DT)
+
+  expect_warning(
+    checkmate::expect_list(
+      sdc_model(
+        data = sdc_model_DT,
+        model = model_all_but_one_zero,
+        id_var = "id"
+      )
+    ),
+    paste0(crayon::bold("DISCLOSURE PROBLEM: "),
+           "Not enough distinct entities."
+    ),
+    fixed = TRUE
+  )
+
+  # x_id does not identify an id
+  sdc_model_DT[id != "A", x_id := rnorm(.N)]
+  sdc_model_DT[id == "A", x_id := 0L]
+  ref_issue_79 <- structure(
+    list(
+      options = list_options(),
+      settings = list_arguments(id_var = "id"),
+      distinct_ids = structure(
+        data.table(distinct_ids = 10L),
+        class = c("sdc_distinct_ids", "data.table", "data.frame")
+      ),
+      terms = list(
+        x_id = structure(
+          data.table(
+            x_id = c("<zero>", "<non-zero>"),
+            distinct_ids = c(1, 9L)
+          ),
+          class = c("sdc_distinct_ids", "data.table", "data.frame")
+        )
+      )
+    ),
+    class = c("sdc_model", "list")
+  )
+
+  model_all_but_one_non_zero <- lm(y ~ x_id, data = sdc_model_DT)
+
+  expect_equal(
+    sdc_model(
+      data = sdc_model_DT,
+      model = model_all_but_one_non_zero,
+      id_var = "id"
+    ),
+    ref_issue_79,
+    ignore_attr = TRUE
+  )
+})
