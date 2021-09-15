@@ -52,11 +52,18 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
     DT <- DT[id_na == FALSE]
   }
 
-  dominance <- DT[
-    j = .SD[getOption("sdc.n_ids_dominance", 2L)],
-    keyby = by,
-    .SDcols = c(value_share = "cum_value_share")
-  ]
+  if (nrow(DT) == 0L) { # handle the edge case with no ID's
+    cols_to_keep <- setdiff(names(DT), c("id_na", "value_share", "value_share_na"))
+    dominance <- DT[, cols_to_keep, with = FALSE]
+
+  } else { # general case
+    dominance <- DT[
+      j = .SD[min(getOption("sdc.n_ids_dominance", 2L), .N)],
+      # min() necessary to handle the edge case with only a single ID
+      keyby = by,
+      .SDcols = "cum_value_share"
+    ]
+  }
   data.table::setnames(dominance, old = "cum_value_share", new = "value_share")
   data.table::setorderv(dominance, "value_share", order = -1L)
 

@@ -426,14 +426,14 @@ test_that("all ID's NA are handled correctly", {
   sdc_descriptives_DT[, id_all_na := NA_character_]
   distinct_ids_ref_10 <- structure(
     data.table(
-      sector = factor(character()),
+      sector = factor(character(), levels = c("S1", "S2")),
       distinct_ids = integer()
     ),
     class = c("sdc_distinct_ids", "data.table", "data.frame")
   )
   dominance_ref_10 <- structure(
     data.table(
-      sector = factor(character()),
+      sector = factor(character(), levels = c("S1", "S2")),
       value_share = double()
     ),
     class = c("sdc_dominance", "data.table", "data.frame")
@@ -453,6 +453,66 @@ test_that("all ID's NA are handled correctly", {
   expect_equal(
     sdc_descriptives(sdc_descriptives_DT, "id_all_na", "val_1", by = "sector"),
     descriptives_ref_10,
+    ignore_attr = TRUE
+  )
+})
+
+test_that("#77 is fixed", {
+  options(sdc.info_level = 2)
+
+  df <- data.table(id = "A", val = 1:4)
+  descriptives_ref_issue_77_a <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments(
+        "id", "val", zero_as_NA = FALSE
+      ),
+      distinct_ids = structure(
+        class = c("sdc_distinct_ids", "data.table", "data.frame"),
+        data.table(distinct_ids = 1L)
+      ),
+      dominance = structure(
+        class = c("sdc_dominance", "data.table", "data.frame"),
+        data.table(value_share = 1L)
+      )
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
+  warnings <- capture_warnings(
+    expect_equal(
+      sdc_descriptives(df, "id", val_var = "val"),
+      descriptives_ref_issue_77_a,
+      ignore_attr = TRUE
+    )
+  )
+  expect_match(
+    warnings,
+    "DISCLOSURE PROBLEM:.*(Not enough distinct entities|Dominant entities)\\."
+  )
+
+  df[, id := NA_character_]
+  descriptives_ref_issue_77_b <- structure(
+    list(
+      options = sdcLog:::list_options(),
+      settings = sdcLog:::list_arguments(
+        "id", "val", zero_as_NA = FALSE
+      ),
+      distinct_ids = structure(
+        class = c("sdc_distinct_ids", "data.table", "data.frame"),
+        data.table(distinct_ids = 0L)
+      ),
+      dominance = structure(
+        class = c("sdc_dominance", "data.table", "data.frame"),
+        data.table(value_share = double())
+      )
+    ),
+    class = c("sdc_descriptives", "list")
+  )
+
+  expect_equal(
+    sdc_descriptives(df, "id", val_var = "val"),
+    descriptives_ref_issue_77_b,
     ignore_attr = TRUE
   )
 })
