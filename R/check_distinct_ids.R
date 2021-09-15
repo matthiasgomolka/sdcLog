@@ -18,10 +18,6 @@ check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
     order(distinct_ids)
   ]
 
-  # If there is no id, nothing needs to be protected. If distinct_ids == NA, no
-  # warning will be thrown.
-  distinct_ids[distinct_ids == 0, distinct_ids := NA_integer_]
-
   structure(
     distinct_ids,
     class = c("sdc_distinct_ids", "data.table", "data.frame")
