@@ -157,7 +157,7 @@ test_that("sdc_descriptives() works without 'val_var'", {
 
 
 # handling zeros ----
-test_that("zeros are handles correctly" , {
+test_that("zeros are handles correctly", {
   data("sdc_descriptives_DT")
   sdc_descriptives_DT_copy <- sdc_descriptives_DT
 

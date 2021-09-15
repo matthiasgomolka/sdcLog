@@ -23,7 +23,10 @@ summary(reg_1b)
 
 (res <- sdc_model(dt, reg_1b))
 
-lapply(c(id = "id", idtest = "idtest"), function(x) sdc_model(dt, reg_1, id_var = x))
+lapply(
+    c(id = "id", idtest = "idtest"),
+    function(x) sdc_model(dt, reg_1, id_var = x)
+)
 
 
 ## How to get results
@@ -81,4 +84,3 @@ reg_8 <- lm(
 summary(reg_8)
 options(sdc.info_level = 1L)
 sdc_model(dt, reg_8)
-

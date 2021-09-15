@@ -3,7 +3,7 @@
 #'   a single warning.
 #' @param list [list] of elements of class `sdc_distinct_ids`.
 #' @importFrom data.table between
-#' @crayon bold
+#' @importFrom crayon bold
 #' @return NULL
 #' @noRd
 warn_distinct_ids <- function(list) {

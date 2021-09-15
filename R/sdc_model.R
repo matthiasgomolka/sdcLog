@@ -23,7 +23,7 @@
 #' sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
 #' @export
 sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
-  var_level <- var <- level <- term <- NULL # to silence NSE notes in RCDM check
+  var_level <- var <- level <- NULL # to silence NSE notes in RCDM check
 
   # check inputs
   # input checks ----
@@ -113,8 +113,8 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   # find the correct variable name corresponding to a level combination / term
   # from the model.
   var_levels <- lapply(model_vars, function(x) {
-    DT <- data.table::CJ(var = x, level = unique(as.character(model_dt[[x]])))
-    DT[, var_level := paste0(var, level)]
+    dt <- data.table::CJ(var = x, level = unique(as.character(model_dt[[x]])))
+    dt[, var_level := paste0(var, level)]
   })
   var_levels <- data.table::rbindlist(var_levels)
 
@@ -137,7 +137,6 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
 
   # drop empty items
   term_vars <- unique(term_vars[lengths(term_vars) > 0L])
-  # term_vars <- unique(term_vars)
   names(term_vars) <- vapply(
     term_vars, paste0, collapse = ":", FUN.VALUE = character(1L)
   )

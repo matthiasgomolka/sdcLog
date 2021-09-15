@@ -6,11 +6,6 @@ is_dummy <- function(x) {
   if (!is.atomic(x)) {
     return(FALSE)
   }
-  # handling complex vectors specifically because they cause a problem in the
-  # last if clause of this function
-  # if (is.complex(x)) {
-  #   return(FALSE)
-  # }
 
   if (is.logical(x)) {
     return(TRUE)

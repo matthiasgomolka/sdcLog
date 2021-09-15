@@ -4,7 +4,8 @@
 #' @noRd
 check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
   # remove NSE notes in R CMD check
-  agg_val_var <- value_share <- id_na <- cum_value_share <- value_share_na <- NULL
+  agg_val_var <- value_share <- id_na <- cum_value_share <- value_share_na <-
+    NULL
 
 
   class <- c("sdc_dominance", "data.table", "data.frame")
@@ -18,7 +19,7 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
   # missing_id_var = "structural" ----
   # distinguish between NA and non-NA id's and calculate the value_share for
   # each id and the cumulative value_share
-  DT <- data[
+  dt <- data[
     j = list(agg_val_var = sum(abs(get(val_var)), na.rm = TRUE)),
     keyby = c(id_var, by)
   ][
@@ -32,7 +33,7 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
   ]
 
   # calculate the value share of NA id's in order to subtract it later
-  na_shares <- DT[
+  na_shares <- dt[
     i = id_na == TRUE,
     j = list(id_na, value_share_na = value_share),
     keyby = by
@@ -42,22 +43,25 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
     # The following code may look unnecessarily complicated, but it's necessary
     # in order to handle by groups correctly.
     # We first merge the value_share_na, ...
-    DT <- merge(DT, na_shares, by = c("id_na", by), all.x = TRUE, sort = FALSE)
+    dt <- merge(dt, na_shares, by = c("id_na", by), all.x = TRUE, sort = FALSE)
     # ... then we fill this value forward. ROW ORDER MATTERS! Rows in DT are
     # ordered decreasingly by agg_val_var above.
-    data.table::setnafill(DT, type = "locf", cols = "value_share_na")
+    data.table::setnafill(dt, type = "locf", cols = "value_share_na")
     # Now we substract the share of NA from the cumulative value share.
-    DT[, cum_value_share := cum_value_share - value_share_na, keyby = by]
+    dt[, cum_value_share := cum_value_share - value_share_na, keyby = by]
     # Lastly, we delete rows where the id is NA.
-    DT <- DT[id_na == FALSE]
+    dt <- dt[id_na == FALSE]
   }
 
-  if (nrow(DT) == 0L) { # handle the edge case with no ID's
-    cols_to_keep <- setdiff(names(DT), c("id_na", "value_share", "value_share_na"))
-    dominance <- DT[, cols_to_keep, with = FALSE]
+  if (nrow(dt) == 0L) { # handle the edge case with no ID's
+    cols_to_keep <- setdiff(
+      names(dt),
+      c("id_na", "value_share", "value_share_na")
+    )
+    dominance <- dt[, cols_to_keep, with = FALSE]
 
   } else { # general case
-    dominance <- DT[
+    dominance <- dt[
       j = .SD[min(getOption("sdc.n_ids_dominance", 2L), .N)],
       # min() necessary to handle the edge case with only a single ID
       keyby = by,

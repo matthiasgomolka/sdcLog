@@ -33,7 +33,9 @@ test_that("no problems are handles correctly", {
 
 
   expect_equal(
-    sdc_model(as.data.frame(sdc_model_DT, stringsAsFactors = FALSE), model_1, "id"),
+    sdc_model(
+      as.data.frame(sdc_model_DT, stringsAsFactors = FALSE), model_1, "id"
+    ),
     ref_1,
     ignore_attr = TRUE
   )

@@ -42,7 +42,12 @@
 #' @return A [list] of class `sdc_descriptives` with detailed information about
 #'   options, settings, and compliance with the criteria distinct entities and
 #'   dominance.
-sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = NULL, by = NULL, zero_as_NA = NULL) {
+sdc_descriptives <- function(
+  data, id_var = getOption("sdc.id_var"),
+  val_var = NULL,
+  by = NULL,
+  zero_as_NA = NULL
+) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
   # input checks ----
@@ -89,7 +94,8 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
     na_idx <- which(data[[val_var]] == 0)
     data.table::set(data, i = na_idx, j = val_var, value = NA)
 
-    on.exit( # reset to zero in order to leave the data unchanged
+    # reset to zero in order to leave the data unchanged
+    on.exit(
       data.table::set(data, i = na_idx, j = val_var, value = 0)
     )
   }
@@ -105,7 +111,9 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
   dominance <- check_dominance(data, id_var, val_var, by)
 
   # warn about dominance if necessary
-  if (nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
+  if (nrow(
+    dominance[value_share >= getOption("sdc.share_dominance", 0.85)]
+  ) > 0L) {
     warning(
       crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities.",
       call. = FALSE

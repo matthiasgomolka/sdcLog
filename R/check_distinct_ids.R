@@ -23,4 +23,3 @@ check_distinct_ids <- function(data, id_var, val_var = NULL, by = NULL) {
     class = c("sdc_distinct_ids", "data.table", "data.frame")
   )
 }
-

@@ -82,6 +82,7 @@ print.sdc_settings <- function(x, ...) {
   )
 }
 
+#' @importFrom data.table between
 #' @export
 print.sdc_descriptives <- function(x, ...) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
@@ -92,8 +93,14 @@ print.sdc_descriptives <- function(x, ...) {
   print(x[["distinct_ids"]])
   print(x[["dominance"]])
   no_problems <- sum(
-    nrow(x[["distinct_ids"]][distinct_ids < getOption("sdc.n_ids", 5L)]),
-    nrow(x[["dominance"]][value_share >= getOption("sdc.share_dominance", 0.85)])
+    nrow(x[["distinct_ids"]][data.table::between(
+      distinct_ids,
+      lower = 0L,
+      upper = getOption("sdc.n_ids", 5L),
+      incbounds = FALSE)]),
+    nrow(
+      x[["dominance"]][value_share >= getOption("sdc.share_dominance", 0.85)]
+    )
   ) == 0L
   if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
     message("Output complies to RDC rules.")
@@ -123,7 +130,11 @@ print.sdc_model <- function(x, ...) {
     function(x) {
       var_names <- setdiff(names(x), "distinct_ids")
       x_non_zero <- subset_zero(x, var_names)
-      nrow(x_non_zero[distinct_ids < getOption("sdc.n_ids", 5L)])
+      nrow(x_non_zero[data.table::between(
+        distinct_ids,
+        lower = 0L,
+        upper = getOption("sdc.n_ids", 5L),
+        incbounds = FALSE)])
     },
     FUN.VALUE = integer(1L)
   )
