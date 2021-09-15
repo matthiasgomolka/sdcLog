@@ -20,11 +20,7 @@ print.sdc_distinct_ids <- function(x, ...) {
     # withOUT problems
   } else if (getOption("sdc.info_level", 1L) > 1L) {
 
-    if (nrow(x) == 0L) { # handle edge case with no ID's
-      n_distinct_ids <- 0L
-    } else { # general case
-      n_distinct_ids <- min(x[["distinct_ids"]])
-    }
+    n_distinct_ids <- min(x[["distinct_ids"]])
     message(
       "No problem with number of distinct entities (", n_distinct_ids, ")."
     )
