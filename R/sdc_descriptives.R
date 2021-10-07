@@ -61,6 +61,10 @@ sdc_descriptives <- function(
   checkmate::assert_subset(id_var, choices = col_names)
 
   checkmate::assert_string(val_var, null.ok = TRUE)
+  # assert that val_var is not "val_var" (which would lead to errors later on)
+  if (!is.null(val_var) && val_var == "val_var") {
+    stop("Assertion on 'val_var' failed: Must not equal \"val_var\".")
+  }
   checkmate::assert_subset(val_var, choices = setdiff(col_names, id_var))
 
   checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)

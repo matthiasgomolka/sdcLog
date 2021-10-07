@@ -536,6 +536,13 @@ test_that("#83 is fixed", {
       value_share = c(0.555555556, 0.001996008, 0.001331558)
     )
   )
-
 })
 
+test_that("preventing val_var = 'val_var' works", {
+  df <- data.table(id_var = "A", val_var = 1L)
+  expect_error(
+    sdc_descriptives(df, id_var = "id_var", val_var = "val_var"),
+    "Assertion on 'val_var' failed: Must not equal \"val_var\".",
+    fixed = TRUE
+  )
+})
