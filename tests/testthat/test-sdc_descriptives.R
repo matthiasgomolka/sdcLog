@@ -516,3 +516,26 @@ test_that("#77 is fixed", {
     ignore_attr = TRUE
   )
 })
+
+test_that("#83 is fixed", {
+  df <- data.table(
+    id = c("N", NA, NA, NA, "N", "N"),
+    by_var = factor(c("U", "U", "N", "M", "M", "N"), levels = c("U", "M", "N")),
+    val = c(7, 2, 500, 3000, 4, 1)
+  )
+
+  res <- expect_warning(
+    sdc_descriptives(df, "id", "val", "by_var"),
+    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
+    fixed = TRUE
+  )
+  expect_equal(
+    as.data.table(res[[4]]),
+    data.table(
+      by_var = factor(c("U", "N", "M"), levels = c("U", "M", "N")),
+      value_share = c(0.555555556, 0.001996008, 0.001331558)
+    )
+  )
+
+})
+

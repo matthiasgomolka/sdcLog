@@ -33,21 +33,18 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL) {
   ]
 
   # calculate the value share of NA id's in order to subtract it later
-  na_shares <- dt[
-    i = id_na == TRUE,
-    j = list(id_na, value_share_na = value_share),
-    keyby = by
-  ]
+  na_shares <- dt[id_na == TRUE, list(value_share_na = value_share), keyby = by]
 
   if (nrow(na_shares) > 0L) {
     # The following code may look unnecessarily complicated, but it's necessary
     # in order to handle by groups correctly.
-    # We first merge the value_share_na, ...
-    dt <- merge(dt, na_shares, by = c("id_na", by), all.x = TRUE, sort = FALSE)
-    # ... then we fill this value forward. ROW ORDER MATTERS! Rows in DT are
-    # ordered decreasingly by agg_val_var above.
-    data.table::setnafill(dt, type = "locf", cols = "value_share_na")
-    # Now we substract the share of NA from the cumulative value share.
+    # We first bind / merge the value_share_na, ...
+    if (is.null(by)) {
+      dt <- cbind(dt, na_shares)
+    } else {
+      dt <- merge(dt, na_shares, by = by, all.x = TRUE, sort = FALSE)
+    }
+    # ... then we subtract the share of NA from the cumulative value share.
     dt[, cum_value_share := cum_value_share - value_share_na, keyby = by]
     # Lastly, we delete rows where the id is NA.
     dt <- dt[id_na == FALSE]
