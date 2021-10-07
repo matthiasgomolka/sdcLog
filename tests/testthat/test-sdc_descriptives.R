@@ -524,8 +524,8 @@ test_that("#83 is fixed", {
     val = c(7, 2, 500, 3000, 4, 1)
   )
 
-  res <- expect_warning(
-    sdc_descriptives(df, "id", "val", "by_var"),
+  expect_warning(
+    {res <- sdc_descriptives(df, "id", "val", "by_var")},
     paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
     fixed = TRUE
   )
