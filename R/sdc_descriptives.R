@@ -1,8 +1,25 @@
 #' Disclosure control for descriptive statistics
-#' @description Checks if your descriptive statistics comply to statistical
-#'   disclosure control. Checks for number of distinct entities and dominance.
+#' @description Checks the number of distinct entities and the (n, k)
+#'   dominance rule for your descriptive statistics.
+#'
+#'   That means that `sdc_descriptives()` checks if there are at least 5
+#'   distinct entities and if the largest 2 entities account for 85% or more of
+#'   `val_var`. The parameters can be changed using options. For details see
+#'   `vignette("options", package = "sdcLog")`.
 #' @inheritParams common_arguments
 #' @importFrom data.table is.data.table as.data.table set
+#' @details The general form of the \mjseqn{(n, k)} dominance rule can be
+#'   formulated as:
+#'
+#'   \loadmathjax
+#'
+#'   \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}
+#'
+#'   where \mjseqn{x_1 \ge x_2 \ge \cdots \ge x_{N}}. \mjseqn{n} denotes the
+#'   number of largest contributions to be considered, \mjseqn{x_n} the
+#'   \mjseqn{n}-th largest contribution, \mjseqn{k} the maximal percentage these
+#'   \mjseqn{n} contributions may account for, and \mjseqn{N} is the total
+#'   number of observations.
 #' @export
 #' @examples
 #' sdc_descriptives(

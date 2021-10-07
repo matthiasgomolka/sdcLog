@@ -31,16 +31,17 @@ Imports:
     checkmate (>= 2.0.0),
     crayon (>= 1.3.4),
     data.table (>= 1.12.8),
+    mathjaxr,
     stats,
     utils
 Suggests: 
-    tibble,
     knitr,
     lfe,
     rmarkdown,
     skimr,
     spelling,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tibble
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
@@ -49,3 +50,4 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+RdMacros: mathjaxr
