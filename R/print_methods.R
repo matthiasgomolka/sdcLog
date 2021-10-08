@@ -1,19 +1,28 @@
 #' @importFrom crayon bold red
-#' @importFrom data.table as.data.table
+#' @importFrom data.table as.data.table between
 #' @export
 print.sdc_distinct_ids <- function(x, ...) {
   distinct_ids <- NULL # removes NSE notes in R CMD check
+
+  var_names <- setdiff(names(x), "distinct_ids")
+  x_non_zero <- subset_zero(x, var_names)
+
   # with problems
-  if (nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]) > 0L) {
+  if (nrow(x_non_zero[data.table::between(
+    distinct_ids,
+    lower = 0L,
+    upper = getOption("sdc.n_ids", 5L),
+    incbounds = FALSE)]
+  ) > 0L) {
     cat(crayon::red("Not enough distinct entities:\n"))
     print(data.table::as.data.table(x))
 
     # withOUT problems
   } else if (getOption("sdc.info_level", 1L) > 1L) {
+
+    n_distinct_ids <- min(x[["distinct_ids"]])
     message(
-      "No problem with number of distinct entities (",
-      min(x[["distinct_ids"]]),
-      ")."
+      "No problem with number of distinct entities (", n_distinct_ids, ")."
     )
   }
 
@@ -23,7 +32,7 @@ print.sdc_distinct_ids <- function(x, ...) {
 #' @importFrom data.table as.data.table
 #' @export
 print.sdc_dominance <- function(x, ...) {
-  distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
+  value_share <- NULL # removes NSE notes in R CMD check
 
   # with problems
   if (nrow(x[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
@@ -73,6 +82,7 @@ print.sdc_settings <- function(x, ...) {
   )
 }
 
+#' @importFrom data.table between
 #' @export
 print.sdc_descriptives <- function(x, ...) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
@@ -83,8 +93,14 @@ print.sdc_descriptives <- function(x, ...) {
   print(x[["distinct_ids"]])
   print(x[["dominance"]])
   no_problems <- sum(
-    nrow(x[["distinct_ids"]][distinct_ids < getOption("sdc.n_ids", 5L)]),
-    nrow(x[["dominance"]][value_share >= getOption("sdc.share_dominance", 0.85)])
+    nrow(x[["distinct_ids"]][data.table::between(
+      distinct_ids,
+      lower = 0L,
+      upper = getOption("sdc.n_ids", 5L),
+      incbounds = FALSE)]),
+    nrow(
+      x[["dominance"]][value_share >= getOption("sdc.share_dominance", 0.85)]
+    )
   ) == 0L
   if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
     message("Output complies to RDC rules.")
@@ -111,7 +127,15 @@ print.sdc_model <- function(x, ...) {
 
   n_problems <- vapply(
     append(list(distinct_ids = x[["distinct_ids"]]), x[["terms"]]),
-    function(x) nrow(x[distinct_ids < getOption("sdc.n_ids", 5L)]),
+    function(x) {
+      var_names <- setdiff(names(x), "distinct_ids")
+      x_non_zero <- subset_zero(x, var_names)
+      nrow(x_non_zero[data.table::between(
+        distinct_ids,
+        lower = 0L,
+        upper = getOption("sdc.n_ids", 5L),
+        incbounds = FALSE)])
+    },
     FUN.VALUE = integer(1L)
   )
   no_problems <- sum(n_problems) == 0L

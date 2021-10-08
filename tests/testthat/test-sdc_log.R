@@ -12,7 +12,7 @@ test_that("sdc_log() works correctly with log files", {
   tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
 
   msg <- ifelse(
-    Sys.info()[['sysname']] == "Windows",
+    Sys.info()[["sysname"]] == "Windows",
     "Log file for",
     paste0("Log file for '.*script_1.R' written to '.*", tf, "'.")
   )
@@ -53,7 +53,7 @@ test_that("sdc_log() handles nested calls to sdc_log()", {
   log_main_1 <- c(
     "",
     "> # First script",
-    '> sdc_log(script_1, conn, append = TRUE)'
+    "> sdc_log(script_1, conn, append = TRUE)"
   )
   log_main_2 <- c(
     "",
@@ -62,7 +62,7 @@ test_that("sdc_log() handles nested calls to sdc_log()", {
     "[1] 2",
     "",
     "> # Second script",
-    '> sdc_log(script_2, conn, append = TRUE)'
+    "> sdc_log(script_2, conn, append = TRUE)"
   )
 
   actual <- readLines(tf_conn)
@@ -122,7 +122,7 @@ test_that("error in script is handled correctly", {
   tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
 
   msg <- ifelse(
-    Sys.info()[['sysname']] == "Windows",
+    Sys.info()[["sysname"]] == "Windows",
     "Log file for",
     paste0("Log file for '.*script_error.R' written to '.*", tf, "'.")
   )

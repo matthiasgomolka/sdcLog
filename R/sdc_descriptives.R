@@ -1,9 +1,37 @@
 #' Disclosure control for descriptive statistics
-#' @description Checks if your descriptive statistics comply to statistical
-#'   disclosure control. Checks for number of distinct entities and dominance.
+#'
+#' @description Checks the number of distinct entities and the (n, k)
+#'   dominance rule for your descriptive statistics.
+#'
+#'   That means that `sdc_descriptives()` checks if there are at least 5
+#'   distinct entities and if the largest 2 entities account for 85% or more of
+#'   `val_var`. The parameters can be changed using options. For details see
+#'   `vignette("options", package = "sdcLog")`.
+#'
 #' @inheritParams common_arguments
+#'
 #' @importFrom data.table is.data.table as.data.table set
+#'
+#' @import mathjaxr
+#'
+#' @details
+#'   \loadmathjax
+#'   The general form of the \mjseqn{(n, k)} dominance rule can be formulated
+#'   as:
+#'
+#'   \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}
+#'
+#'   where \mjseqn{x_1 \ge x_2 \ge \cdots \ge x_{N}}. \mjseqn{n} denotes the
+#'   number of largest contributions to be considered, \mjseqn{x_n} the
+#'   \mjseqn{n}-th largest contribution, \mjseqn{k} the maximal percentage these
+#'   \mjseqn{n} contributions may account for, and \mjseqn{N} is the total
+#'   number of observations.
+#'
+#'   If the statement above is true, the \mjseqn{(n, k)} dominance rule is
+#'   violated.
+#'
 #' @export
+#'
 #' @examples
 #' sdc_descriptives(
 #'   data = sdc_descriptives_DT,
@@ -39,10 +67,17 @@
 #'   by = c("sector", "year"),
 #'   zero_as_NA = FALSE
 #' )
+#'
 #' @return A [list] of class `sdc_descriptives` with detailed information about
 #'   options, settings, and compliance with the criteria distinct entities and
 #'   dominance.
-sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = NULL, by = NULL, zero_as_NA = NULL) {
+
+sdc_descriptives <- function(
+  data, id_var = getOption("sdc.id_var"),
+  val_var = NULL,
+  by = NULL,
+  zero_as_NA = NULL
+) {
   distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
   # input checks ----
@@ -56,6 +91,10 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
   checkmate::assert_subset(id_var, choices = col_names)
 
   checkmate::assert_string(val_var, null.ok = TRUE)
+  # assert that val_var is not "val_var" (which would lead to errors later on)
+  if (!is.null(val_var) && val_var == "val_var") {
+    stop("Assertion on 'val_var' failed: Must not equal \"val_var\".")
+  }
   checkmate::assert_subset(val_var, choices = setdiff(col_names, id_var))
 
   checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
@@ -89,7 +128,8 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
     na_idx <- which(data[[val_var]] == 0)
     data.table::set(data, i = na_idx, j = val_var, value = NA)
 
-    on.exit( # reset to zero in order to leave the data unchanged
+    # reset to zero in order to leave the data unchanged
+    on.exit(
       data.table::set(data, i = na_idx, j = val_var, value = 0)
     )
   }
@@ -105,7 +145,9 @@ sdc_descriptives <- function(data, id_var = getOption("sdc.id_var"), val_var = N
   dominance <- check_dominance(data, id_var, val_var, by)
 
   # warn about dominance if necessary
-  if (nrow(dominance[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
+  if (nrow(
+    dominance[value_share >= getOption("sdc.share_dominance", 0.85)]
+  ) > 0L) {
     warning(
       crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities.",
       call. = FALSE

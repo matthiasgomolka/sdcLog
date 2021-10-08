@@ -1,6 +1,3 @@
-# pure technical settings
-.datatable.aware <- TRUE
-
 #' arguments
 #' @name common_arguments
 #' @param data [data.frame] from which the descriptive statistics are

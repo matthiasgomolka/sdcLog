@@ -287,4 +287,3 @@ test_that("sdc_min_max() does not enter an infinite loop", {
     fixed = TRUE
   )
 })
-
