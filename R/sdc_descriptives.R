@@ -20,6 +20,9 @@
 #'   \mjseqn{n}-th largest contribution, \mjseqn{k} the maximal percentage these
 #'   \mjseqn{n} contributions may account for, and \mjseqn{N} is the total
 #'   number of observations.
+#'
+#'   If the statement above is true, the \mjseqn{(n, k)} dominance rule is
+#'   violated.
 #' @export
 #' @examples
 #' sdc_descriptives(

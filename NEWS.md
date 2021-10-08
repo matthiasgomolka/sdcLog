@@ -1,8 +1,17 @@
 # sdcLog 0.4.0
 
+### Improvements
+
+* Introduction of [mathjaxr](https://CRAN.R-project.org/package=mathjaxr) to
+  improve the quality and readability of the help files.
+* [lintr](https://CRAN.R-project.org/package=lintr) induced cleanup of the 
+  codebase.
+
 ### Bug Fixes
 
 * Fixed https://github.com/matthiasgomolka/sdcLog/issues/79.
+* Fixed https://github.com/matthiasgomolka/sdcLog/issues/83.
+* Fixed https://github.com/matthiasgomolka/sdcLog/issues/75.
 
 # sdcLog 0.3.0
 
