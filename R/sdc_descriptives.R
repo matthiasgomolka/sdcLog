@@ -1,4 +1,5 @@
 #' Disclosure control for descriptive statistics
+#'
 #' @description Checks the number of distinct entities and the (n, k)
 #'   dominance rule for your descriptive statistics.
 #'
@@ -6,12 +7,17 @@
 #'   distinct entities and if the largest 2 entities account for 85% or more of
 #'   `val_var`. The parameters can be changed using options. For details see
 #'   `vignette("options", package = "sdcLog")`.
-#' @inheritParams common_arguments
-#' @importFrom data.table is.data.table as.data.table set
-#' @details The general form of the \mjseqn{(n, k)} dominance rule can be
-#'   formulated as:
 #'
+#' @inheritParams common_arguments
+#'
+#' @importFrom data.table is.data.table as.data.table set
+#'
+#' @import mathjaxr
+#'
+#' @details
 #'   \loadmathjax
+#'   The general form of the \mjseqn{(n, k)} dominance rule can be formulated
+#'   as:
 #'
 #'   \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}
 #'
@@ -23,7 +29,9 @@
 #'
 #'   If the statement above is true, the \mjseqn{(n, k)} dominance rule is
 #'   violated.
+#'
 #' @export
+#'
 #' @examples
 #' sdc_descriptives(
 #'   data = sdc_descriptives_DT,
@@ -59,9 +67,11 @@
 #'   by = c("sector", "year"),
 #'   zero_as_NA = FALSE
 #' )
+#'
 #' @return A [list] of class `sdc_descriptives` with detailed information about
 #'   options, settings, and compliance with the criteria distinct entities and
 #'   dominance.
+
 sdc_descriptives <- function(
   data, id_var = getOption("sdc.id_var"),
   val_var = NULL,

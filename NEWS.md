@@ -5,7 +5,7 @@
 * Introduction of [mathjaxr](https://CRAN.R-project.org/package=mathjaxr) to
   improve the quality and readability of the help files.
 * [lintr](https://CRAN.R-project.org/package=lintr) induced cleanup of the 
-  codebase.
+  code base.
 
 ### Bug Fixes
 
