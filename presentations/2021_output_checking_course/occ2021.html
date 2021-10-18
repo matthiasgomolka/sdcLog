@@ -132,7 +132,7 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)),
 ```r
 # Proof, that the result complies to rules
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
-## OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE
 ## Output complies to RDC rules.
 ```
@@ -149,9 +149,16 @@ This time, researches want to calculate the result grouped by `sector` and
 
 ```r
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+## Warning: DISCLOSURE PROBLEM: Not enough distinct entities.
 ## Warning: DISCLOSURE PROBLEM: Dominant entities.
-## OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA: FALSE
+## Not enough distinct entities:
+##    sector year distinct_ids
+## 1:     S1 2019            4
+## 2:     S1 2020            5
+## 3:     S2 2019            5
+## 4:     S2 2020            5
 ## Dominant entities:
 ##    sector year value_share
 ## 1:     S2 2020   0.9056314
@@ -184,10 +191,10 @@ Minimum and maximum value are confidential micro data.
 
 ```r
 sdc_min_max(DT, id_var = "id", val_var = "val_1")
-## OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1
 ##    val_var      min distinct_ids_min      max distinct_ids_max
-## 1:   val_1 2.320075                3 37.34043                7
+## 1:   val_1 3.364432                5 37.34043                7
 ```
 
 ---
@@ -217,8 +224,8 @@ sdc_model(DT, model = mod, id_var = "id")
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-c4d63e0ad4c67fd64a35" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c4d63e0ad4c67fd64a35">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9c314ddad939b0479d78" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9c314ddad939b0479d78">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -252,7 +259,7 @@ https://github.com/matthiasgomolka/sdcLog/issues
 "highlightLines": true,
 "highlightSpans": true,
 "countIncrementalSlides": false,
-"slideNumberFormat": "Präsentation verfügbar unter <a href=\"https://tinyurl.com/sdcLog-FDI2021\">https://tinyurl.com/sdcLog-FDI2021</>"
+"slideNumberFormat": "Slides available on <a href=\"https://tinyurl.com/sdcLog-presentation\">https://tinyurl.com/sdcLog-presentation</>"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

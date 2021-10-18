@@ -13,7 +13,7 @@ output:
       highlightLines: yes
       highlightSpans: yes
       countIncrementalSlides: no
-      slideNumberFormat: 'Präsentation verfügbar unter <a href="https://tinyurl.com/sdcLog-FDI2021">https://tinyurl.com/sdcLog-FDI2021</>'
+      slideNumberFormat: 'Slides available on <a href="https://tinyurl.com/sdcLog-presentation">https://tinyurl.com/sdcLog-presentation</>'
 lang: de-de
 editor_options: 
   chunk_output_type: console
