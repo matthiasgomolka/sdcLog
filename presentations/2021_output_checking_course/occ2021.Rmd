@@ -1,0 +1,255 @@
+---
+title: "sdcLog"
+subtitle: "Toolkit for Output Control in Research Data Centres"
+author: "Matthias Gomolka"
+institute: "Deutsche Bundesbank, Research Data and Service Centre (RDSC)"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: yes
+      highlightSpans: yes
+      countIncrementalSlides: no
+      slideNumberFormat: 'Präsentation verfügbar unter <a href="https://tinyurl.com/sdcLog-FDI2021">https://tinyurl.com/sdcLog-FDI2021</>'
+lang: de-de
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+library(sdcLog)
+library(DiagrammeR)
+style_mono_accent(
+  base_color = "#1d3557",
+  header_font_google = google_font("Fira Sans"),
+  text_font_google   = google_font("Fira Sans", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+options(datatable.print.keys = FALSE)
+options(datatable.print.class = FALSE)
+
+knitr::opts_chunk$set(
+  # prompt = TRUE,
+  # comment = "#>",
+  collapse = TRUE,
+  background = "#FAFAFA"
+)
+```
+
+# Who am I? 
+### And why do I talk about sdcLog?
+
+I work in the Bundesbank's Research Data and Service Centre.
+
+--
+
+#### What I do: 
+
+--
+
+- Production of research data sets on securities transactions
+- Data Production Pipelines
+- **R tools, which make the RDSC life easier**
+
+--
+
+#### Disclaimer:
+
+- No expert in Output Control. I just implemented functionality which we already
+  have for Stata in R.
+
+---
+
+# Motivation
+
+#### Problem
+
+- Researchers need to show that their output complies to our rules.
+
+--
+
+- That get's complicated quickly.
+
+--
+
+- It would be very time-consuming for the RDSC if we would have to check *how* a
+  researcher proved that her output complies to RDSC rules.
+
+--
+
+#### Solution
+
+- RDSC provides tools which help researchers to show that their output complies 
+  to the rules: **sdcLog**
+
+---
+
+# Theory
+
+Two simple rules:
+
+--
+
+1. Each result must be based on at least 5 distinct entities (distinct ID's).
+
+--
+
+2. The two largest entities must not account for more than 85% of a result
+   (n,k-dominance).
+
+
+---
+
+# Example
+
+A researcher wants to publish the mean of a variable grouped by `sector`. To do 
+so, she has to use `sdc_descriptives()` to show that the output complies to RDSC
+rules.
+
+--
+
+.pull-left[
+```{r sdc_descriptives_1, echo=3}
+data("sdc_descriptives_DT")
+DT <- sdc_descriptives_DT[, id_na := NULL]
+head(DT)
+```
+]
+
+--
+
+.pull-right[
+```{r sdc_descriptives_3}
+# result
+DT[, .(mean = mean(val_1, na.rm = TRUE)),
+   by = "sector"]
+```
+]
+
+--
+
+```{r sdc_descriptives_6}
+# Proof, that the result complies to rules
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
+```
+
+---
+
+# Another example
+
+This time, researches want to calculate the result grouped by `sector` and
+`year`.
+
+--
+
+```{r sdc_descriptives_7}
+sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
+```
+
+---
+
+# Minimum and maximum values
+
+Now, researchers want to publish minimum and maximum values as well. 
+
+--
+
+#### Problem
+
+Minimum and maximum value are confidential micro data.
+
+--
+
+#### Solution
+
+"Minimum" and "maximum" value as mean of `n` smallest / largest values using 
+`sdc_min_max()`:
+
+--
+
+```{r sdc_min_max_1}
+sdc_min_max(DT, id_var = "id", val_var = "val_1")
+```
+
+---
+
+# Output control for models
+
+Researchers also want to publish results from a linear regression.
+
+--
+
+```{r sdc_model_1}
+options(sdc.n_ids = 3)
+
+# Estimate model
+mod <- lm(val_1 ~ sector + year + val_2, data = DT)
+
+# Check if model complies to rules
+sdc_model(DT, model = mod, id_var = "id")
+```
+
+---
+
+# Why is it called sdcLog?
+
+<center>
+```{r diagrammer_1, echo=FALSE, fig.align='center', out.width='60%'}
+grViz("
+digraph boxes_and_circles {
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 30]
+  
+  # several 'node' statements
+  node [shape = box, fontname = 'Fira Sans', width = 5.5]
+  script [label = 'analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()'];
+  
+  node [width = 1] 
+  log [label = 'Log file']
+  
+  node [shape = box, width = 3]
+  checks [label = 'Checked by RDSC']
+
+  node [shape = oval, width = 1] 
+  sdc_log [label = '@@1']
+
+  # several 'edge' statements
+  script -> sdc_log
+  sdc_log -> log
+  log -> checks
+}
+
+[1]: 'sdc_log(analysis.R)'
+")
+```
+</center>
+
+---
+
+# Installation und contact information
+
+#### CRAN
+
+```{r install, eval=FALSE}
+install.packages("sdcLog")
+```
+
+#### GitHub
+
+https://github.com/matthiasgomolka/sdcLog/issues
+
+#### E-mail
+
+[matthias.gomolka@bundesbank.de](mailto:matthias.gomolka@bundesbank.de)
+
+#### Phone
+
+069 9556-4991
