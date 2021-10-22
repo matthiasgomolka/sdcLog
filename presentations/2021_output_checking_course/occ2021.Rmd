@@ -244,12 +244,12 @@ install.packages("sdcLog")
 
 #### GitHub
 
-https://github.com/matthiasgomolka/sdcLog/issues
+https://github.com/matthiasgomolka/sdcLog
 
 #### E-mail
 
 [matthias.gomolka@bundesbank.de](mailto:matthias.gomolka@bundesbank.de)
 
-#### Phone
+#### Twitter
 
-069 9556-4991
+[@matthiasgomolka](https://twitter.com/matthiasgomolka)

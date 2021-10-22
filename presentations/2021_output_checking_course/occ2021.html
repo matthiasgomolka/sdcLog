@@ -224,8 +224,8 @@ sdc_model(DT, model = mod, id_var = "id")
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-9c314ddad939b0479d78" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9c314ddad939b0479d78">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-0ffcb9c16e841de4f58f" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0ffcb9c16e841de4f58f">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -241,15 +241,15 @@ install.packages("sdcLog")
 
 #### GitHub
 
-https://github.com/matthiasgomolka/sdcLog/issues
+https://github.com/matthiasgomolka/sdcLog
 
 #### E-mail
 
 [matthias.gomolka@bundesbank.de](mailto:matthias.gomolka@bundesbank.de)
 
-#### Phone
+#### Twitter
 
-069 9556-4991
+[@matthiasgomolka](https://twitter.com/matthiasgomolka)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
