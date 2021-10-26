@@ -101,7 +101,7 @@ test_that("sdc_log() returns appropriate error", {
   file.copy(from = script_1, to = tf)
   expect_error(
     sdc_log(r_script = tf, destination = log),
-    "Assertion on 'r_script' failed: File extension must be in {'R'}.",
+    "Assertion on 'r_script' failed: File extension must be in {'R'}",
     fixed = TRUE
   )
 

@@ -318,7 +318,7 @@ test_that("sdc_model() returns appropriate errors", {
   )
   expect_error(
     sdc_model(sdc_model_DT, model_1, "wrong_id"),
-    "Assertion on 'id_var' failed: Must be a subset of {'id','y','x_1','x_2','x_3','x_4','dummy_1','dummy_2','dummy_3'}, but is {'wrong_id'}.",
+    "Assertion on 'id_var' failed: Must be a subset of {'id','y','x_1','x_2','x_3','x_4','dummy_1','dummy_2','dummy_3'}",
     fixed = TRUE
   )
   expect_error(

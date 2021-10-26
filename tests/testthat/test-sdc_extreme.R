@@ -211,7 +211,7 @@ test_that("sdc_min_max() returns appropriate error", {
     sdc_min_max(extreme_test_dt, "wrong_id", "val_1"),
     paste0(
       "Assertion on 'id_var' failed: Must be a subset of {'id','val_1',",
-      "'val_2','val_3'}, but is {'wrong_id'}."
+      "'val_2','val_3'}"
     ),
     fixed = TRUE
   )
@@ -219,7 +219,7 @@ test_that("sdc_min_max() returns appropriate error", {
     sdc_min_max(extreme_test_dt, "id", "wrong_val"),
     paste0(
       "Assertion on 'val_var' failed: Must be a subset of {'val_1',",
-      "'val_2','val_3'}, but is {'wrong_val'}."
+      "'val_2','val_3'}"
     ),
     fixed = TRUE
   )
@@ -227,7 +227,7 @@ test_that("sdc_min_max() returns appropriate error", {
     sdc_min_max(extreme_test_dt_by, "id", "val_1", "wrong_by"),
     paste0(
       "Assertion on 'by' failed: Must be a subset of {'sector',",
-      "'val_2','val_3','val_4'}, but is {'wrong_by'}."
+      "'val_2','val_3','val_4'}"
     ),
     fixed = TRUE
   )
@@ -260,17 +260,17 @@ test_that("sdc_min_max() returns appropriate error", {
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id_var", val_var = "val_1"),
-    "Assertion on 'id_var' failed: Must be a subset of {'id','val_1','val_2','val_3'}, but is {'id_var'}.",
+    "Assertion on 'id_var' failed: Must be a subset of {'id','val_1','val_2','val_3'}",
     fixed = TRUE
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id", val_var = "val_"),
-    "Assertion on 'val_var' failed: Must be a subset of {'val_1','val_2','val_3'}, but is {'val_'}.",
+    "Assertion on 'val_var' failed: Must be a subset of {'val_1','val_2','val_3'}",
     fixed = TRUE
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id", val_var = "val_1", by = "by_var"),
-    "Assertion on 'by' failed: Must be a subset of {'val_2','val_3'}, but is {'by_var'}.",
+    "Assertion on 'by' failed: Must be a subset of {'val_2','val_3'}",
     fixed = TRUE
   )
 })
