@@ -35,6 +35,7 @@ Imports:
     stats,
     utils
 Suggests: 
+    cffr,
     knitr,
     lfe,
     rmarkdown,

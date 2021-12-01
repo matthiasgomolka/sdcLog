@@ -1,0 +1,55 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.1.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "sdcLog" in publications use:'
+type: software
+license: GPL-3.0-only
+title: 'sdcLog: Tools for Statistical Disclosure Control in Research Data Centers'
+version: 0.4.0
+abstract: Tools for researchers to explicitly show that their results comply to rules
+  for statistical disclosure control imposed by research data centers. These tools
+  help in checking descriptive statistics and models and in calculating extreme values
+  that are not individual data. Also included is a simple function to create log files.
+  The methods used here are described in the "Guidelines for the checking of output
+  based on microdata research" by Bond, Brandt, and de Wolf (2015) <https://ec.europa.eu/eurostat/cros/system/files/dwb_standalone-document_output-checking-guidelines.pdf>.
+authors:
+- family-names: Gomolka
+  given-names: Matthias
+  email: matthias.gomolka@posteo.de
+- family-names: Becker
+  given-names: Tim
+preferred-citation:
+  type: manual
+  title: 'sdcLog: Tools for Statistical Disclosure Control in Research Data Centers'
+  authors:
+  - family-names: Gomolka
+    given-names: Matthias
+    email: matthias.gomolka@posteo.de
+  - family-names: Becker
+    given-names: Tim
+  version: 0.4.0
+  abstract: Tools for researchers to explicitly show that their results comply to
+    rules for statistical disclosure control imposed by research data centers. These
+    tools help in checking descriptive statistics and models and in calculating extreme
+    values that are not individual data. Also included is a simple function to create
+    log files. The methods used here are described in the "Guidelines for the checking
+    of output based on microdata research" by Bond, Brandt, and de Wolf (2015) <https://ec.europa.eu/eurostat/cros/system/files/dwb_standalone-document_output-checking-guidelines.pdf>.
+  repository: https://CRAN.R-project.org/package=sdcLog
+  repository-code: https://github.com/matthiasgomolka/sdcLog
+  url: https://github.com/matthiasgomolka/sdcLog
+  contact:
+  - family-names: Gomolka
+    given-names: Matthias
+    email: matthias.gomolka@posteo.de
+  license: GPL-3.0-only
+  year: '2021'
+repository: https://CRAN.R-project.org/package=sdcLog
+repository-code: https://github.com/matthiasgomolka/sdcLog
+url: https://github.com/matthiasgomolka/sdcLog
+contact:
+- family-names: Gomolka
+  given-names: Matthias
+  email: matthias.gomolka@posteo.de
