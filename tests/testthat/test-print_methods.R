@@ -119,6 +119,25 @@ test_that("print.sdc_dominance works for val_var = NULL", {
     )
 })
 
+dominance_5 <- structure(
+    data.table(value_share = 0.1),
+    class = c("sdc_dominance", "data.table", "data.frame")
+)
+
+test_that("print.sdc_dominance prints info on cases without dominance problem", {
+    options(sdc.info_level = 0L)
+    expect_silent(print(dominance_5))
+
+    options(sdc.info_level = 1L)
+    expect_silent(print(dominance_5))
+
+    options(sdc.info_level = 2L)
+    expect_message(
+        print(dominance_5),
+        "No problem with dominance (0.1).",
+        fixed = TRUE
+    )
+})
 
 # test print.sdc_descriptives ----
 descriptives_1 <- structure(
