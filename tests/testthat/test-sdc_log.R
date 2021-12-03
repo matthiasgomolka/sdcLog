@@ -20,8 +20,9 @@ test_that("sdc_log() works correctly with log files", {
         sdc_log(r_script = script_1, destination = tf),
         msg
     )
-    expect_identical(readLines(tf)[-32], gsub("✓", "v", readLines(log))[-32])
-    expect_match(readLines(tf)[32], "Output complies to RDC rules.")
+    exclude <- c(9, 32)
+    expect_identical(readLines(tf)[-exclude], gsub("✓", "v", readLines(log))[-exclude])
+    expect_match(readLines(tf)[exclude], "Output complies to RDC rules.")
 })
 
 test_that("sdc_log() works correctly with connections", {
