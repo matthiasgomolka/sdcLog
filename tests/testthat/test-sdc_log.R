@@ -39,8 +39,9 @@ test_that("sdc_log() works correctly with connections", {
     expect_identical(sink.number(), 0L)
 
     close(conn)
-    expect_identical(readLines(tf_conn)[-32], gsub("✓", "v", readLines(log))[-32])
-    expect_match(readLines(tf_conn)[32], "Output complies to RDC rules.")
+    exclude <- c(9, 32)
+    expect_identical(readLines(tf_conn)[-exclude], gsub("✓", "v", readLines(log))[-exclude])
+    expect_match(readLines(tf_conn)[exclude], "Output complies to RDC rules.")
 })
 
 test_that("sdc_log() handles nested calls to sdc_log()", {
