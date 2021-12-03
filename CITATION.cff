@@ -44,6 +44,7 @@ preferred-citation:
   - family-names: Gomolka
     given-names: Matthias
     email: matthias.gomolka@posteo.de
+  keywords: statistical-disclosure-control
   license: GPL-3.0-only
   year: '2021'
 repository: https://CRAN.R-project.org/package=sdcLog
@@ -53,3 +54,4 @@ contact:
 - family-names: Gomolka
   given-names: Matthias
   email: matthias.gomolka@posteo.de
+keywords: statistical-disclosure-control
