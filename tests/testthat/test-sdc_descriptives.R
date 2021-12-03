@@ -79,7 +79,9 @@ test_that("sdc_descriptives works in medium cases", {
       descriptives_ref_2,
       ignore_attr = TRUE
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
+    paste(
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
+    ),
     fixed = TRUE
   )
 })
@@ -327,7 +329,7 @@ test_that("missing ID's are handled correctly (simple case)", {
       descriptives_ref_7,
       ignore_attr = TRUE
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
+    paste(cli::style_bold("DISCLOSURE PROBLEM:"), "Dominant entities."),
     fixed = TRUE
   )
 })
@@ -374,7 +376,9 @@ test_that("missing ID's are handled correctly (by case)", {
       descriptives_ref_8,
       ignore_attr = TRUE
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
+    paste(
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
+    ),
     fixed = TRUE
   )
 
@@ -415,7 +419,7 @@ test_that("missing ID's are handled correctly (by case)", {
       descriptives_ref_9,
       ignore_attr = TRUE
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Dominant entities."),
+    paste(cli::style_bold("DISCLOSURE PROBLEM:"), "Dominant entities."),
     fixed = TRUE
   )
 })
@@ -526,7 +530,9 @@ test_that("#83 is fixed", {
 
   expect_warning(
     {res <- sdc_descriptives(df, "id", "val", "by_var")},
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "), "Not enough distinct entities."),
+    paste(
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
+    ),
     fixed = TRUE
   )
   expect_equal(

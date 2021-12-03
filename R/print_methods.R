@@ -1,4 +1,4 @@
-#' @importFrom crayon bold red
+#' @importFrom cli cli_alert_danger cli_alert_success
 #' @importFrom data.table as.data.table between
 #' @export
 print.sdc_distinct_ids <- function(x, ...) {
@@ -14,21 +14,21 @@ print.sdc_distinct_ids <- function(x, ...) {
         upper = getOption("sdc.n_ids", 5L),
         incbounds = FALSE)]
     ) > 0L) {
-        cat(crayon::red("Not enough distinct entities:\n"))
+        cli::cli_alert_danger("Not enough distinct entities:\n")
         print(data.table::as.data.table(x))
 
         # withOUT problems
     } else if (getOption("sdc.info_level", 1L) > 1L) {
 
         n_distinct_ids <- min(x[["distinct_ids"]])
-        message(
-            "No problem with number of distinct entities (", n_distinct_ids, ")."
+        cli::cli_alert_success(
+            "No problem with number of distinct entities ({n_distinct_ids})."
         )
     }
 
 }
 
-#' @importFrom crayon bold red
+#' @importFrom cli cli_alert_danger cli_alert_info cli_alert_success
 #' @importFrom data.table as.data.table
 #' @export
 print.sdc_dominance <- function(x, ...) {
@@ -36,7 +36,7 @@ print.sdc_dominance <- function(x, ...) {
 
     # with problems
     if (nrow(x[value_share >= getOption("sdc.share_dominance", 0.85)]) > 0L) {
-        cat(crayon::red("Dominant entities:\n"))
+        cli::cli_alert_danger("Dominant entities:\n")
         print(data.table::as.data.table(x))
 
 
@@ -50,7 +50,7 @@ print.sdc_dominance <- function(x, ...) {
         )
 
         if (identical(x, dt_no_check)) {
-            message("No dominance check conducted, because 'val_var = NULL'.")
+            cli::cli_alert_info("No dominance check conducted, because 'val_var = NULL'.")
 
             # regular case without problems
         } else {
@@ -60,39 +60,41 @@ print.sdc_dominance <- function(x, ...) {
             } else {
                 max_dominance_info <- ""
             }
-            message(paste0("No problem with dominance", max_dominance_info, "."))
+            cli::cli_alert_success("No problem with dominance{max_dominance_info}.")
         }
     }
 
 }
 
 
-#' @importFrom crayon bold underline
+#' @importFrom cli cli_text style_bold
 #' @export
 print.sdc_options <- function(x, ...) {
-    message(
-        crayon::bold("OPTIONS: "),
-        paste(names(x), crayon::underline(x), sep = ": ", collapse = " | ")
-    )
+    cli::cli_text(paste(
+        cli::style_bold("OPTIONS:"),
+        paste(names(x), cli::style_bold(x), sep = ": ", collapse = " | ")
+    ))
 }
 
 
-#' @importFrom crayon bold underline
+#' @importFrom cli cli_text style_bold
 #' @export
 print.sdc_settings <- function(x, ...) {
     x <- x[!vapply(x, is.null, FUN.VALUE = logical(1L))]
 
-    message(
-        crayon::bold("SETTINGS: "),
-        paste(names(x), crayon::underline(x), sep = ": ", collapse = " | ")
-    )
+    cli::cli_text(paste(
+        cli::style_bold("SETTINGS:"),
+        paste(names(x), cli::style_bold(x), sep = ": ", collapse = " | ")
+    ))
 }
 
+#' @importFrom cli cli_alert_success
 #' @importFrom data.table between
 #' @export
 print.sdc_descriptives <- function(x, ...) {
     distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
+    cli::cli_h1("SDC results (descriptives)")
     print(x[["options"]])
     print(x[["settings"]])
 
@@ -109,14 +111,17 @@ print.sdc_descriptives <- function(x, ...) {
         )
     ) == 0L
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
-        message("Output complies to RDC rules.")
+        cli::cli_alert_success("Output complies to RDC rules.")
     }
+    print(cli::rule(col = "cyan"))
 }
 
+#' @importFrom cli cli_alert_success
 #' @export
 print.sdc_model <- function(x, ...) {
     distinct_ids <- NULL # removes NSE notes in R CMD check
 
+    cli::cli_h1("SDC results (model)")
     print(x[["options"]])
     print(x[["settings"]])
 
@@ -147,13 +152,16 @@ print.sdc_model <- function(x, ...) {
     no_problems <- sum(n_problems) == 0L
 
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
-        message("Output complies to RDC rules.")
+        cli::cli_alert_success("Output complies to RDC rules.")
     }
+    print(cli::rule(col = "cyan"))
 }
 
 #' @export
 print.sdc_min_max <- function(x, ...) {
+    cli::cli_h1("SDC safe min/max")
     print(x[["options"]])
     print(x[["settings"]])
     print(x[["min_max"]])
+    print(cli::rule(col = "cyan"))
 }
