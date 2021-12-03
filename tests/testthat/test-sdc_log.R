@@ -68,6 +68,7 @@ test_that("sdc_log() handles nested calls to sdc_log()", {
     )
 
     actual <- readLines(tf_conn)
+    actual <- actual[grep("Output complies|^(--|──)", actual, invert = TRUE)]
 
     expected <- c(
         log_main_1,
@@ -75,6 +76,7 @@ test_that("sdc_log() handles nested calls to sdc_log()", {
         log_main_2,
         gsub("✓", "v", readLines(log))
     )
+    expected <- expected[grep("Output complies|^(--|──)", expected, invert = TRUE)]
 
     # For some reason, comments from script_main disappear in the testing
     # environment. This only happens when I run the tests using "Run Tests" or
