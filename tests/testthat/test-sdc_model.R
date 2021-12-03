@@ -87,8 +87,8 @@ test_that("too few distinct id's are handled correctly", {
       ref_2,
       ignore_attr = TRUE
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "),
-           "Not enough distinct entities."
+    paste(
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
     ),
     fixed = TRUE
   )
@@ -186,9 +186,8 @@ test_that("dummy problems are handled correctly", {
       ref_4,
       ignore_attr = TRUE
     ),
-    paste0(
-      crayon::bold("DISCLOSURE PROBLEM: "),
-      "Not enough distinct entities."
+    paste(
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
     ),
     fixed = TRUE
   )
@@ -295,8 +294,7 @@ test_that("interaction with problems is handled correctly", {
       ignore_attr = TRUE
     ),
     paste(
-      crayon::bold("DISCLOSURE PROBLEM:"),
-      "Not enough distinct entities."
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
     ),
     fixed = TRUE
   )
@@ -405,8 +403,8 @@ test_that("Bug from #79 is solved", {
         id_var = "id"
       )
     ),
-    paste0(crayon::bold("DISCLOSURE PROBLEM: "),
-           "Not enough distinct entities."
+    paste(
+        cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
     ),
     fixed = TRUE
   )

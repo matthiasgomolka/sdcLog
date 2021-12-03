@@ -3,7 +3,7 @@
 #'   a single warning.
 #' @param list [list] of elements of class `sdc_distinct_ids`.
 #' @importFrom data.table between
-#' @importFrom crayon bold
+#' @importFrom cli cli_warn style_bold
 #' @return NULL
 #' @noRd
 warn_distinct_ids <- function(list) {
@@ -25,10 +25,9 @@ warn_distinct_ids <- function(list) {
     )
 
     if (sum(problems) > 0L) {
-        warning(
-            crayon::bold("DISCLOSURE PROBLEM: "),
-            "Not enough distinct entities.",
-            call. = FALSE
-        )
+        cli::cli_warn(paste(
+            cli::style_bold("DISCLOSURE PROBLEM:"),
+            "Not enough distinct entities."
+        ))
     }
 }

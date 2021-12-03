@@ -86,13 +86,13 @@ sdc_log <- function(
   tryCatch(
     source(
       r_script,
+      local = local,
       echo = TRUE,
       continue.echo = "+ ",
       skip.echo = 0,
       max.deparse.length = Inf,
       width.cutoff = 80,
-      chdir = FALSE,
-      local = local
+      chdir = FALSE
     ),
     # on error, redirect output to console
     error = function(error) {
