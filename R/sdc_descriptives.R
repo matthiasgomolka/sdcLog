@@ -11,6 +11,7 @@
 #' @inheritParams common_arguments
 #'
 #' @importFrom data.table is.data.table as.data.table set
+#' @importFrom cli cli_warn style_bold
 #'
 #' @import mathjaxr
 #'

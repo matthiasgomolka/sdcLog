@@ -1,13 +1,5 @@
 library(data.table)
 
-clean_cli_output <- function(x) {
-    x <- capture_messages(print(x))
-    x <- cli::ansi_strip(x)
-    x <- x[!(x %in% c("\n", "\r\r", "\r \r"))]
-    x <- x[grep("^(──|--)", x, invert = TRUE)]
-    gsub("\\✔|\\✓", "v", x)
-}
-
 # test print.sdc_distinct_ids ----
 distinct_ids_1 <- structure(
     data.table(distinct_ids = 10L),
@@ -443,4 +435,27 @@ test_that("print.sdc_model works for errors", {
               rep("x Not enough distinct entities:\n", 4))
         )
     }
+})
+
+# test print.sdc_min_max
+test_that("print.sdc_min_max throws information", {
+    ref <- structure(
+        list(
+            options = sdcLog:::list_options(),
+            settings = sdcLog:::list_arguments("id_na", "val_1"),
+            min_max = data.table(
+                val_var = "val_1",
+                min = NA_real_,
+                distinct_ids_min = NA_integer_,
+                max = NA_real_,
+                distinct_ids_max = NA_integer_
+            )
+        ),
+        class = c("sdc_min_max", "list")
+    )
+    messages <- capture_messages(print(ref))
+    expect_match(
+        messages[3],
+        "It is impossible to compute extreme values for variable 'val_1' that comply to RDC rules."
+    )
 })
