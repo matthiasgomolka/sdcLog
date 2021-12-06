@@ -81,13 +81,14 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var"), fill_id_var
   )
   names(model_vars) <- model_vars
 
+  # fill id's ----
   if (isTRUE(fill_id_var)) {
-      rows <- which(is.na(data[[id_var]]))
-      fill_na(data, id_var, rows)
+      id_na_idx <- which(is.na(data[[id_var]]))
+      fill_na(data, id_var, id_na_idx)
 
-      # make sure that data remains unchanged for users
+      # reset to NA in order to leave the data unchanged
       on.exit(
-          data.table::set(data, i = rows, j = id_var, value = NA),
+          data.table::set(data, i = id_na_idx, j = id_var, value = NA),
           add = TRUE
       )
   }
