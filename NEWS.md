@@ -9,6 +9,8 @@
   many missing values. See 
   [this discussion](https://github.com/matthiasgomolka/sdcLog/issues/69) for
   details.
+* For `options(sdc.info_level = 2)`, the information on dominance now prints the 
+  dominance, similar to the number of distinct identifiers.
   
 # sdcLog 0.4.0
 
