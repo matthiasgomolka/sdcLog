@@ -288,7 +288,7 @@ test_that("argument fill_id_var works", {
         sdc_min_max(extreme_test_dt, "id_na", val_var = "val_1"),
         extreme_ref_6
     )
-    extreme_ref_1$settings$id_var <- "id_na"
+    extreme_ref_1$settings$id_var <- "id_na (filled)"
 
     expect_identical(
         sdc_min_max(extreme_test_dt, "id_na", val_var = "val_1", fill_id_var = TRUE),

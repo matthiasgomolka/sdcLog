@@ -11,8 +11,11 @@ list_options <- function() {
 
 
 list_arguments <- function(
-  id_var, val_var = NULL, by = NULL, zero_as_NA = NULL
+  id_var, val_var = NULL, by = NULL, zero_as_NA = NULL, fill_id_var = NULL
 ) {
+    if (isTRUE(fill_id_var)) {
+        id_var <- paste(id_var, "(filled)")
+    }
   structure(
     list(
       id_var = id_var,

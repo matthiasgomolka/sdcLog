@@ -171,7 +171,7 @@ sdc_descriptives <- function(
 
     res <- list(
         options = list_options(),
-        settings = list_arguments(id_var, val_var, by, zero_as_NA),
+        settings = list_arguments(id_var, val_var, by, zero_as_NA, fill_id_var),
         distinct_ids = distinct_ids,
         dominance = dominance
     )

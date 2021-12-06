@@ -199,7 +199,7 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var"), fill_id_var
   structure(
     list(
       options = list_options(),
-      settings = list_arguments(id_var = id_var),
+      settings = list_arguments(id_var = id_var, fill_id_var = fill_id_var),
       distinct_ids = distinct_ids,
       terms = term_list
     ),

@@ -162,6 +162,66 @@ test_that("print.sdc_dominance prints info on cases without dominance problem", 
     )
 })
 
+# test print.sdc_options ----
+test_that("options are printed correctly", {
+    options(sdc.n_ids = 3L)
+    options(sdc.n_ids_dominance = 1L)
+    options(sdc.share_dominance = 0.5)
+    expect_identical(
+        cli::ansi_strip(capture_message(print(list_options()))$args$text$str),
+        "OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 1 | sdc.share_dominance: 0.5"
+    )
+
+    options(sdc.n_ids = 5L)
+    options(sdc.n_ids_dominance = 2L)
+    options(sdc.share_dominance = 0.85)
+    expect_identical(
+        cli::ansi_strip(capture_message(print(list_options()))$args$text$str),
+        "OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85"
+    )
+})
+
+# test print.sdc_settings ----
+test_that("settings are printed correctly", {
+
+    settings <- list_arguments(id_var = "ID")
+
+    expect_identical(
+        cli::ansi_strip(capture_message(print(settings))$args$text$str),
+        "SETTINGS: id_var: ID"
+    )
+
+    settings <- list_arguments(id_var = "ID", val_var = "VARIABLE")
+    expect_identical(
+        cli::ansi_strip(capture_message(print(settings))$args$text$str),
+        "SETTINGS: id_var: ID | val_var: VARIABLE"
+    )
+
+    settings <- list_arguments(id_var = "ID", val_var = "VARIABLE", by = "BY")
+    expect_identical(
+        cli::ansi_strip(capture_message(print(settings))$args$text$str),
+        "SETTINGS: id_var: ID | val_var: VARIABLE | by: BY"
+    )
+
+
+    settings <- list_arguments(
+        id_var = "ID", val_var = "VARIABLE", by = "BY", zero_as_NA = FALSE
+    )
+    expect_identical(
+        cli::ansi_strip(capture_message(print(settings))$args$text$str),
+        "SETTINGS: id_var: ID | val_var: VARIABLE | by: BY | zero_as_NA: FALSE"
+    )
+
+    settings <- list_arguments(
+        id_var = "ID", val_var = "VARIABLE", by = "BY", zero_as_NA = FALSE,
+        fill_id_var = TRUE
+    )
+    expect_identical(
+        cli::ansi_strip(capture_message(print(settings))$args$text$str),
+        "SETTINGS: id_var: ID (filled) | val_var: VARIABLE | by: BY | zero_as_NA: FALSE"
+    )
+})
+
 # test print.sdc_descriptives ----
 descriptives_1 <- structure(
     list(
@@ -453,7 +513,9 @@ test_that("print.sdc_min_max throws information", {
         ),
         class = c("sdc_min_max", "list")
     )
-    messages <- capture_messages(print(ref))
+    capture_output({
+        messages <- capture_messages(print(ref))
+    })
     expect_match(
         messages[3],
         "It is impossible to compute extreme values for variable 'val_1' that comply to RDC rules."

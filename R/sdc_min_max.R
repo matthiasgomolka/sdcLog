@@ -111,7 +111,7 @@ sdc_min_max <- function(
   structure(
     list(
       options = list_options(),
-      settings = list_arguments(id_var, val_var, by),
+      settings = list_arguments(id_var, val_var, by, fill_id_var = fill_id_var),
       min_max = res
     ),
     class = c("sdc_min_max", "list")
