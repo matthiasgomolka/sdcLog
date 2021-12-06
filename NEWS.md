@@ -1,3 +1,15 @@
+# sdcLog 0.5.0
+
+### Improvements
+
+* SDC Results are now presented using {cli} instead of {crayon}. This made it 
+  possible to improve the overall readability of the SDC results.
+* All `sdc_*` functions gain the new argument `fill_id_var`. This makes output
+  control easier in specific cases where you need to check an identifier with 
+  many missing values. See 
+  [this discussion](https://github.com/matthiasgomolka/sdcLog/issues/69) for
+  details.
+  
 # sdcLog 0.4.0
 
 ### Improvements

@@ -1,16 +1,22 @@
 #' Disclosure control for models
+#'
 #' @description Checks if your model complies to RDC rules. Checks for overall
 #'   number of entities and number of entities for each level of dummy
 #'   variables.
+#'
 #' @inheritParams common_arguments
+#'
 #' @param data [data.frame] which was used to build the model.
+#'
 #' @importFrom data.table is.data.table as.data.table fsetequal rbindlist :=
 #'   %flike% set
 #' @importFrom broom augment tidy
 #' @importFrom stats model.frame na.omit
 #' @importFrom checkmate assert_data_frame assert_string
+#'
 #' @return A [list] of class `sdc_model` with detailed information about
 #'   options, settings, and compliance with the distinct entities criterion.
+#'
 #' @examples
 #' # Check simple models
 #' model_1 <- lm(y ~ x_1 + x_2, data = sdc_model_DT)
@@ -21,11 +27,12 @@
 #'
 #' model_3 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 #' sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
+#'
 #' @export
-sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
-  var_level <- var <- level <- NULL # to silence NSE notes in RCDM check
+#'
+sdc_model <- function(data, model, id_var = getOption("sdc.id_var"), fill_id_var = FALSE) {
+  var_level <- var <- level <- NULL # to silence NSE notes in RCMD check
 
-  # check inputs
   # input checks ----
   checkmate::assert_data_frame(data)
   if (!data.table::is.data.table(data)) {
@@ -73,6 +80,18 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
     )
   )
   names(model_vars) <- model_vars
+
+  # fill id's ----
+  if (isTRUE(fill_id_var)) {
+      id_na_idx <- which(is.na(data[[id_var]]))
+      fill_na(data, id_var, id_na_idx)
+
+      # reset to NA in order to leave the data unchanged
+      on.exit(
+          data.table::set(data, i = id_na_idx, j = id_var, value = NA),
+          add = TRUE
+      )
+  }
 
   model_dt <- stats::na.omit(data[, c(id_var, model_vars), with = FALSE])
 
@@ -180,7 +199,7 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var")) {
   structure(
     list(
       options = list_options(),
-      settings = list_arguments(id_var = id_var),
+      settings = list_arguments(id_var = id_var, fill_id_var = fill_id_var),
       distinct_ids = distinct_ids,
       terms = term_list
     ),

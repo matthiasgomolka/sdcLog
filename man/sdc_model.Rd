@@ -4,7 +4,7 @@
 \alias{sdc_model}
 \title{Disclosure control for models}
 \usage{
-sdc_model(data, model, id_var = getOption("sdc.id_var"))
+sdc_model(data, model, id_var = getOption("sdc.id_var"), fill_id_var = FALSE)
 }
 \arguments{
 \item{data}{\link{data.frame} which was used to build the model.}
@@ -13,6 +13,25 @@ sdc_model(data, model, id_var = getOption("sdc.id_var"))
 and various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 
 \item{id_var}{\link{character} The name of the id variable. Defaults to \code{ getOption("sdc.id_var")} so that you can provide \code{options(sdc.id_var = "my_id_var")} at the top of your script.}
+
+\item{fill_id_var}{\link{logical} Only for very specific use cases. For example:
+\itemize{
+\item \code{id_var} contains \code{NA} values which represent missing values in the sense
+that there actually exist values identifying the entity but are unknown (or
+deleted for privacy reasons).
+\item \code{id_var} contains \code{NA} values which result from the fact that an
+observation features more than one  confidential identifier and not all of
+these identifiers are present in each observation. Examples for such
+identifiers are the role of a broker in a security transaction or the role of
+a collateral giver in a credit relationship.
+}
+
+If \code{TRUE}, \code{NA} values within \code{id_var} will internally be filled with
+\verb{<filled_[i]>}, assuming that all \code{NA} values of \code{id_var} can be treated as
+different small entities for statistical disclosure control purposes. Thus,
+set \code{TRUE} only if this is a reasonable assumption.
+
+Defaults to \code{FALSE}.}
 }
 \value{
 A \link{list} of class \code{sdc_model} with detailed information about
@@ -33,4 +52,5 @@ sdc_model(data = sdc_model_DT, model = model_2, id_var = "id")
 
 model_3 <- lm(y ~ x_1 + x_2 + dummy_3, data = sdc_model_DT)
 sdc_model(data = sdc_model_DT, model = model_3, id_var = "id")
+
 }

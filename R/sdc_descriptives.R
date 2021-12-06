@@ -11,6 +11,7 @@
 #' @inheritParams common_arguments
 #'
 #' @importFrom data.table is.data.table as.data.table set
+#' @importFrom cli cli_warn style_bold
 #'
 #' @import mathjaxr
 #'
@@ -73,10 +74,12 @@
 #'   dominance.
 
 sdc_descriptives <- function(
-    data, id_var = getOption("sdc.id_var"),
+    data,
+    id_var = getOption("sdc.id_var"),
     val_var = NULL,
     by = NULL,
-    zero_as_NA = NULL
+    zero_as_NA = NULL,
+    fill_id_var = FALSE
 ) {
     distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
@@ -125,15 +128,27 @@ sdc_descriptives <- function(
     }
 
     if (isTRUE(zero_as_NA)) {
-        na_idx <- which(data[[val_var]] == 0)
-        data.table::set(data, i = na_idx, j = val_var, value = NA)
+        val_na_idx <- which(data[[val_var]] == 0)
+        data.table::set(data, i = val_na_idx, j = val_var, value = NA)
 
         # reset to zero in order to leave the data unchanged
         on.exit(
-            data.table::set(data, i = na_idx, j = val_var, value = 0)
+            data.table::set(data, i = val_na_idx, j = val_var, value = 0),
+            add = TRUE
         )
     }
 
+    # fill id's ----
+    if (isTRUE(fill_id_var)) {
+        id_na_idx <- which(is.na(data[[id_var]]))
+        fill_na(data, id_var, id_na_idx)
+
+        # reset to NA in order to leave the data unchanged
+        on.exit(
+            data.table::set(data, i = id_na_idx, j = id_var, value = NA),
+            add = TRUE
+        )
+    }
 
     # check distinct_ids ----
     distinct_ids <- check_distinct_ids(data, id_var, val_var, by)
@@ -156,7 +171,7 @@ sdc_descriptives <- function(
 
     res <- list(
         options = list_options(),
-        settings = list_arguments(id_var, val_var, by, zero_as_NA),
+        settings = list_arguments(id_var, val_var, by, zero_as_NA, fill_id_var),
         distinct_ids = distinct_ids,
         dominance = dominance
     )

@@ -158,11 +158,18 @@ print.sdc_model <- function(x, ...) {
     end_rule()
 }
 
+#' importFrom cli cli_alert_info
+#' @noRd
 #' @export
 print.sdc_min_max <- function(x, ...) {
     title_rule("SDC safe min/max")
     print(x[["options"]])
     print(x[["settings"]])
+    if (is.na(x[["min_max"]][[1L, "min"]])) {
+        cli::cli_alert_info(
+            "It is impossible to compute extreme values for variable '{x[['min_max']][[1L, 'val_var']]}' that comply to RDC rules."
+        )
+    }
     print(x[["min_max"]])
     end_rule()
 }

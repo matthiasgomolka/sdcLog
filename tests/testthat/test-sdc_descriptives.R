@@ -461,6 +461,25 @@ test_that("all ID's NA are handled correctly", {
   )
 })
 
+# some id's ----
+test_that("argument fill_id_var works", {
+    data("sdc_descriptives_DT")
+    id_na <- sdc_descriptives_DT[["id_na"]]
+    expect_warning(
+        sdc_descriptives(sdc_descriptives_DT, "id_na", val_var = "val_1", by = "sector"),
+        paste(
+            cli::style_bold("DISCLOSURE PROBLEM:"), "Not enough distinct entities."
+        ),
+        fixed = TRUE
+    )
+
+    expect_silent(
+        sdc_descriptives(sdc_descriptives_DT, "id_na", val_var = "val_1", by = "sector", fill_id_var = TRUE)
+    )
+    expect_identical(sdc_descriptives_DT[["id_na"]], id_na)
+})
+
+
 test_that("#77 is fixed", {
   options(sdc.info_level = 2)
 
@@ -552,3 +571,4 @@ test_that("preventing val_var = 'val_var' works", {
     fixed = TRUE
   )
 })
+
