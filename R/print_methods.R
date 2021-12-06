@@ -66,6 +66,19 @@ print.sdc_dominance <- function(x, ...) {
 
 }
 
+#' @importFrom cli cli_alert_danger cli_alert_success
+#' @export
+print.sdc_dfs <- function(x, ...) {
+    # with problems
+    if (x <= getOption("sdc.n_df", 10L)) {
+        cli::cli_alert_danger("Not enough degrees of freedom: {x}")
+
+        # withOUT problems
+    } else if (getOption("sdc.info_level", 1L) > 1L) {
+        cli::cli_alert_success("No problem with degrees of freedom ({x}).")
+    }
+}
+
 
 #' @importFrom cli cli_text style_bold
 #' @export
@@ -127,6 +140,7 @@ print.sdc_model <- function(x, ...) {
     print(x[["settings"]])
 
     print(x[["distinct_ids"]])
+    print(x[["dfs"]])
     if (getOption("sdc.info_level", 1L) <= 1L) {
         print_fun <- conditional_print
     } else {

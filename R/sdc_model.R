@@ -10,7 +10,7 @@
 #'
 #' @importFrom data.table is.data.table as.data.table fsetequal rbindlist :=
 #'   %flike% set
-#' @importFrom broom augment tidy
+#' @importFrom broom augment tidy glance
 #' @importFrom stats model.frame na.omit
 #' @importFrom checkmate assert_data_frame assert_string
 #'
@@ -92,6 +92,13 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var"), fill_id_var
           add = TRUE
       )
   }
+
+  # check degrees of freedom ----
+  dfs <- structure(
+      broom::glance(model)[["df.residual"]],
+      class = c("sdc_dfs", "integer")
+  )
+
 
   model_dt <- stats::na.omit(data[, c(id_var, model_vars), with = FALSE])
 
@@ -201,6 +208,7 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var"), fill_id_var
       options = list_options(),
       settings = list_arguments(id_var = id_var, fill_id_var = fill_id_var),
       distinct_ids = distinct_ids,
+      dfs = dfs,
       terms = term_list
     ),
     class = c("sdc_model", "list")
