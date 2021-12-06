@@ -8,7 +8,10 @@ script_main <- list.files(pattern = "script_main.R", recursive = TRUE)
 script_error <- list.files(pattern = "script_error.R", recursive = TRUE)
 log <- list.files(pattern = "test_log.txt", recursive = TRUE)
 
-test_that("sdc_log() works correctly with log files", {
+test_that(
+    "sdc_log() works correctly with log files",
+    # configs = "plain",
+    code = {
     tf <- normalizePath(tempfile(fileext = ".txt"), mustWork = FALSE)
 
     msg <- ifelse(
@@ -20,7 +23,7 @@ test_that("sdc_log() works correctly with log files", {
         sdc_log(r_script = script_1, destination = tf),
         msg
     )
-    exclude <- c(9, 32)
+    exclude <- c(8, 29)
     expect_identical(readLines(tf)[-exclude], gsub("✓", "v", readLines(log))[-exclude])
     expect_match(readLines(tf)[exclude], "Output complies to RDC rules.")
 })
@@ -39,7 +42,7 @@ test_that("sdc_log() works correctly with connections", {
     expect_identical(sink.number(), 0L)
 
     close(conn)
-    exclude <- c(9, 32)
+    exclude <- c(8, 29)
     expect_identical(readLines(tf_conn)[-exclude], gsub("✓", "v", readLines(log))[-exclude])
     expect_match(readLines(tf_conn)[exclude], "Output complies to RDC rules.")
 })
