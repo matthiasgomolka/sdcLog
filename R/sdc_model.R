@@ -98,6 +98,12 @@ sdc_model <- function(data, model, id_var = getOption("sdc.id_var"), fill_id_var
       broom::glance(model)[["df.residual"]],
       class = c("sdc_dfs", "integer")
   )
+  if (dfs <= getOption("sdc.n_df", 10L)) {
+      cli::cli_warn(paste(
+          cli::style_bold("DISCLOSURE PROBLEM:"),
+          "Not enough degrees of freedom."
+      ))
+  }
 
 
   model_dt <- stats::na.omit(data[, c(id_var, model_vars), with = FALSE])
