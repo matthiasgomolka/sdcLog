@@ -209,27 +209,15 @@ test_that("sdc_min_max() returns appropriate error", {
   # throw error if specified variables are not in data
   expect_error(
     sdc_min_max(extreme_test_dt, "wrong_id", "val_1"),
-    paste0(
-      "Assertion on 'id_var' failed: Must be a subset of {'id','val_1',",
-      "'val_2','val_3'}"
-    ),
-    fixed = TRUE
+    "'id_var'.*subset"
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id", "wrong_val"),
-    paste0(
-      "Assertion on 'val_var' failed: Must be a subset of {'val_1',",
-      "'val_2','val_3'}"
-    ),
-    fixed = TRUE
+    "'val_var'.*subset"
   )
   expect_error(
     sdc_min_max(extreme_test_dt_by, "id", "val_1", "wrong_by"),
-    paste0(
-      "Assertion on 'by' failed: Must be a subset of {'sector',",
-      "'val_2','val_3','val_4'}"
-    ),
-    fixed = TRUE
+    "'by'.*subset"
   )
 
   # error for elements unquoted
@@ -260,18 +248,15 @@ test_that("sdc_min_max() returns appropriate error", {
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id_var", val_var = "val_1"),
-    "Assertion on 'id_var' failed: Must be a subset of {'id','val_1','val_2','val_3'}",
-    fixed = TRUE
+    "'id_var'.*subset",
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id", val_var = "val_"),
-    "Assertion on 'val_var' failed: Must be a subset of {'val_1','val_2','val_3'}",
-    fixed = TRUE
+    "'val_var'.*subset",
   )
   expect_error(
     sdc_min_max(extreme_test_dt, "id", val_var = "val_1", by = "by_var"),
-    "Assertion on 'by' failed: Must be a subset of {'val_2','val_3'}",
-    fixed = TRUE
+    "'by'.*subset",
   )
 })
 
