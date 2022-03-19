@@ -220,27 +220,15 @@ test_that("sdc_descriptives() returns appropriate error", {
   # throw error if specified variables are not in data
   expect_error(
     sdc_descriptives(sdc_descriptives_DT, "wrong_id", "val_1"),
-    paste0(
-      "Assertion on 'id_var' failed: Must be a subset of {'id','id_na',",
-      "'sector','year','val_1','val_2'}"
-    ),
-    fixed = TRUE
+    "'id_var'.*subset"
   )
   expect_error(
     sdc_descriptives(sdc_descriptives_DT, "id", "wrong_val"),
-    paste0(
-      "Assertion on 'val_var' failed: Must be a subset of {'id_na',",
-      "'sector','year','val_1','val_2'}"
-    ),
-    fixed = TRUE
+    "'val_var'.*subset"
   )
   expect_error(
     sdc_descriptives(sdc_descriptives_DT, "id", "val_1", "wrong_by"),
-    paste0(
-      "Assertion on 'by' failed: Must be a subset of {'id_na','sector','year',",
-      "'val_2'}"
-    ),
-    fixed = TRUE
+    "'by'.*subset"
   )
 
   # error for elements unquoted
