@@ -128,18 +128,10 @@ extreme_ref_4 <- structure(
 
 # actual tests
 test_that("sdc_min_max() works in simple cases with by", {
-    # expect_identical(
-    #   sdc_min_max(extreme_test_dt_by, "id", "val_1", by = sector),
-    #   extreme_ref_4
-    # )
     expect_identical(
         sdc_min_max(extreme_test_dt_by, "id", "val_1", by = "sector"),
         extreme_ref_4
     )
-    # expect_identical(
-    #   sdc_min_max(extreme_test_dt_by, "id", "val_1", by = .(sector)),
-    #   extreme_ref_4
-    # )
 })
 
 
@@ -180,7 +172,7 @@ test_that("sdc_min_max() gives no result in by cases", {
 
 # test that sdc_min_max returns appropriate error
 test_that("sdc_min_max() returns appropriate error", {
-
+    options(sdc.id_var = NULL)
     # throw error if data is not a data.frame
     expect_error(
         sdc_min_max(wrong_test_dt, "id", "val_1"),
@@ -197,15 +189,27 @@ test_that("sdc_min_max() returns appropriate error", {
     # throw error if specified variables are not in data
     expect_error(
         sdc_min_max(extreme_test_dt, "wrong_id", "val_1"),
-        "'id_var'.*subset"
+        paste0(
+            "Assertion on 'id_var' failed: Must be a subset of {'id','val_1',",
+            "'val_2','val_3'}"
+        ),
+        fixed = TRUE
     )
     expect_error(
         sdc_min_max(extreme_test_dt, "id", "wrong_val"),
-        "'val_var'.*subset"
+        paste0(
+            "Assertion on 'val_var' failed: Must be a subset of {'val_1',",
+            "'val_2','val_3'}"
+        ),
+        fixed = TRUE
     )
     expect_error(
         sdc_min_max(extreme_test_dt_by, "id", "val_1", "wrong_by"),
-        "'by'.*subset"
+        paste0(
+            "Assertion on 'by' failed: Must be a subset of {'sector',",
+            "'val_2','val_3','val_4'}"
+        ),
+        fixed = TRUE
     )
 
     # error for elements unquoted
@@ -236,15 +240,18 @@ test_that("sdc_min_max() returns appropriate error", {
     )
     expect_error(
         sdc_min_max(extreme_test_dt, "id_var", val_var = "val_1"),
-        "'id_var'.*subset",
+        "Assertion on 'id_var' failed: Must be a subset of {'id','val_1','val_2','val_3'}",
+        fixed = TRUE
     )
     expect_error(
         sdc_min_max(extreme_test_dt, "id", val_var = "val_"),
-        "'val_var'.*subset",
+        "Assertion on 'val_var' failed: Must be a subset of {'val_1','val_2','val_3'}",
+        fixed = TRUE
     )
     expect_error(
         sdc_min_max(extreme_test_dt, "id", val_var = "val_1", by = "by_var"),
-        "'by'.*subset",
+        "Assertion on 'by' failed: Must be a subset of {'val_2','val_3'}",
+        fixed = TRUE
     )
 })
 
@@ -255,4 +262,37 @@ test_that("sdc_min_max() does not enter an infinite loop", {
         sdc_min_max(extreme_test_dt[1:5], "id", "val_2"),
         extreme_ref_2
     )
+})
+
+
+test_that("argument fill_id_var works", {
+    extreme_test_dt[id %chin% LETTERS[1:4], id_na := id]
+    id_na <- extreme_test_dt[["id_na"]]
+
+    extreme_ref_6 <- structure(
+        list(
+            options = sdcLog:::list_options(),
+            settings = sdcLog:::list_arguments("id_na", "val_1"),
+            min_max = data.table(
+                val_var = "val_1",
+                min = NA_real_,
+                distinct_ids_min = NA_integer_,
+                max = NA_real_,
+                distinct_ids_max = NA_integer_
+            )
+        ),
+        class = c("sdc_min_max", "list")
+    )
+
+    expect_identical(
+        sdc_min_max(extreme_test_dt, "id_na", val_var = "val_1"),
+        extreme_ref_6
+    )
+    extreme_ref_1$settings$id_var <- "id_na (filled)"
+
+    expect_identical(
+        sdc_min_max(extreme_test_dt, "id_na", val_var = "val_1", fill_id_var = TRUE),
+        extreme_ref_1
+    )
+    expect_identical(extreme_test_dt[["id_na"]], id_na)
 })

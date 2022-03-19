@@ -1,12 +1,16 @@
 #' Calculate RDC rule-compliant extreme values
+#'
 #' @description Checks if calculation of extreme values comply to RDC rules. If
 #'   so, function returns average min and max values according to RDC rules.
+#'
 #' @inheritParams common_arguments
+#'
 #' @importFrom data.table is.data.table as.data.table data.table setorderv
 #'   fintersect uniqueN
 #'   .N set
 #' @importFrom checkmate assert_int
-#' @export
+#' @importFrom cli cli_alert_warning
+#'
 #' @examples
 #' sdc_min_max(sdc_min_max_DT, id_var = "id", val_var = "val_1")
 #' sdc_min_max(sdc_min_max_DT, id_var = "id", val_var = "val_2")
@@ -15,14 +19,19 @@
 #' sdc_min_max(
 #'   sdc_min_max_DT, id_var = "id", val_var = "val_1", by = c("sector", "year")
 #' )
+#'
 #' @return A list [list] of class `sdc_min_max` with detailed information about
 #'   options, settings and the calculated extreme values (if possible).
+#'
+#' @export
+#'
 sdc_min_max <- function(
   data,
   id_var = getOption("sdc.id_var"),
   val_var,
   by = NULL,
-  max_obs = nrow(data)
+  max_obs = nrow(data),
+  fill_id_var = FALSE
 ) {
   # input checks ----
   checkmate::assert_data_frame(data)
@@ -43,6 +52,17 @@ sdc_min_max <- function(
   min_obs <- getOption("sdc.n_ids", 5L)
   checkmate::assert_int(max_obs, lower = min_obs, upper = nrow(data))
 
+  # fill id's ----
+  if (isTRUE(fill_id_var)) {
+      id_na_idx <- which(is.na(data[[id_var]]))
+      fill_na(data, id_var, id_na_idx)
+
+      # reset to NA in order to leave the data unchanged
+      on.exit(
+          data.table::set(data, i = id_na_idx, j = id_var, value = NA),
+          add = TRUE
+      )
+  }
 
   # na.omit.data.table call to prevent NA values being counted
   data <- na.omit(data, cols = val_var)
@@ -88,17 +108,10 @@ sdc_min_max <- function(
     }
   }
 
-  if (is.na(res[[1L, "min"]])) {
-    message(
-      "It is impossible to compute extreme values for variable '",
-      res[[1L, "val_var"]], "' that comply to RDC rules."
-    )
-  }
-
   structure(
     list(
       options = list_options(),
-      settings = list_arguments(id_var, val_var, by),
+      settings = list_arguments(id_var, val_var, by, fill_id_var = fill_id_var),
       min_max = res
     ),
     class = c("sdc_min_max", "list")

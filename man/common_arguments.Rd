@@ -16,6 +16,25 @@ statistics are computed.}
 
 \item{zero_as_NA}{\link{logical} If TRUE, zeros in 'val_var' are treated as NA.}
 
+\item{fill_id_var}{\link{logical} Only for very specific use cases. For example:
+\itemize{
+\item \code{id_var} contains \code{NA} values which represent missing values in the sense
+that there actually exist values identifying the entity but are unknown (or
+deleted for privacy reasons).
+\item \code{id_var} contains \code{NA} values which result from the fact that an
+observation features more than one  confidential identifier and not all of
+these identifiers are present in each observation. Examples for such
+identifiers are the role of a broker in a security transaction or the role of
+a collateral giver in a credit relationship.
+}
+
+If \code{TRUE}, \code{NA} values within \code{id_var} will internally be filled with
+\verb{<filled_[i]>}, assuming that all \code{NA} values of \code{id_var} can be treated as
+different small entities for statistical disclosure control purposes. Thus,
+set \code{TRUE} only if this is a reasonable assumption.
+
+Defaults to \code{FALSE}.}
+
 \item{model}{The estimated model object. Can be a model type like \link{lm}, \link{glm}
 and various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 

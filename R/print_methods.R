@@ -94,7 +94,8 @@ print.sdc_settings <- function(x, ...) {
 print.sdc_descriptives <- function(x, ...) {
     distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
-    cli::cli_h1("SDC results (descriptives)")
+    title_rule("SDC results (descriptives)")
+
     print(x[["options"]])
     print(x[["settings"]])
 
@@ -113,7 +114,7 @@ print.sdc_descriptives <- function(x, ...) {
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
         cli::cli_alert_success("Output complies to RDC rules.")
     }
-    print(cli::rule(col = "cyan"))
+    end_rule()
 }
 
 #' @importFrom cli cli_alert_success
@@ -121,7 +122,7 @@ print.sdc_descriptives <- function(x, ...) {
 print.sdc_model <- function(x, ...) {
     distinct_ids <- NULL # removes NSE notes in R CMD check
 
-    cli::cli_h1("SDC results (model)")
+    title_rule("SDC results (model)")
     print(x[["options"]])
     print(x[["settings"]])
 
@@ -154,14 +155,35 @@ print.sdc_model <- function(x, ...) {
     if (no_problems & (getOption("sdc.info_level", 1L) > 0L)) {
         cli::cli_alert_success("Output complies to RDC rules.")
     }
-    print(cli::rule(col = "cyan"))
+    end_rule()
 }
 
+#' importFrom cli cli_alert_info
+#' @noRd
 #' @export
 print.sdc_min_max <- function(x, ...) {
-    cli::cli_h1("SDC safe min/max")
+    title_rule("SDC safe min/max")
     print(x[["options"]])
     print(x[["settings"]])
+    if (is.na(x[["min_max"]][[1L, "min"]])) {
+        cli::cli_alert_info(
+            "It is impossible to compute extreme values for variable '{x[['min_max']][[1L, 'val_var']]}' that comply to RDC rules."
+        )
+    }
     print(x[["min_max"]])
+    end_rule()
+}
+
+
+#' @importFrom cli rule style_bold
+title_rule <- function(title) {
+    print(cli::rule(
+        right = cli::style_bold(title),
+        line_col = "cyan"
+    ))
+}
+
+#' @importFrom cli rule
+end_rule <- function() {
     print(cli::rule(col = "cyan"))
 }
