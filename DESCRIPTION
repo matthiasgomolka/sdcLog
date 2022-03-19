@@ -1,18 +1,11 @@
 Package: sdcLog
 Title: Tools for Statistical Disclosure Control in Research Data Centers
-Version: 0.4.0
-Authors@R: 
-    c(person(given = "Matthias",
-             family = "Gomolka",
-             role = c("aut", "cre"),
-             email = "matthias.gomolka@posteo.de"),
-      person(given = "Tim",
-             family = "Becker",
-             role = "aut"),
-      person(given = "Pantelis",
-             family = "Karapanagiotis",
-             role = "ctb",
-             email = "pikappa.devel@gmail.com"))
+Version: 0.5.0
+Authors@R: c(
+    person("Matthias", "Gomolka", , "matthias.gomolka@posteo.de", role = c("aut", "cre")),
+    person("Tim", "Becker", role = "aut"),
+    person("Pantelis", "Karapanagiotis", , "pikappa.devel@gmail.com", role = "ctb")
+  )
 Description: Tools for researchers to explicitly show that their results
     comply to rules for statistical disclosure control imposed by research
     data centers. These tools help in checking descriptive statistics and
@@ -28,8 +21,8 @@ Depends:
     R (>= 3.5)
 Imports: 
     broom (>= 0.5.5),
-    cli,
     checkmate (>= 2.0.0),
+    cli,
     data.table (>= 1.12.8),
     mathjaxr,
     stats,

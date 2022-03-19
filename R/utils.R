@@ -1,4 +1,7 @@
+#' Helper function to fill SDC variables
 #' @importFrom data.table set
+#' @keywords internal
+#' @noRd
 fill_na <- function(data, id_var, rows) {
     data.table::set(
         data,

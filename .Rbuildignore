@@ -16,3 +16,4 @@
 ^presentations$
 ^prepare_for_cran.R$
 ^CITATION\.cff$
+^revdep$

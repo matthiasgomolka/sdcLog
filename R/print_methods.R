@@ -1,5 +1,14 @@
+#' Print methods for SDC objects
+#'
+#' @description These methods print SDC objects. Tables containing information
+#'   are only printed when relevant.
+#'
+#' @param x The object to be printed
+#' @param ... Ignored.
+#'
 #' @importFrom cli cli_alert_danger cli_alert_success
 #' @importFrom data.table as.data.table between
+#'
 #' @export
 print.sdc_distinct_ids <- function(x, ...) {
     distinct_ids <- NULL # removes NSE notes in R CMD check
@@ -30,6 +39,7 @@ print.sdc_distinct_ids <- function(x, ...) {
 
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_success
 #' @importFrom data.table as.data.table
+#' @rdname print.sdc_distinct_ids
 #' @export
 print.sdc_dominance <- function(x, ...) {
     value_share <- NULL # removes NSE notes in R CMD check
@@ -68,6 +78,7 @@ print.sdc_dominance <- function(x, ...) {
 
 
 #' @importFrom cli cli_text style_bold
+#' @rdname print.sdc_distinct_ids
 #' @export
 print.sdc_options <- function(x, ...) {
     cli::cli_text(paste(
@@ -78,6 +89,7 @@ print.sdc_options <- function(x, ...) {
 
 
 #' @importFrom cli cli_text style_bold
+#' @rdname print.sdc_distinct_ids
 #' @export
 print.sdc_settings <- function(x, ...) {
     x <- x[!vapply(x, is.null, FUN.VALUE = logical(1L))]
@@ -90,6 +102,7 @@ print.sdc_settings <- function(x, ...) {
 
 #' @importFrom cli cli_alert_success
 #' @importFrom data.table between
+#' @rdname print.sdc_distinct_ids
 #' @export
 print.sdc_descriptives <- function(x, ...) {
     distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
@@ -118,6 +131,7 @@ print.sdc_descriptives <- function(x, ...) {
 }
 
 #' @importFrom cli cli_alert_success
+#' @rdname print.sdc_distinct_ids
 #' @export
 print.sdc_model <- function(x, ...) {
     distinct_ids <- NULL # removes NSE notes in R CMD check
@@ -159,7 +173,7 @@ print.sdc_model <- function(x, ...) {
 }
 
 #' importFrom cli cli_alert_info
-#' @noRd
+#' @rdname print.sdc_distinct_ids
 #' @export
 print.sdc_min_max <- function(x, ...) {
     title_rule("SDC safe min/max")
@@ -175,7 +189,10 @@ print.sdc_min_max <- function(x, ...) {
 }
 
 
+#' Helper function to print specific title rules
 #' @importFrom cli rule style_bold
+#' @keywords internal
+#' @noRd
 title_rule <- function(title) {
     print(cli::rule(
         right = cli::style_bold(title),
@@ -183,7 +200,10 @@ title_rule <- function(title) {
     ))
 }
 
+#' Helper function to print specific end rules
 #' @importFrom cli rule
+#' @keywords internal
+#' @noRd
 end_rule <- function() {
     print(cli::rule(col = "cyan"))
 }
