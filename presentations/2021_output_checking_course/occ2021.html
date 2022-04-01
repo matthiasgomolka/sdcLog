@@ -132,9 +132,11 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)),
 ```r
 # Proof, that the result complies to rules
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
+## ────────────────────────────────────────────────── SDC results (descriptives) ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE
-## Output complies to RDC rules.
+## ✓ Output complies to RDC rules.
+## ────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -151,20 +153,23 @@ This time, researches want to calculate the result grouped by `sector` and
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 ## Warning: DISCLOSURE PROBLEM: Not enough distinct entities.
 ## Warning: DISCLOSURE PROBLEM: Dominant entities.
+## ────────────────────────────────────────────────── SDC results (descriptives) ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
-## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA: FALSE
-## Not enough distinct entities:
+## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA:
+## FALSE
+## x Not enough distinct entities:
 ##    sector year distinct_ids
 ## 1:     S1 2019            4
 ## 2:     S1 2020            5
 ## 3:     S2 2019            5
 ## 4:     S2 2020            5
-## Dominant entities:
+## x Dominant entities:
 ##    sector year value_share
 ## 1:     S2 2020   0.9056314
 ## 2:     S1 2020   0.8776852
 ## 3:     S1 2019   0.6815011
 ## 4:     S2 2019   0.5506965
+## ────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -191,10 +196,12 @@ Minimum and maximum value are confidential micro data.
 
 ```r
 sdc_min_max(DT, id_var = "id", val_var = "val_1")
+## ──────────────────────────────────────────────────────────── SDC safe min/max ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1
 ##    val_var      min distinct_ids_min      max distinct_ids_max
 ## 1:   val_1 3.364432                5 37.34043                7
+## ────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -214,9 +221,11 @@ mod &lt;- lm(val_1 ~ sector + year + val_2, data = DT)
 
 # Check if model complies to rules
 sdc_model(DT, model = mod, id_var = "id")
+## ───────────────────────────────────────────────────────── SDC results (model) ──
 ## OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id
-## Output complies to RDC rules.
+## ✓ Output complies to RDC rules.
+## ────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -224,8 +233,8 @@ sdc_model(DT, model = mod, id_var = "id")
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-0ffcb9c16e841de4f58f" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0ffcb9c16e841de4f58f">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-61af1a3180e09dc30414" style="width:60%;height:504px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-61af1a3180e09dc30414">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
