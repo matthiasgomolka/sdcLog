@@ -79,7 +79,8 @@ sdc_descriptives <- function(
     val_var = NULL,
     by = NULL,
     zero_as_NA = NULL,
-    fill_id_var = FALSE
+    fill_id_var = FALSE,
+    keys = NULL
 ) {
     distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
@@ -91,19 +92,29 @@ sdc_descriptives <- function(
     col_names <- names(data)
 
     checkmate::assert_string(id_var)
-    checkmate::assert_subset(id_var, choices = col_names)
+    checkmate::assert_subset(id_var, choices = setdiff(col_names, c(val_var, keys)))
 
     checkmate::assert_string(val_var, null.ok = TRUE)
     # assert that val_var is not "val_var" (which would lead to errors later on)
     if (!is.null(val_var) && val_var == "val_var") {
         stop("Assertion on 'val_var' failed: Must not equal \"val_var\".")
     }
-    checkmate::assert_subset(val_var, choices = setdiff(col_names, id_var))
+    checkmate::assert_subset(val_var, choices = setdiff(col_names, c(id_var, keys)))
 
     checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
     checkmate::assert_subset(by, choices = setdiff(col_names, c(id_var, val_var)))
 
     checkmate::assert_logical(zero_as_NA, len = 1L, null.ok = TRUE)
+
+    checkmate::assert_subset(keys, choices = setdiff(col_names, c(id_var, val_var)))
+    # check if keys are actually keys
+    key_check <- data[, N := data.table::uniqueN(get(val_var)), by = keys][N > 1L]
+    if (nrow(key_check) > 0L) {
+        stop(
+            "Assertion on 'keys' failed: Values in 'val_var' are not unique in {'",
+            paste0(keys, collapse = "', '"), "'}.",
+        )
+    }
 
 
     # handling 0's ----
@@ -157,7 +168,7 @@ sdc_descriptives <- function(
     warn_distinct_ids(list(distinct_ids = distinct_ids))
 
     # check dominance ----
-    dominance <- check_dominance(data, id_var, val_var, by)
+    dominance <- check_dominance(data, id_var, val_var, by, keys)
 
     # warn about dominance if necessary
     if (nrow(
