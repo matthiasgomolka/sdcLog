@@ -564,12 +564,46 @@ test_that("preventing val_var = 'val_var' works", {
 # duplicates in val_var
 # incorrect calculation: false negative
 test_that("duplicates in val_var are handled correctly", {
-    expect_silent(
-        sdc_descriptives(sdc_dups_DT, "lender", "volume")
-    )
+    for (id_var in c("lender_group", "lender", "borrower", "borrower_group")) {
 
-    # correct calculation
-    expect_warning(
-        sdc_descriptives(sdc_dups_DT, "lender", "volume", keys = c("lender", "borrower"))
-    )
+        # incorrect_ calculation
+        expect_silent(
+            sdc_descriptives(sdc_dups_DT, id_var = id_var, val_var = "volume")
+        )
+
+        # correct calculation
+        expect_warning(
+            sdc_descriptives(
+                sdc_dups_DT,
+                id_var = id_var,
+                val_var = "volume",
+                keys = c("lender", "borrower")
+            ),
+            "Dominant entities."
+        )
+
+    }
+})
+test_that("keys are checked correcly", {
+    for (keys in list(
+        c("lender_group"),
+        c("borrower_group"),
+        c("lender_group", "borrower_group"),
+        c("lender_group", "lender")
+    )) {
+        expect_error(
+            sdc_descriptives(
+                sdc_dups_DT,
+                id_var = "lender",
+                val_var = "volume",
+                keys = keys
+            ),
+            paste0(
+                "The set of 'keys' {'", paste0(keys, collapse = "', '"),
+                "'} does not uniquely identify each value of 'val_var'."
+            ),
+            fixed = TRUE
+        )
+    }
+
 })

@@ -15,14 +15,16 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL, keys = NULL
             structure(data.table::data.table(value_share = NA_real_), class = class)
         )
     }
-    browser()
+
     # missing_id_var = "structural" ----
     # distinguish between NA and non-NA id's and calculate the value_share for
     # each id and the cumulative value_share
-
-    dt <- data[
-        j = .SD[1L], by = keys
-    ][
+    if (!is.null(keys)) {
+        dt <- data[, .SD[1L], by = keys]
+    } else {
+        dt <- data
+    }
+    dt <- dt[
         j = list(agg_val_var = sum(abs(get(val_var)), na.rm = TRUE)),
         keyby = c(id_var, by)
     ][

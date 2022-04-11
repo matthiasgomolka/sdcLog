@@ -86,7 +86,6 @@ sdc_dups_DT <- merge(
     sdc_dups_borrower_groups_DT,
     by = "borrower"
 )
-sdc_dups_DT
 setcolorder(sdc_dups_DT, c("lender_group", "lender", "volume", "borrower", "borrower_group"))
 
 usethis::use_data(sdc_dups_DT, overwrite = TRUE)

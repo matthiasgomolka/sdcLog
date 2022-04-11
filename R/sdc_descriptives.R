@@ -74,13 +74,13 @@
 #'   dominance.
 
 sdc_descriptives <- function(
-    data,
-    id_var = getOption("sdc.id_var"),
-    val_var = NULL,
-    by = NULL,
-    zero_as_NA = NULL,
-    fill_id_var = FALSE,
-    keys = NULL
+        data,
+        id_var = getOption("sdc.id_var"),
+        val_var = NULL,
+        by = NULL,
+        zero_as_NA = NULL,
+        fill_id_var = FALSE,
+        keys = NULL
 ) {
     distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
 
@@ -92,7 +92,7 @@ sdc_descriptives <- function(
     col_names <- names(data)
 
     checkmate::assert_string(id_var)
-    checkmate::assert_subset(id_var, choices = setdiff(col_names, c(val_var, keys)))
+    checkmate::assert_subset(id_var, choices = setdiff(col_names, val_var))
 
     checkmate::assert_string(val_var, null.ok = TRUE)
     # assert that val_var is not "val_var" (which would lead to errors later on)
@@ -106,14 +106,32 @@ sdc_descriptives <- function(
 
     checkmate::assert_logical(zero_as_NA, len = 1L, null.ok = TRUE)
 
-    checkmate::assert_subset(keys, choices = setdiff(col_names, c(id_var, val_var)))
+    checkmate::assert_subset(keys, choices = setdiff(col_names, val_var))
     # check if keys are actually keys
-    key_check <- data[, N := data.table::uniqueN(get(val_var)), by = keys][N > 1L]
-    if (nrow(key_check) > 0L) {
-        stop(
-            "Assertion on 'keys' failed: Values in 'val_var' are not unique in {'",
-            paste0(keys, collapse = "', '"), "'}.",
-        )
+    if (!is.null(keys)) {
+        unique_vals <- data[, list(N = data.table::uniqueN(get(val_var))), by = keys][N > 1L]
+        if (nrow(unique_vals) > 0L) {
+            stop(
+                "Assertion on 'keys' failed: Values in 'val_var' are not unique in the set of keys {'",
+                paste0(keys, collapse = "', '"), "'}."
+            )
+        }
+        # rows_per_keys <- data[, .N, by = c(keys, val_var)][, .N, by = keys][N > 1L]
+        rows_per_keys <- data[
+            j = list(id_var = unique(get(id_var)), .N),
+            by = c(keys, val_var)
+        ][
+            j = .N,
+            by = "id_var"
+        ][
+            N > 1L
+        ]
+        if (nrow(rows_per_keys) > 0L) {
+            stop(
+                "Assertion on 'keys' failed: The set of 'keys' {'",
+                paste0(keys, collapse = "', '"), "'} does not uniquely identify each value of 'val_var'."
+            )
+        }
     }
 
 
