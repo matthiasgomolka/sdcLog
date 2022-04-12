@@ -17,7 +17,7 @@
 #'
 #' @details
 #'   \loadmathjax
-#'   The general form of the \mjseqn{(n, k)} dominance rule can be formulated
+#'   The general form of the \mjseqn{(n, k)}-dominance rule can be formulated
 #'   as:
 #'
 #'   \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}
@@ -28,7 +28,7 @@
 #'   \mjseqn{n} contributions may account for, and \mjseqn{N} is the total
 #'   number of observations.
 #'
-#'   If the statement above is true, the \mjseqn{(n, k)} dominance rule is
+#'   If the statement above is true, the \mjseqn{(n, k)}-dominance rule is
 #'   violated.
 #'
 #' @export
@@ -74,14 +74,15 @@
 #'   dominance.
 
 sdc_descriptives <- function(
-    data,
-    id_var = getOption("sdc.id_var"),
-    val_var = NULL,
-    by = NULL,
-    zero_as_NA = NULL,
-    fill_id_var = FALSE
+        data,
+        id_var = getOption("sdc.id_var"),
+        val_var = NULL,
+        by = NULL,
+        zero_as_NA = NULL,
+        fill_id_var = FALSE,
+        key_vars = getOption("sdc.key_vars")
 ) {
-    distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
+    distinct_ids <- value_share <- mean_val_var <- NULL # removes NSE notes in R CMD check
 
     # input checks ----
     checkmate::assert_data_frame(data)
@@ -91,19 +92,73 @@ sdc_descriptives <- function(
     col_names <- names(data)
 
     checkmate::assert_string(id_var)
-    checkmate::assert_subset(id_var, choices = col_names)
+    checkmate::assert_subset(id_var, choices = setdiff(col_names, val_var))
 
     checkmate::assert_string(val_var, null.ok = TRUE)
     # assert that val_var is not "val_var" (which would lead to errors later on)
     if (!is.null(val_var) && val_var == "val_var") {
         stop("Assertion on 'val_var' failed: Must not equal \"val_var\".")
     }
-    checkmate::assert_subset(val_var, choices = setdiff(col_names, id_var))
+    checkmate::assert_subset(val_var, choices = setdiff(col_names, c(id_var, key_vars)))
 
     checkmate::assert_character(by, any.missing = FALSE, null.ok = TRUE)
     checkmate::assert_subset(by, choices = setdiff(col_names, c(id_var, val_var)))
 
     checkmate::assert_logical(zero_as_NA, len = 1L, null.ok = TRUE)
+
+    checkmate::assert_subset(key_vars, choices = setdiff(col_names, val_var))
+    # checkmate::assert_string(time_var, null.ok = TRUE)
+    # checkmate::assert_subset(time_var, choices = setdiff(col_names, c(id_var, val_var, key_vars)))
+    # check if keys are actually keys
+    if (!is.null(key_vars) & !is.null(val_var)) {
+
+        # hard check for duplicates by key_vars
+        values_unique <- identical(
+            unique(data, by = c(key_vars)),
+            unique(data, by = c(key_vars, val_var))
+        )
+        if (isFALSE(values_unique)) {
+            stop(
+                "Assertion on 'key_vars' failed: Values in 'val_var' are not unique in {'",
+                paste0( key_vars, collapse = "','"), "'}."
+            )
+        }
+
+
+        # soft check for duplicates by key_vars
+        val_var_dups <- anyDuplicated(data[, .SD[1L], by = key_vars], by = val_var)
+        # val_var_dups <- anyDuplicated(data, by = c(val_var, time_var, id_var))
+
+        if (val_var_dups > 0L) {
+            cli::cli_alert_warning("Duplicates in {.code val_var} detected. Is your specification of {.code key_vars} correct?")
+        }
+
+        data[, mean_val_var := get(val_var) / .N, by = key_vars]
+        on.exit(set(data, j = "mean_val_var", value = NULL), add = TRUE)
+        val_var <- structure("mean_val_var", names = val_var)
+        # unique_vals <- data[
+        #     j = .N,
+        #     by = c(key_vars, time_var, val_var)
+        # ][
+        #     N > 1L
+        # ]
+        # # rows_per_keys <- data[, .N, by = c(keys, val_var)][, .N, by = keys][N > 1L]
+        # rows_per_keys <- data[
+        #     j = list(id_var = unique(get(id_var)), .N),
+        #     by = c(keys, val_var)
+        # ][
+        #     j = .N,
+        #     by = "id_var"
+        # ][
+        #     N > 1L
+        # ]
+        # if (nrow(rows_per_keys) > 0L) {
+        #     stop(
+        #         "Assertion on 'keys' failed: The set of 'keys' {'",
+        #         paste0(keys, collapse = "', '"), "'} does not uniquely identify each value of 'val_var'."
+        #     )
+        # }
+    }
 
 
     # handling 0's ----
@@ -157,7 +212,7 @@ sdc_descriptives <- function(
     warn_distinct_ids(list(distinct_ids = distinct_ids))
 
     # check dominance ----
-    dominance <- check_dominance(data, id_var, val_var, by)
+    dominance <- check_dominance(data, id_var, val_var, by, key_vars)
 
     # warn about dominance if necessary
     if (nrow(
@@ -171,7 +226,7 @@ sdc_descriptives <- function(
 
     res <- list(
         options = list_options(),
-        settings = list_arguments(id_var, val_var, by, zero_as_NA, fill_id_var),
+        settings = list_arguments(id_var, val_var, by, zero_as_NA, fill_id_var, key_vars),
         distinct_ids = distinct_ids,
         dominance = dominance
     )

@@ -10,7 +10,8 @@ sdc_descriptives(
   val_var = NULL,
   by = NULL,
   zero_as_NA = NULL,
-  fill_id_var = FALSE
+  fill_id_var = FALSE,
+  key_vars = getOption("sdc.key_vars")
 )
 }
 \arguments{
@@ -44,6 +45,17 @@ different small entities for statistical disclosure control purposes. Thus,
 set \code{TRUE} only if this is a reasonable assumption.
 
 Defaults to \code{FALSE}.}
+
+\item{key_vars}{\link{character} Only for specific use cases in which duplicate
+values in \code{val_var} occur. This can happen for example due to
+\itemize{
+\item grouped aggregations, such as \code{sdc_descriptives_DT[, mean_val_1 := mean(val_1, na.rm = TRUE), by = "id"]} or
+\item 1:n merges, such as \code{merge(sdc_dups_credits_DT, sdc_dups_lender_groups_DT, by = "lender")}.
+}
+
+In these cases, you need to use \code{key_vars} to specify those columns which
+identify each row. Usually, these are one or more id variables and time
+variables.}
 }
 \value{
 A \link{list} of class \code{sdc_descriptives} with detailed information about
@@ -61,7 +73,7 @@ distinct entities and if the largest 2 entities account for 85\% or more of
 }
 \details{
 \loadmathjax
-The general form of the \mjseqn{(n, k)} dominance rule can be formulated
+The general form of the \mjseqn{(n, k)}-dominance rule can be formulated
 as:
 
 \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}

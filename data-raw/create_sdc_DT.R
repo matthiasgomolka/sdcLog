@@ -1,6 +1,6 @@
 library(data.table)
 
-# dt for descriptives
+# dt for descriptives ----
 set.seed(1)
 n <- 20L
 sdc_descriptives_DT <- data.table::data.table(
@@ -18,7 +18,7 @@ data.table::setcolorder(sdc_descriptives_DT, c("id", "id_na", "sector", "year"))
 
 usethis::use_data(sdc_descriptives_DT, overwrite = TRUE)
 
-# dt for extreme
+# dt for extreme ----
 set.seed(1)
 n <- 20L
 sdc_min_max_DT <- data.table::data.table(
@@ -33,7 +33,7 @@ sdc_min_max_DT <- data.table::data.table(
 data.table::setorder(sdc_min_max_DT, -val_1)
 usethis::use_data(sdc_min_max_DT, overwrite = TRUE)
 
-# dt for model
+# dt for model ----
 set.seed(1)
 n <- 80
 y <- rnorm(n, mean = 120, sd = 8)
@@ -59,3 +59,38 @@ sdc_model_DT[id %in% c("A", "B", "C", "D", "E", "F"), x_3 := NA_real_]
 sdc_model_DT[id %in% c("A", "B"), x_4 := x_4 * 100]
 
 usethis::use_data(sdc_model_DT, overwrite = TRUE)
+
+
+# dt for dup obs ----
+sdc_dups_credits_DT <- data.table(
+    lender = factor(paste0("L", 1:6)),
+    borrower = factor(paste0("B", 1:6)),
+    volume = c(400L:401L, 10L:12L, 99L)
+)
+usethis::use_data(sdc_dups_credits_DT, overwrite = TRUE)
+
+sdc_dups_lender_groups_DT <- data.table(
+    lender_group = factor(paste0("LG", 1:7)),
+    lender = factor(paste0("L", c(1:6, 6)))
+)
+usethis::use_data(sdc_dups_lender_groups_DT, overwrite = TRUE)
+
+sdc_dups_borrower_groups_DT <- data.table(
+    borrower_group = factor(paste0("BG", 1:7)),
+    borrower = factor(paste0("B", c(1:6, 6)))
+)
+
+sdc_dups_DT <- merge(
+    sdc_dups_lender_groups_DT,
+    sdc_dups_credits_DT,
+    by = "lender"
+)
+sdc_dups_DT <- merge(
+    sdc_dups_DT,
+    sdc_dups_borrower_groups_DT,
+    by = "borrower"
+)
+setcolorder(sdc_dups_DT, c("lender_group", "lender", "volume", "borrower", "borrower_group"))
+
+usethis::use_data(sdc_dups_DT, overwrite = TRUE)
+

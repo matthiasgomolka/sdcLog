@@ -38,6 +38,51 @@ user_options <- options()
 
 ------------------------------------------------------------------------
 
+2. **My data set contains duplicates in the value variable which I want to check using `sdc_descriptives()`. Therefore, the calculation of the \(n, k)\-dominance will be incorrect. How can I account for this case without subsetting my data?**
+
+    In this case, you can use the `key_vars` argument. In `key_vars`, specify the columns needed to identify unique values in your `val_var`. Here is an example:
+    
+    ```{r}
+    # original data
+    data("sdc_dups_credits_DT")
+    sdc_dups_credits_DT
+    data("sdc_dups_lender_groups_DT")
+    sdc_dups_lender_groups_DT
+    
+    # merge data
+    merged <- merge(sdc_dups_credits_DT, sdc_dups_lender_groups_DT, by = "lender")
+    merged
+    ```
+    
+    Since lender `L6` is part of lender groups `LG6` and `LG7`, the credit value of `99` is now duplicated. Applying `sdc_descriptives()` without specifying `key_vars` would lead to an incorrect calculation of the \(n, k)\-dominance. To solve this, use:
+    
+    ```{r}
+    sdc_descriptives(
+        merged, 
+        id_var = "lender", 
+        val_var = "volume",
+        key_vars = c("lender", "borrower")
+    )
+    sdc_descriptives(
+        merged, 
+        id_var = "borrower", 
+        val_var = "volume",
+        key_vars = c("lender", "borrower")
+    )
+    sdc_descriptives(
+        merged, 
+        id_var = "lender_group", 
+        val_var = "volume",
+        key_vars = c("lender", "borrower")
+    )
+    ```
+    
+    The specification of `key_vars = c("lender", "borrower")` tells `sdc_descriptives()` that unique values of `volume` are identified by the combination of `lender` and `borrower`.
+    
+    Usually, `key_vars` will contain one or more id variables and time variables.
+
+------------------------------------------------------------------------
+
 This vignette will be extended as users have more questions.
 
 ```{r reset options, include=FALSE}
