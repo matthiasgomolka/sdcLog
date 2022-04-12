@@ -135,7 +135,7 @@ sdc_descriptives <- function(
 
         data[, mean_val_var := get(val_var) / .N, by = key_vars]
         on.exit(set(data, j = "mean_val_var", value = NULL), add = TRUE)
-        val_var <- "mean_val_var"
+        val_var <- structure("mean_val_var", names = val_var)
         # unique_vals <- data[
         #     j = .N,
         #     by = c(key_vars, time_var, val_var)
@@ -226,7 +226,7 @@ sdc_descriptives <- function(
 
     res <- list(
         options = list_options(),
-        settings = list_arguments(id_var, val_var, by, zero_as_NA, fill_id_var),
+        settings = list_arguments(id_var, val_var, by, zero_as_NA, fill_id_var, key_vars),
         distinct_ids = distinct_ids,
         dominance = dominance
     )
