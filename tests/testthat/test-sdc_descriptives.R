@@ -633,3 +633,7 @@ test_that("duplicates in val_var are handled correctly", {
 
 
 })
+
+# df <- readxl::read_excel("/home/matthias/Downloads/gebundene_daten_2.xlsx")
+# sdc_descriptives(df, "Unternehmen", val_var = "Total_export")
+# sdc_descriptives(df, "Unternehmen", val_var = "Total_export", key_vars = "Unternehmen")

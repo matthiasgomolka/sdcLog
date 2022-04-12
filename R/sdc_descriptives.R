@@ -110,7 +110,7 @@ sdc_descriptives <- function(
     # checkmate::assert_string(time_var, null.ok = TRUE)
     # checkmate::assert_subset(time_var, choices = setdiff(col_names, c(id_var, val_var, key_vars)))
     # check if keys are actually keys
-    if (!is.null(key_vars)) {
+    if (!is.null(key_vars) & !is.null(val_var)) {
 
         # hard check for duplicates by key_vars
         values_unique <- identical(
