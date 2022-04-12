@@ -33,6 +33,18 @@
 #'
 #' Defaults to `FALSE`.
 #'
+#' @param key_vars [character] Only for specific use cases in which duplicate
+#'   values in `val_var` occur. This can happen for example due to
+#'
+#' * grouped aggregations, such as `sdc_descriptives_DT[, mean_val_1 :=
+#' mean(val_1, na.rm = TRUE), by = "id"]` or
+#' * 1:n merges, such as `merge(sdc_dups_credits_DT, sdc_dups_lender_groups_DT,
+#' by = "lender")`.
+#'
+#' In these cases, you need to use `key_vars` to specify those columns which
+#' identify each row. Usually, these are one or more id variables and time
+#' variables.
+#'
 #' @param model The estimated model object. Can be a model type like [lm], [glm]
 #'   and various others (anything which can be handled by [broom::augment()]).
 #'

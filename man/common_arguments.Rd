@@ -35,6 +35,17 @@ set \code{TRUE} only if this is a reasonable assumption.
 
 Defaults to \code{FALSE}.}
 
+\item{key_vars}{\link{character} Only for specific use cases in which duplicate
+values in \code{val_var} occur. This can happen for example due to
+\itemize{
+\item grouped aggregations, such as \code{sdc_descriptives_DT[, mean_val_1 := mean(val_1, na.rm = TRUE), by = "id"]} or
+\item 1:n merges, such as \code{merge(sdc_dups_credits_DT, sdc_dups_lender_groups_DT, by = "lender")}.
+}
+
+In these cases, you need to use \code{key_vars} to specify those columns which
+identify each row. Usually, these are one or more id variables and time
+variables.}
+
 \item{model}{The estimated model object. Can be a model type like \link{lm}, \link{glm}
 and various others (anything which can be handled by \code{\link[broom:reexports]{broom::augment()}}).}
 

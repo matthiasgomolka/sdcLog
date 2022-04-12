@@ -63,17 +63,21 @@ usethis::use_data(sdc_model_DT, overwrite = TRUE)
 
 # dt for dup obs ----
 sdc_dups_credits_DT <- data.table(
-    lender = paste0("L", 1:6),
-    borrower = paste0("B", 1:6),
+    lender = factor(paste0("L", 1:6)),
+    borrower = factor(paste0("B", 1:6)),
     volume = c(400L:401L, 10L:12L, 99L)
 )
+usethis::use_data(sdc_dups_credits_DT, overwrite = TRUE)
+
 sdc_dups_lender_groups_DT <- data.table(
-    lender_group = paste0("LG", 1:7),
-    lender = paste0("L", c(1:6, 6))
+    lender_group = factor(paste0("LG", 1:7)),
+    lender = factor(paste0("L", c(1:6, 6)))
 )
+usethis::use_data(sdc_dups_lender_groups_DT, overwrite = TRUE)
+
 sdc_dups_borrower_groups_DT <- data.table(
-    borrower_group = paste0("BG", 1:7),
-    borrower = paste0("B", c(1:6, 6))
+    borrower_group = factor(paste0("BG", 1:7)),
+    borrower = factor(paste0("B", c(1:6, 6)))
 )
 
 sdc_dups_DT <- merge(

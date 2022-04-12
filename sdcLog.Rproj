@@ -22,3 +22,5 @@ PackageCheckArgs: --as-cran --no-stop-on-test-error
 PackageRoxygenize: rd,collate,namespace,vignette
 
 QuitChildProcessesOnExit: Yes
+
+SpellingDictionary: en_US

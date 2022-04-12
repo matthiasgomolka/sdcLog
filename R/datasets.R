@@ -38,3 +38,43 @@
 #' - val_1 - val_3 [numeric] value variables
 #' @keywords datasets
 "sdc_min_max_DT"
+
+#' Example data for `sdc_descriptives()`
+#' @description Utilized in the unit tests
+#' @name sdc_dups_DT
+#' @docType data
+#' @usage data("sdc_dups_DT")
+#' @format A data.table with 9 rows and 5 columns.
+#' @details The data.table contains the following columns:
+#' - lender_group [factor] random lender group identifier
+#' - lender [factor] random lender identifier
+#' - volume [integer] credit volume
+#' - borrower [factor] random borrower identifier
+#' - borrower_group [factor] random borrower group identifier
+#' @keywords datasets
+"sdc_dups_DT"
+
+#' Example data for `sdc_descriptives()`
+#' @description Utilized in the unit tests
+#' @name sdc_dups_credits_DT
+#' @docType data
+#' @usage data("sdc_dups_credits_DT")
+#' @format A data.table with 6 rows and 3 columns.
+#' @details The data.table contains the following columns:
+#' - lender [factor] random lender identifier
+#' - borrower [factor] random borrower identifier
+#' - volume [integer] credit volume
+#' @keywords datasets
+"sdc_dups_credits_DT"
+
+#' Example data for `sdc_descriptives()`
+#' @description Utilized in the unit tests
+#' @name sdc_dups_lender_groups_DT
+#' @docType data
+#' @usage data("sdc_dups_lender_groups_DT")
+#' @format A data.table with 7 rows and 2 columns.
+#' @details The data.table contains the following columns:
+#' - lender_group [factor] random lender group identifier
+#' - lender [factor] random lender identifier
+#' @keywords datasets
+"sdc_dups_lender_groups_DT"

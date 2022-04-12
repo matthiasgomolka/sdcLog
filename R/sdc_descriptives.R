@@ -82,7 +82,7 @@ sdc_descriptives <- function(
         fill_id_var = FALSE,
         key_vars = getOption("sdc.key_vars")
 ) {
-    distinct_ids <- value_share <- NULL # removes NSE notes in R CMD check
+    distinct_ids <- value_share <- mean_val_var <- NULL # removes NSE notes in R CMD check
 
     # input checks ----
     checkmate::assert_data_frame(data)
