@@ -2,7 +2,7 @@
 #' @inheritParams common_arguments
 #' @importFrom data.table fifelse setnafill setnames setorderv
 #' @noRd
-check_dominance <- function(data, id_var, val_var = NULL, by = NULL, keys = NULL) {
+check_dominance <- function(data, id_var, val_var = NULL, by = NULL, key_vars = NULL) {
     # remove NSE notes in R CMD check
     agg_val_var <- value_share <- id_na <- cum_value_share <- value_share_na <-
         NULL
@@ -19,12 +19,12 @@ check_dominance <- function(data, id_var, val_var = NULL, by = NULL, keys = NULL
     # missing_id_var = "structural" ----
     # distinguish between NA and non-NA id's and calculate the value_share for
     # each id and the cumulative value_share
-    if (!is.null(keys)) {
-        dt <- data[, .SD[1L], by = keys]
-    } else {
-        dt <- data
-    }
-    dt <- dt[
+    # if (!is.null(key_vars)) {
+    #     dt <- data[, .SD[1L], by = key_vars]
+    # } else {
+    #     dt <- data
+    # }
+    dt <- data[
         j = list(agg_val_var = sum(abs(get(val_var)), na.rm = TRUE)),
         keyby = c(id_var, by)
     ][

@@ -561,49 +561,75 @@ test_that("preventing val_var = 'val_var' works", {
 })
 
 
-# duplicates in val_var
+# duplicates in val_var ----
 # incorrect calculation: false negative
 test_that("duplicates in val_var are handled correctly", {
-    for (id_var in c("lender_group", "lender", "borrower", "borrower_group")) {
+    data("sdc_dups_DT")
+    sdc_dups_DT2 <- data.table::rbindlist(list(
+        "2020-01" = sdc_dups_DT, "2020-02" = sdc_dups_DT),
+        idcol = "date"
+    )
+    sdc_dups_DT2[date == "2020-02", volume := volume - 3]
 
-        # incorrect_ calculation
-        expect_silent(
-            sdc_descriptives(sdc_dups_DT, id_var = id_var, val_var = "volume")
-        )
+    for (df in list(sdc_dups_DT, sdc_dups_DT2)) {
 
-        # correct calculation
-        expect_warning(
-            sdc_descriptives(
-                sdc_dups_DT,
-                id_var = id_var,
-                val_var = "volume",
-                keys = c("lender", "borrower")
-            ),
-            "Dominant entities."
-        )
+        for (id_var in c("lender_group", "lender", "borrower", "borrower_group")) {
 
+            # incorrect_ calculation
+            expect_silent(
+                sdc_descriptives(df, id_var = id_var, val_var = "volume")
+            )
+
+            # correct calculation
+            if ("date" %in% names(df)) {
+                time_var <- "date"
+            } else {
+                time_var <- NULL
+            }
+            expect_warning(
+                sdc_descriptives(
+                    df,
+                    id_var = id_var,
+                    val_var = "volume",
+                    key_vars = c("lender", "borrower", time_var)
+                ),
+                "Dominant entities."
+            )
+
+
+        }
+
+        for (key_vars in list(
+            c("lender_group"),
+            c("borrower_group"),
+            c("lender_group", "borrower_group"),
+            c("lender_group", "lender")
+        )) {
+            if (identical(df, sdc_dups_DT)) {
+                expect_message(
+                    sdc_descriptives(
+                        df,
+                        id_var = id_var,
+                        val_var = "volume",
+                        key_vars = key_vars
+                    ),
+                    "Duplicates.+detected"
+                )
+            } else {
+                expect_error(
+                    sdc_descriptives(
+                        df,
+                        id_var = id_var,
+                        val_var = "volume",
+                        key_vars = key_vars
+                    ),
+                    "Assertion on 'key_vars' failed"
+                )
+            }
+        }
+
+        expect_false("mean_val_var" %in% names(df))
     }
-})
-test_that("keys are checked correcly", {
-    for (keys in list(
-        c("lender_group"),
-        c("borrower_group"),
-        c("lender_group", "borrower_group"),
-        c("lender_group", "lender")
-    )) {
-        expect_error(
-            sdc_descriptives(
-                sdc_dups_DT,
-                id_var = "lender",
-                val_var = "volume",
-                keys = keys
-            ),
-            paste0(
-                "The set of 'keys' {'", paste0(keys, collapse = "', '"),
-                "'} does not uniquely identify each value of 'val_var'."
-            ),
-            fixed = TRUE
-        )
-    }
+
 
 })

@@ -65,7 +65,7 @@ usethis::use_data(sdc_model_DT, overwrite = TRUE)
 sdc_dups_credits_DT <- data.table(
     lender = paste0("L", 1:6),
     borrower = paste0("B", 1:6),
-    volume = c(rep(400L, 2), rep(10, 3), 99)
+    volume = c(400L:401L, 10L:12L, 99L)
 )
 sdc_dups_lender_groups_DT <- data.table(
     lender_group = paste0("LG", 1:7),
