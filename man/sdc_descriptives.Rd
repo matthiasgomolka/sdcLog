@@ -73,7 +73,7 @@ distinct entities and if the largest 2 entities account for 85\% or more of
 }
 \details{
 \loadmathjax
-The general form of the \mjseqn{(n, k)} dominance rule can be formulated
+The general form of the \mjseqn{(n, k)}-dominance rule can be formulated
 as:
 
 \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}

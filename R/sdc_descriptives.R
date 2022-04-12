@@ -17,7 +17,7 @@
 #'
 #' @details
 #'   \loadmathjax
-#'   The general form of the \mjseqn{(n, k)} dominance rule can be formulated
+#'   The general form of the \mjseqn{(n, k)}-dominance rule can be formulated
 #'   as:
 #'
 #'   \mjsdeqn{\sum_{i=1}^{n}x_i > \frac{k}{100} \sum_{i=1}^{N}x_i}
@@ -28,7 +28,7 @@
 #'   \mjseqn{n} contributions may account for, and \mjseqn{N} is the total
 #'   number of observations.
 #'
-#'   If the statement above is true, the \mjseqn{(n, k)} dominance rule is
+#'   If the statement above is true, the \mjseqn{(n, k)}-dominance rule is
 #'   violated.
 #'
 #' @export
