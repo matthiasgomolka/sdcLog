@@ -4,6 +4,8 @@
     <title>sdcLog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Matthias Gomolka" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/htmltools-fill/fill.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
     <script src="libs/viz/viz.js"></script>
     <link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
@@ -14,10 +16,18 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # sdcLog
+]
+.subtitle[
 ## Utilities for statistical disclosure control in the context of research data centers
+]
+.author[
 ### Matthias Gomolka
+]
+.institute[
 ### Deutsche Bundesbank, Research Data and Service Center
+]
 
 ---
 
@@ -98,15 +108,15 @@ Two simple rules:
 # An example
 
 
-```r
+``` r
 head(DT)
-#&gt;    id sector year     val_1    val_2
-#&gt; 1:  A     S1 2019        NA 9.477642
-#&gt; 2:  A     S1 2020 94.174449 5.856641
-#&gt; 3:  B     S1 2019  4.349115 3.697140
-#&gt; 4:  B     S1 2020  2.589011 6.796527
-#&gt; 5:  C     S1 2019  6.155680 7.213390
-#&gt; 6:  C     S1 2020  7.183206 5.948330
+#&gt;    id id_na sector year     val_1    val_2
+#&gt; 1:  A     A     S1 2019        NA 9.477642
+#&gt; 2:  A  &lt;NA&gt;     S1 2020 94.174449 5.856641
+#&gt; 3:  B     B     S1 2019  4.349115 3.697140
+#&gt; 4:  B     B     S1 2020  2.589011 6.796527
+#&gt; 5:  C     C     S1 2019  6.155680 7.213390
+#&gt; 6:  C     C     S1 2020  7.183206 5.948330
 ```
 
 ---
@@ -114,19 +124,19 @@ head(DT)
 # An example
 
 
-```r
+``` r
 head(DT)
-#&gt;    id sector year     val_1    val_2
-#&gt; 1:  A     S1 2019        NA 9.477642
-#&gt; 2:  A     S1 2020 94.174449 5.856641
-#&gt; 3:  B     S1 2019  4.349115 3.697140
-#&gt; 4:  B     S1 2020  2.589011 6.796527
-#&gt; 5:  C     S1 2019  6.155680 7.213390
-#&gt; 6:  C     S1 2020  7.183206 5.948330
+#&gt;    id id_na sector year     val_1    val_2
+#&gt; 1:  A     A     S1 2019        NA 9.477642
+#&gt; 2:  A  &lt;NA&gt;     S1 2020 94.174449 5.856641
+#&gt; 3:  B     B     S1 2019  4.349115 3.697140
+#&gt; 4:  B     B     S1 2020  2.589011 6.796527
+#&gt; 5:  C     C     S1 2019  6.155680 7.213390
+#&gt; 6:  C     C     S1 2020  7.183206 5.948330
 ```
 
 
-```r
+``` r
 # results wanted
 DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
 #&gt;    sector     mean
@@ -139,19 +149,19 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
 # An example
 
 
-```r
+``` r
 head(DT)
-#&gt;    id sector year     val_1    val_2
-#&gt; 1:  A     S1 2019        NA 9.477642
-#&gt; 2:  A     S1 2020 94.174449 5.856641
-#&gt; 3:  B     S1 2019  4.349115 3.697140
-#&gt; 4:  B     S1 2020  2.589011 6.796527
-#&gt; 5:  C     S1 2019  6.155680 7.213390
-#&gt; 6:  C     S1 2020  7.183206 5.948330
+#&gt;    id id_na sector year     val_1    val_2
+#&gt; 1:  A     A     S1 2019        NA 9.477642
+#&gt; 2:  A  &lt;NA&gt;     S1 2020 94.174449 5.856641
+#&gt; 3:  B     B     S1 2019  4.349115 3.697140
+#&gt; 4:  B     B     S1 2020  2.589011 6.796527
+#&gt; 5:  C     C     S1 2019  6.155680 7.213390
+#&gt; 6:  C     C     S1 2020  7.183206 5.948330
 ```
 
 
-```r
+``` r
 # results wanted
 DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
 #&gt;    sector     mean
@@ -160,36 +170,40 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)), by = "sector"]
 ```
 
 
-```r
+``` r
 # show that this result is fine
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
-#&gt; [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE ]
-#&gt; Output complies to RDC rules.
+#&gt; ────────────────────────────────────────────────────────────────────────────────────────────── SDC results (descriptives) ──
+#&gt; OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+#&gt; SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE
+#&gt; ✔ Output complies to RDC rules.
+#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
 
 # Another example
 
-```r
+``` r
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
-#&gt; Warning: Potential disclosure problem: Not enough distinct entities.
-#&gt; Warning: Potential disclosure problem: Dominant entities.
-#&gt; [ OPTIONS:  sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85 ]
-#&gt; [ SETTINGS: id_var: id | val_var: val_1 | by: sector, year | zero_as_NA: FALSE ]
-#&gt; Not enough distinct entities:
+#&gt; Warning: DISCLOSURE PROBLEM: Not enough distinct entities.
+#&gt; Warning: DISCLOSURE PROBLEM: Dominant entities.
+#&gt; ────────────────────────────────────────────────────────────────────────────────────────────── SDC results (descriptives) ──
+#&gt; OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
+#&gt; SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA: FALSE
+#&gt; ✖ Not enough distinct entities:
 #&gt;    sector year distinct_ids
 #&gt; 1:     S1 2019            4
 #&gt; 2:     S1 2020            5
 #&gt; 3:     S2 2019            5
 #&gt; 4:     S2 2020            5
-#&gt; Dominant entities:
+#&gt; ✖ Dominant entities:
 #&gt;    sector year value_share
 #&gt; 1:     S2 2020   0.9056314
 #&gt; 2:     S1 2020   0.8776852
 #&gt; 3:     S1 2019   0.6815011
 #&gt; 4:     S2 2019   0.5506965
+#&gt; ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -198,15 +212,15 @@ sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 
 `sdc_model()` for disclosure control of models
 
-`sdc_extreme()` for non-confidential min/max values
+`sdc_min_max()` for non-confidential min/max values
 
 ---
 
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-5dad88d674e52ff1a6f8" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5dad88d674e52ff1a6f8">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-a2c182bcb28f2f8a94e2" style="width:60%;height:504px;"></div>
+<script type="application/json" data-for="htmlwidget-a2c182bcb28f2f8a94e2">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -214,8 +228,8 @@ sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-ea777c7ad0f244662d4e" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ea777c7ad0f244662d4e">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-961ab25e01f81818cb64" style="width:60%;height:504px;"></div>
+<script type="application/json" data-for="htmlwidget-961ab25e01f81818cb64">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -223,8 +237,8 @@ sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-707dfe320c134c5693c9" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-707dfe320c134c5693c9">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_extreme() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-189ad4415557a21c227f" style="width:60%;height:504px;"></div>
+<script type="application/json" data-for="htmlwidget-189ad4415557a21c227f">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"R Script\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  \"log file\"\n  \n  node [shape = box, width = 3]\n  checks [label = \"manual checks by RDC staff\"]\n\n  node [shape = oval, width = 1]\n  \"sdc_log()\"\n\n  # several \"edge\" statements\n  \"script\" -> \"sdc_log()\"\n  \"sdc_log()\" -> \"log file\"\n  \"log file\" -> checks\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -233,7 +247,7 @@ class: middle
 # Get in touch!
 
 
-```r
+``` r
 # CRAN
 install.packages("sdcLog")
 
@@ -244,11 +258,11 @@ remotes::install_github("https://github.com/matthiasgomolka/sdcLog")
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"ratio": "16:9",
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false,
-"slideNumberFormat": "Slides available at https://tinyurl.com/sdcLog-uRos2020 | Twitter: @matthiasgomolka"
+  "ratio": "16:9",
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false,
+  "slideNumberFormat": "Slides available at https://tinyurl.com/sdcLog-uRos2020 | Twitter: @matthiasgomolka"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -289,6 +303,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

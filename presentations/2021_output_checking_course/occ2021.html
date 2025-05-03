@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content="Matthias Gomolka" />
     <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/htmltools-fill/fill.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
     <script src="libs/viz/viz.js"></script>
     <link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
@@ -15,10 +16,18 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # sdcLog
+]
+.subtitle[
 ## Toolkit for Output Control in Research Data Centres
+]
+.author[
 ### Matthias Gomolka
+]
+.institute[
 ### Deutsche Bundesbank, Research Data and Service Centre (RDSC)
+]
 
 ---
 
@@ -100,7 +109,7 @@ rules.
 
 .pull-left[
 
-```r
+``` r
 head(DT)
 ##    id sector year     val_1    val_2
 ## 1:  A     S1 2019        NA 9.477642
@@ -116,7 +125,7 @@ head(DT)
 
 .pull-right[
 
-```r
+``` r
 # result
 DT[, .(mean = mean(val_1, na.rm = TRUE)),
    by = "sector"]
@@ -129,14 +138,14 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)),
 --
 
 
-```r
+``` r
 # Proof, that the result complies to rules
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
-## ────────────────────────────────────────────────── SDC results (descriptives) ──
+## ────────────────────────────────────────────────────────────────────────────────────────────── SDC results (descriptives) ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE
-## ✓ Output complies to RDC rules.
-## ────────────────────────────────────────────────────────────────────────────────
+## ✔ Output complies to RDC rules.
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -149,27 +158,26 @@ This time, researches want to calculate the result grouped by `sector` and
 --
 
 
-```r
+``` r
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 ## Warning: DISCLOSURE PROBLEM: Not enough distinct entities.
 ## Warning: DISCLOSURE PROBLEM: Dominant entities.
-## ────────────────────────────────────────────────── SDC results (descriptives) ──
+## ────────────────────────────────────────────────────────────────────────────────────────────── SDC results (descriptives) ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
-## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA:
-## FALSE
-## x Not enough distinct entities:
+## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA: FALSE
+## ✖ Not enough distinct entities:
 ##    sector year distinct_ids
 ## 1:     S1 2019            4
 ## 2:     S1 2020            5
 ## 3:     S2 2019            5
 ## 4:     S2 2020            5
-## x Dominant entities:
+## ✖ Dominant entities:
 ##    sector year value_share
 ## 1:     S2 2020   0.9056314
 ## 2:     S1 2020   0.8776852
 ## 3:     S1 2019   0.6815011
 ## 4:     S2 2019   0.5506965
-## ────────────────────────────────────────────────────────────────────────────────
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -194,14 +202,14 @@ Minimum and maximum value are confidential micro data.
 --
 
 
-```r
+``` r
 sdc_min_max(DT, id_var = "id", val_var = "val_1")
-## ──────────────────────────────────────────────────────────── SDC safe min/max ──
+## ──────────────────────────────────────────────────────────────────────────────────────────────────────── SDC safe min/max ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1
 ##    val_var      min distinct_ids_min      max distinct_ids_max
 ## 1:   val_1 3.364432                5 37.34043                7
-## ────────────────────────────────────────────────────────────────────────────────
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -213,7 +221,7 @@ Researchers also want to publish results from a linear regression.
 --
 
 
-```r
+``` r
 options(sdc.n_ids = 3)
 
 # Estimate model
@@ -221,11 +229,11 @@ mod &lt;- lm(val_1 ~ sector + year + val_2, data = DT)
 
 # Check if model complies to rules
 sdc_model(DT, model = mod, id_var = "id")
-## ───────────────────────────────────────────────────────── SDC results (model) ──
+## ───────────────────────────────────────────────────────────────────────────────────────────────────── SDC results (model) ──
 ## OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id
-## ✓ Output complies to RDC rules.
-## ────────────────────────────────────────────────────────────────────────────────
+## ✔ Output complies to RDC rules.
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -233,8 +241,8 @@ sdc_model(DT, model = mod, id_var = "id")
 # Why is it called sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-61af1a3180e09dc30414" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-61af1a3180e09dc30414">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-8eb640de5e36b7f021dc" style="width:60%;height:504px;"></div>
+<script type="application/json" data-for="htmlwidget-8eb640de5e36b7f021dc">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\ncontains sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log file\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Checked by RDSC\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -244,7 +252,7 @@ sdc_model(DT, model = mod, id_var = "id")
 #### CRAN
 
 
-```r
+``` r
 install.packages("sdcLog")
 ```
 
@@ -263,12 +271,12 @@ https://github.com/matthiasgomolka/sdcLog
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"ratio": "16:9",
-"highlightStyle": "github",
-"highlightLines": true,
-"highlightSpans": true,
-"countIncrementalSlides": false,
-"slideNumberFormat": "Slides available on <a href=\"https://tinyurl.com/sdcLog-presentation\">https://tinyurl.com/sdcLog-presentation</>"
+  "ratio": "16:9",
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "slideNumberFormat": "Slides available on <a href=\"https://tinyurl.com/sdcLog-presentation\">https://tinyurl.com/sdcLog-presentation</>"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -309,6 +317,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

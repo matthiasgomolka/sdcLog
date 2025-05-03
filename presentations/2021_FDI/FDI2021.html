@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content="Matthias Gomolka" />
     <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/htmltools-fill/fill.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
     <script src="libs/viz/viz.js"></script>
     <link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
@@ -15,10 +16,18 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # sdcLog
+]
+.subtitle[
 ## Werkzeuge für Outputkontrolle in Forschungsdatenzentrem
+]
+.author[
 ### Matthias Gomolka
+]
+.institute[
 ### Deutsche Bundesbank, Forschungsdaten- und Servicezentrum
+]
 
 ---
 
@@ -94,15 +103,15 @@ Output-Regeln entspricht.
 
 .pull-left[
 
-```r
+``` r
 head(DT)
-##    id sector year     val_1    val_2
-## 1:  A     S1 2019        NA 9.477642
-## 2:  A     S1 2020 94.174449 5.856641
-## 3:  B     S1 2019  4.349115 3.697140
-## 4:  B     S1 2020  2.589011 6.796527
-## 5:  C     S1 2019  6.155680 7.213390
-## 6:  C     S1 2020  7.183206 5.948330
+##    id id_na sector year     val_1    val_2
+## 1:  A     A     S1 2019        NA 9.477642
+## 2:  A  &lt;NA&gt;     S1 2020 94.174449 5.856641
+## 3:  B     B     S1 2019  4.349115 3.697140
+## 4:  B     B     S1 2020  2.589011 6.796527
+## 5:  C     C     S1 2019  6.155680 7.213390
+## 6:  C     C     S1 2020  7.183206 5.948330
 ```
 ]
 
@@ -110,7 +119,7 @@ head(DT)
 
 .pull-right[
 
-```r
+``` r
 # gesuchtes Ergebnis
 DT[, .(mean = mean(val_1, na.rm = TRUE)),
    by = "sector"]
@@ -123,12 +132,14 @@ DT[, .(mean = mean(val_1, na.rm = TRUE)),
 --
 
 
-```r
+``` r
 # Nachweis, dass das Ergebnis den Regeln entspricht
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = "sector")
+## ────────────────────────────────────────────────────────────────────────────────────────────── SDC results (descriptives) ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1 | by: sector | zero_as_NA: FALSE
-## Output complies to RDC rules.
+## ✔ Output complies to RDC rules.
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -140,24 +151,26 @@ Diesmal berechnen die Forschenden das arithmetische Mittel gruppiert nach `secto
 --
 
 
-```r
+``` r
 sdc_descriptives(DT, id_var = "id", val_var = "val_1", by = c("sector", "year"))
 ## Warning: DISCLOSURE PROBLEM: Not enough distinct entities.
 ## Warning: DISCLOSURE PROBLEM: Dominant entities.
+## ────────────────────────────────────────────────────────────────────────────────────────────── SDC results (descriptives) ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1 | by: c("sector", "year") | zero_as_NA: FALSE
-## Not enough distinct entities:
+## ✖ Not enough distinct entities:
 ##    sector year distinct_ids
 ## 1:     S1 2019            4
 ## 2:     S1 2020            5
 ## 3:     S2 2019            5
 ## 4:     S2 2020            5
-## Dominant entities:
+## ✖ Dominant entities:
 ##    sector year value_share
 ## 1:     S2 2020   0.9056314
 ## 2:     S1 2020   0.8776852
 ## 3:     S1 2019   0.6815011
 ## 4:     S2 2019   0.5506965
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -183,12 +196,14 @@ größten Werte mit `sdc_min_max()`:
 --
 
 
-```r
+``` r
 sdc_min_max(DT, id_var = "id", val_var = "val_1")
+## ──────────────────────────────────────────────────────────────────────────────────────────────────────── SDC safe min/max ──
 ## OPTIONS: sdc.n_ids: 5 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id | val_var: val_1
 ##    val_var      min distinct_ids_min      max distinct_ids_max
 ## 1:   val_1 3.364432                5 37.34043                7
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -200,7 +215,7 @@ Jetzt möchten Forschende die Ergebnisse einer linearen Regression veröffentlic
 --
 
 
-```r
+``` r
 options(sdc.n_ids = 3)
 
 # Modell berechnen
@@ -208,9 +223,11 @@ mod &lt;- lm(val_1 ~ sector + year + val_2, data = DT)
 
 # Prüfen, ob Ergebnise freigegeben werden können
 sdc_model(DT, model = mod, id_var = "id")
+## ───────────────────────────────────────────────────────────────────────────────────────────────────── SDC results (model) ──
 ## OPTIONS: sdc.n_ids: 3 | sdc.n_ids_dominance: 2 | sdc.share_dominance: 0.85
 ## SETTINGS: id_var: id
-## Output complies to RDC rules.
+## ✔ Output complies to RDC rules.
+## ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -218,8 +235,8 @@ sdc_model(DT, model = mod, id_var = "id")
 # Warum heißt es sdcLog?
 
 &lt;center&gt;
-<div id="htmlwidget-ff97e75e0a119f10a8aa" style="width:60%;height:504px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ff97e75e0a119f10a8aa">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\nenthält sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log Datei\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Prüfung durch FDSZ\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-4a12eb0f39eaa979102f" style="width:60%;height:504px;"></div>
+<script type="application/json" data-for="htmlwidget-4a12eb0f39eaa979102f">{"x":{"diagram":"\ndigraph boxes_and_circles {\n\n  # a \"graph\" statement\n  graph [overlap = true, fontsize = 30]\n  \n  # several \"node\" statements\n  node [shape = box, fontname = \"Fira Sans\", width = 5.5]\n  script [label = \"analysis.R\nenthält sdc_descriptives() / sdc_min_max() / sdc_model()\"];\n  \n  node [width = 1] \n  log [label = \"Log Datei\"]\n  \n  node [shape = box, width = 3]\n  checks [label = \"Prüfung durch FDSZ\"]\n\n  node [shape = oval, width = 1] \n  sdc_log [label = \"sdc_log(analysis.R)\"]\n\n  # several \"edge\" statements\n  script -> sdc_log\n  sdc_log -> log\n  log -> checks\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 &lt;/center&gt;
 
 ---
@@ -229,7 +246,7 @@ sdc_model(DT, model = mod, id_var = "id")
 #### CRAN
 
 
-```r
+``` r
 install.packages("sdcLog")
 ```
 
@@ -248,12 +265,12 @@ https://github.com/matthiasgomolka/sdcLog/issues
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"ratio": "16:9",
-"highlightStyle": "github",
-"highlightLines": true,
-"highlightSpans": true,
-"countIncrementalSlides": false,
-"slideNumberFormat": "Präsentation verfügbar unter <a href=\"https://tinyurl.com/sdcLog-FDI2021\">https://tinyurl.com/sdcLog-FDI2021</>"
+  "ratio": "16:9",
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "slideNumberFormat": "Präsentation verfügbar unter <a href=\"https://tinyurl.com/sdcLog-FDI2021\">https://tinyurl.com/sdcLog-FDI2021</>"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -294,6 +311,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

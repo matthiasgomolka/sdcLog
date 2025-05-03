@@ -1,3 +1,9 @@
+# 0.5.1
+
+### Fixes
+
+* Pure CRAN check maintenance release.
+
 # sdcLog 0.5.0
 
 ### Improvements

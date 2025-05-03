@@ -1,13 +1,11 @@
 ## Test environments
-* elementary OS 6 Odin (local R installation), R 4.1.3
-* macOS-latest, release
-* windows-latest, release
-* windows-latest, oldrel
-* ubuntu-18.04, devel
-* ubuntu-18.04, release
-* ubuntu-18.04, oldrel
-* ubuntu-18.04, 3.6
-* ubuntu-18.04, 3.5
+* windows 11 (local R installation), R 4.5.0
+* macOS-latest, 'release'
+* windows-latest, 'release'
+* ubuntu-latest, 'devel', http-user-agent: 'release'
+* ubuntu-latest, 'release'
+* ubuntu-latest, 'oldrel-1'
+* ubuntu-latest, 'oldrel-2'
 
 ## R CMD check results
 
