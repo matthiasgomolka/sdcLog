@@ -1,11 +1,14 @@
+<!-- badges: start -->
 [![CRAN
 release](https://www.r-pkg.org/badges/version/sdcLog)](https://CRAN.R-project.org/package=sdcLog)
 [![Downloads](https://cranlogs.r-pkg.org/badges/sdcLog)](https://www.r-pkg.org:443/pkg/sdcLog)
 [![Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Codecov](https://codecov.io/gh/matthiasgomolka/sdcLog/branch/main/graph/badge.svg)](https://app.codecov.io/gh/matthiasgomolka/sdcLog)
-[![R-CMD-check](https://github.com/matthiasgomolka/sdcLog/workflows/R-CMD-check/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions)
+[![R-CMD-check](https://github.com/matthiasgomolka/sdcLog/actions/workflows/R-CMD-check.yaml/badge.svghttps://github.com/matthiasgomolka/sdcLog/actions/workflows/R-CMD-check.yaml/badge.svghttps://github.com/matthiasgomolka/sdcLog/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matthiasgomolka/sdcLog/actions/workflows/R-CMD-check.yaml)
 [![Dependencies](https://tinyverse.netlify.com/badge/sdcLog)](https://cran.r-project.org/package=sdcLog)
 [![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![Codecov test coverage](https://codecov.io/gh/matthiasgomolka/sdcLog/graph/badge.svg)](https://app.codecov.io/gh/matthiasgomolka/sdcLog)
+<!-- badges: end -->
 
 **sdcLog** is work in progress and aims to provide tools which simplify
 statistical disclosure control in the context of research data centers.

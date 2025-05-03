@@ -1,52 +1,27 @@
-# -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.2.1
+# --------------------------------------------
+# CITATION file created with {cffr} R package
 # See also: https://docs.ropensci.org/cffr/
-# -----------------------------------------------------------
+# --------------------------------------------
  
 cff-version: 1.2.0
 message: 'To cite package "sdcLog" in publications use:'
 type: software
 license: GPL-3.0-only
 title: 'sdcLog: Tools for Statistical Disclosure Control in Research Data Centers'
-version: 0.5.0
+version: 0.5.1
+doi: 10.32614/CRAN.package.sdcLog
 abstract: Tools for researchers to explicitly show that their results comply to rules
   for statistical disclosure control imposed by research data centers. These tools
   help in checking descriptive statistics and models and in calculating extreme values
   that are not individual data. Also included is a simple function to create log files.
   The methods used here are described in the "Guidelines for the checking of output
-  based on microdata research" by Bond, Brandt, and de Wolf (2015) <https://ec.europa.eu/eurostat/cros/system/files/dwb_standalone-document_output-checking-guidelines.pdf>.
+  based on microdata research" by Bond, Brandt, and de Wolf (2015) <https://cros.ec.europa.eu/system/files/2024-02/Output-checking-guidelines.pdf>.
 authors:
 - family-names: Gomolka
   given-names: Matthias
   email: matthias.gomolka@posteo.de
 - family-names: Becker
   given-names: Tim
-preferred-citation:
-  type: manual
-  title: 'sdcLog: Tools for Statistical Disclosure Control in Research Data Centers'
-  authors:
-  - family-names: Gomolka
-    given-names: Matthias
-    email: matthias.gomolka@posteo.de
-  - family-names: Becker
-    given-names: Tim
-  version: 0.5.0
-  abstract: Tools for researchers to explicitly show that their results comply to
-    rules for statistical disclosure control imposed by research data centers. These
-    tools help in checking descriptive statistics and models and in calculating extreme
-    values that are not individual data. Also included is a simple function to create
-    log files. The methods used here are described in the "Guidelines for the checking
-    of output based on microdata research" by Bond, Brandt, and de Wolf (2015) <https://ec.europa.eu/eurostat/cros/system/files/dwb_standalone-document_output-checking-guidelines.pdf>.
-  repository: https://CRAN.R-project.org/package=sdcLog
-  repository-code: https://github.com/matthiasgomolka/sdcLog
-  url: https://github.com/matthiasgomolka/sdcLog
-  contact:
-  - family-names: Gomolka
-    given-names: Matthias
-    email: matthias.gomolka@posteo.de
-  keywords: statistical-disclosure-control
-  license: GPL-3.0-only
-  year: '2022'
 repository: https://CRAN.R-project.org/package=sdcLog
 repository-code: https://github.com/matthiasgomolka/sdcLog
 url: https://github.com/matthiasgomolka/sdcLog
@@ -59,19 +34,20 @@ references:
 - type: software
   title: 'R: A Language and Environment for Statistical Computing'
   notes: Depends
+  url: https://www.R-project.org/
   authors:
   - name: R Core Team
-  location:
-    name: Vienna, Austria
-  year: '2022'
-  url: https://www.R-project.org/
   institution:
     name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2025'
   version: '>= 3.5'
 - type: software
   title: broom
   abstract: 'broom: Convert Statistical Objects into Tidy Tibbles'
   notes: Imports
+  url: https://broom.tidymodels.org/
+  repository: https://CRAN.R-project.org/package=broom
   authors:
   - family-names: Robinson
     given-names: David
@@ -82,158 +58,193 @@ references:
     orcid: https://orcid.org/0000-0002-4985-5160
   - family-names: Couch
     given-names: Simon
-    email: simonpatrickcouch@gmail.com
+    email: simon.couch@posit.co
     orcid: https://orcid.org/0000-0001-5676-5107
-  year: '2022'
-  url: https://CRAN.R-project.org/package=broom
+  year: '2025'
+  doi: 10.32614/CRAN.package.broom
   version: '>= 0.5.5'
 - type: software
   title: checkmate
   abstract: 'checkmate: Fast and Versatile Argument Checks'
   notes: Imports
+  url: https://mllg.github.io/checkmate/
+  repository: https://CRAN.R-project.org/package=checkmate
   authors:
   - family-names: Lang
     given-names: Michel
     email: michellang@gmail.com
     orcid: https://orcid.org/0000-0001-9754-0393
-  year: '2022'
-  url: https://CRAN.R-project.org/package=checkmate
+  year: '2025'
+  doi: 10.32614/CRAN.package.checkmate
   version: '>= 2.0.0'
 - type: software
   title: cli
   abstract: 'cli: Helpers for Developing Command Line Interfaces'
   notes: Imports
+  url: https://cli.r-lib.org
+  repository: https://CRAN.R-project.org/package=cli
   authors:
   - family-names: Csárdi
     given-names: Gábor
-    email: csardi.gabor@gmail.com
-  year: '2022'
-  url: https://CRAN.R-project.org/package=cli
+    email: gabor@posit.co
+  year: '2025'
+  doi: 10.32614/CRAN.package.cli
 - type: software
   title: data.table
   abstract: 'data.table: Extension of `data.frame`'
   notes: Imports
+  url: https://r-datatable.com
+  repository: https://CRAN.R-project.org/package=data.table
   authors:
+  - family-names: Barrett
+    given-names: Tyson
+    email: t.barrett88@gmail.com
+    orcid: https://orcid.org/0000-0002-2137-1391
   - family-names: Dowle
     given-names: Matt
     email: mattjdowle@gmail.com
   - family-names: Srinivasan
     given-names: Arun
     email: asrini@pm.me
-  year: '2022'
-  url: https://CRAN.R-project.org/package=data.table
+  - family-names: Gorecki
+    given-names: Jan
+  - family-names: Chirico
+    given-names: Michael
+    orcid: https://orcid.org/0000-0003-0787-087X
+  - family-names: Hocking
+    given-names: Toby
+    orcid: https://orcid.org/0000-0002-3146-0865
+  - family-names: Schwendinger
+    given-names: Benjamin
+    orcid: https://orcid.org/0000-0003-3315-8114
+  - family-names: Krylov
+    given-names: Ivan
+    email: ikrylov@disroot.org
+    orcid: https://orcid.org/0000-0002-0172-3812
+  year: '2025'
+  doi: 10.32614/CRAN.package.data.table
   version: '>= 1.12.8'
 - type: software
   title: mathjaxr
   abstract: 'mathjaxr: Using ''Mathjax'' in Rd Files'
   notes: Imports
+  url: https://github.com/wviechtb/mathjaxr
+  repository: https://CRAN.R-project.org/package=mathjaxr
   authors:
   - family-names: Viechtbauer
     given-names: Wolfgang
     email: wvb@wvbauer.com
     orcid: https://orcid.org/0000-0003-3463-4063
-  year: '2022'
-  url: https://CRAN.R-project.org/package=mathjaxr
+  year: '2025'
+  doi: 10.32614/CRAN.package.mathjaxr
 - type: software
   title: stats
   abstract: 'R: A Language and Environment for Statistical Computing'
   notes: Imports
   authors:
   - name: R Core Team
-  location:
-    name: Vienna, Austria
-  year: '2022'
-  url: https://www.R-project.org/
   institution:
     name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2025'
 - type: software
   title: utils
   abstract: 'R: A Language and Environment for Statistical Computing'
   notes: Imports
   authors:
   - name: R Core Team
-  location:
-    name: Vienna, Austria
-  year: '2022'
-  url: https://www.R-project.org/
   institution:
     name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2025'
 - type: software
   title: cffr
   abstract: 'cffr: Generate Citation File Format (''cff'') Metadata for R Packages'
   notes: Suggests
+  url: https://docs.ropensci.org/cffr/
+  repository: https://CRAN.R-project.org/package=cffr
   authors:
   - family-names: Hernangómez
     given-names: Diego
     email: diego.hernangomezherrero@gmail.com
     orcid: https://orcid.org/0000-0001-8457-4658
-  year: '2022'
-  url: https://CRAN.R-project.org/package=cffr
+  year: '2025'
+  doi: 10.32614/CRAN.package.cffr
 - type: software
   title: knitr
   abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
   notes: Suggests
+  url: https://yihui.org/knitr/
+  repository: https://CRAN.R-project.org/package=knitr
   authors:
   - family-names: Xie
     given-names: Yihui
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
-  year: '2022'
-  url: https://CRAN.R-project.org/package=knitr
+  year: '2025'
+  doi: 10.32614/CRAN.package.knitr
 - type: software
   title: lfe
   abstract: 'lfe: Linear Group Fixed Effects'
   notes: Suggests
+  url: https://github.com/r-econometrics/lfe
+  repository: https://CRAN.R-project.org/package=lfe
   authors:
   - family-names: Gaure
     given-names: Simen
-    email: Simen.Gaure@frisch.uio.no
     orcid: https://orcid.org/0000-0001-7251-8747
-  year: '2022'
-  url: https://CRAN.R-project.org/package=lfe
+  year: '2025'
+  doi: 10.32614/CRAN.package.lfe
 - type: software
   title: rmarkdown
   abstract: 'rmarkdown: Dynamic Documents for R'
   notes: Suggests
+  url: https://pkgs.rstudio.com/rmarkdown/
+  repository: https://CRAN.R-project.org/package=rmarkdown
   authors:
   - family-names: Allaire
     given-names: JJ
-    email: jj@rstudio.com
+    email: jj@posit.co
   - family-names: Xie
     given-names: Yihui
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
+  - family-names: Dervieux
+    given-names: Christophe
+    email: cderv@posit.co
+    orcid: https://orcid.org/0000-0003-4474-2498
   - family-names: McPherson
     given-names: Jonathan
-    email: jonathan@rstudio.com
+    email: jonathan@posit.co
   - family-names: Luraschi
     given-names: Javier
-    email: javier@rstudio.com
   - family-names: Ushey
     given-names: Kevin
-    email: kevin@rstudio.com
+    email: kevin@posit.co
   - family-names: Atkins
     given-names: Aron
-    email: aron@rstudio.com
+    email: aron@posit.co
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@rstudio.com
+    email: hadley@posit.co
   - family-names: Cheng
     given-names: Joe
-    email: joe@rstudio.com
+    email: joe@posit.co
   - family-names: Chang
     given-names: Winston
-    email: winston@rstudio.com
+    email: winston@posit.co
   - family-names: Iannone
     given-names: Richard
-    email: rich@rstudio.com
+    email: rich@posit.co
     orcid: https://orcid.org/0000-0003-3925-190X
-  year: '2022'
-  url: https://CRAN.R-project.org/package=rmarkdown
+  year: '2025'
+  doi: 10.32614/CRAN.package.rmarkdown
 - type: software
   title: skimr
   abstract: 'skimr: Compact and Flexible Summaries of Data'
   notes: Suggests
+  url: https://docs.ropensci.org/skimr/
+  repository: https://CRAN.R-project.org/package=skimr
   authors:
   - family-names: Waring
     given-names: Elin
@@ -244,8 +255,9 @@ references:
   - family-names: McNamara
     given-names: Amelia
     email: amcnamara@smith.edu
-  - family-names: Arino de la Rubia
+  - family-names: Rubia
     given-names: Eduardo
+    name-particle: Arino de la
     email: earino@gmail.com
   - family-names: Zhu
     given-names: Hao
@@ -253,43 +265,51 @@ references:
   - family-names: Ellis
     given-names: Shannon
     email: sellis18@jhmi.edu
-  year: '2022'
-  url: https://CRAN.R-project.org/package=skimr
+  year: '2025'
+  doi: 10.32614/CRAN.package.skimr
 - type: software
   title: spelling
   abstract: 'spelling: Tools for Spell Checking in R'
   notes: Suggests
+  url: https://ropensci.r-universe.dev/spelling
+  repository: https://CRAN.R-project.org/package=spelling
   authors:
   - family-names: Ooms
     given-names: Jeroen
-    email: jeroen@berkeley.edu
+    email: jeroenooms@gmail.com
     orcid: https://orcid.org/0000-0002-4035-0289
   - family-names: Hester
     given-names: Jim
     email: james.hester@rstudio.com
-  year: '2022'
-  url: https://CRAN.R-project.org/package=spelling
+  year: '2025'
+  doi: 10.32614/CRAN.package.spelling
 - type: software
   title: testthat
   abstract: 'testthat: Unit Testing for R'
   notes: Suggests
+  url: https://testthat.r-lib.org
+  repository: https://CRAN.R-project.org/package=testthat
   authors:
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@rstudio.com
-  year: '2022'
-  url: https://CRAN.R-project.org/package=testthat
+    email: hadley@posit.co
+  year: '2025'
+  doi: 10.32614/CRAN.package.testthat
   version: '>= 3.0.0'
 - type: software
   title: tibble
   abstract: 'tibble: Simple Data Frames'
   notes: Suggests
+  url: https://tibble.tidyverse.org/
+  repository: https://CRAN.R-project.org/package=tibble
   authors:
   - family-names: Müller
     given-names: Kirill
-    email: krlmlr+r@mailbox.org
+    email: kirill@cynkra.com
+    orcid: https://orcid.org/0000-0002-1416-3412
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2022'
-  url: https://CRAN.R-project.org/package=tibble
+  year: '2025'
+  doi: 10.32614/CRAN.package.tibble
+
