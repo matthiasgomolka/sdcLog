@@ -452,8 +452,8 @@ A simple call of this function could look as follows:
 
 ```{r eval = FALSE}
 sdc_log(
-  r_scripts = "/home/my_project/R/my_script.R",
-  log_files = "/home/my_project/log/my_script.txt"
+  r_script = "/home/my_project/R/my_script.R",
+  destination = "/home/my_project/log/my_script.txt"
 )
 ```
 
